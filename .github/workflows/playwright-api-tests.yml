@@ -1,4 +1,4 @@
-name: Playwright .NET Tests
+name: Playwright API Tests
 
 on:
   push:
@@ -6,19 +6,18 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    # Runs at 04:00 UTC (07:00 Bulgarian Summer Time / 06:00 Winter Time) every day
-    - cron: '0 4 * * *'
+    # Runs at 04:30 UTC (07:30 Bulgarian Summer Time / 06:30 Winter Time) every day
+    - cron: '30 4 * * *'
   workflow_dispatch:
-
 
 jobs:
   test:
-    name: Run UI Tests
+    name: Run API Tests
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: "01.Playwright/3.AutomationАtАutomationexercise.com"
+        working-directory: "01.Playwright/4.APITestingОnАutomationexercise.com"
 
     steps:
       - name: Checkout Repository
@@ -30,52 +29,28 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore Dependencies
-        run: dotnet restore AutomationExercise.sln
+        run: dotnet restore AutomationExercise.ApiTests.sln
 
       - name: Build Solution
-        run: dotnet build AutomationExercise.sln -c Release --no-restore
-
-      - name: Install Playwright Browsers and OS Dependencies
-        run: pwsh AutomationExercise.Tests/bin/Release/net9.0/playwright.ps1 install --with-deps
+        run: dotnet build AutomationExercise.ApiTests.sln -c Release --no-restore
 
       - name: Run NUnit Tests
-        env:
-          HEADLESS: "true"
-          SLOW_MO_MS: "0"
-        run: dotnet test AutomationExercise.sln -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test AutomationExercise.ApiTests.sln -c Release --no-build --logger "trx;LogFileName=test-results.trx"
 
       - name: Upload TRX Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-trx
-          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/test-results.trx"
+          path: "01.Playwright/4.APITestingОnАutomationexercise.com/AutomationExercise.ApiTests/TestResults/test-results.trx"
           if-no-files-found: warn
-
-      - name: Upload Failure Screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: failure-screenshots
-          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/Screenshots/"
-          if-no-files-found: ignore
 
       - name: Upload Allure Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
-          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/bin/Release/net9.0/allure-results/"
-          if-no-files-found: ignore
-
-      - name: Upload Playwright Traces & Logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-traces-logs
-          path: |
-            01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/**/*.zip
-            01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/**/*.log
+          path: "01.Playwright/4.APITestingОnАutomationexercise.com/AutomationExercise.ApiTests/bin/Release/net9.0/allure-results/"
           if-no-files-found: ignore
 
       - name: Prepare Email Body with Test Results
@@ -85,7 +60,7 @@ jobs:
           import xml.etree.ElementTree as ET
           import os
 
-          trx_path = 'AutomationExercise.Tests/TestResults/test-results.trx'
+          trx_path = 'AutomationExercise.ApiTests/TestResults/test-results.trx'
           email_body = []
           email_body.append(f"GitHub Actions Workflow: {os.environ.get('GITHUB_WORKFLOW')}")
           email_body.append(f"Run Number: #{os.environ.get('GITHUB_RUN_NUMBER')}")
@@ -137,4 +112,3 @@ jobs:
           from: GitHub Actions <noreply@github.com>
           body: file://email_body.txt
           secure: true
-
