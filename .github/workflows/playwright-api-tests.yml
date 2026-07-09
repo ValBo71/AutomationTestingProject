@@ -103,7 +103,7 @@ jobs:
               f.write('\n'.join(email_body))
 
       - name: Send Email Notification
-        if: false # always() - disabled for now
+        if: always()
         env:
           MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
           MAIL_PORT: ${{ secrets.MAIL_PORT }}
@@ -115,7 +115,7 @@ jobs:
         run: python ../../send_email.py
 
       - name: Upload SMTP Error Log
-        if: false # failure() - disabled for now
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: smtp-error-log-api
@@ -125,7 +125,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Commit and Push SMTP Error Log (if any)
-        if: false # failure() - disabled for now
+        if: failure()
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
