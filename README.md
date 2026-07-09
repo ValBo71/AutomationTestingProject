@@ -2,6 +2,7 @@
 
 [![Playwright UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml)
 [![Playwright API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml)
+[![Expand Testing API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml)
 
 A professional repository containing automated testing solutions.
 
@@ -26,6 +27,15 @@ This repository includes professional continuous integration (CI) pipelines impl
   * Scheduled run: **Every day at 07:30 AM Bulgarian time** (04:30 UTC).
   * Manual execution via the GitHub UI (`workflow_dispatch`).
 * **Features:** Lightweight running without full browser binary downloads (uses Playwright API Request Context), TRX results export, Allure results archiving, and a ready-to-run email dispatch script to send diagnostics directly to `vbogdanov.test@abv.bg`.
+
+### 3. Expand Testing API Test Pipeline (Playwright Notes API Tests)
+* **Target Project:** `01.Playwright/05-practice-expandtesting-apo-csharp/ApiTests.sln`
+* **Trigger Events:**
+  * Every `push` to the `main` branch.
+  * Every `pull_request` targeting the `main` branch.
+  * Scheduled run: **Every day at 08:00 AM Bulgarian time** (05:00 UTC).
+  * Manual execution via the GitHub UI (`workflow_dispatch`).
+* **Features:** Uses Playwright API Request Context, TRX results export, Allure results archiving, and email body preparation template.
 
 ---
 
