@@ -1,0 +1,436 @@
+{
+  "info": {
+    "_postman_id": "34d37126-8ed5-439c-b8c7-9f5074801282",
+    "name": "Swagger Petstore",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14224181",
+    "_collection_link": "https://go.postman.co/collection/14224181-34d37126-8ed5-439c-b8c7-9f5074801282?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "CreateUser",
+      "item": [
+        {
+          "name": "Create Users",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"nameUser\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
+                  "pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
+                  "pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
+                  "pm.collectionVariables.set(\"emailUser\", pm.variables.replaceIn('{{$randomEmail}}'));\r",
+                  "pm.collectionVariables.set(\"pass\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
+                  "pm.collectionVariables.set(\"phone\", pm.variables.replaceIn('{{$randomPhoneNumber}}'));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.collectionVariables.set(\"userID\", pm.response.json().message);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "  {\r\n    \"username\": \"{{nameUser}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"email\": \"{{emailUser}}\",\r\n    \"password\": \"{{pass}}\",\r\n    \"phone\": \"{{phone}}\"\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/v2/user",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v2",
+                "user"
+              ],
+              "query": [
+                {
+                  "key": "baseURL",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User created with supplited name\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtedLoginName = pm.collectionVariables.get(\"nameUser\");\r",
+                  "    pm.expect(jsonData.username).to.eql(expedtedLoginName);\r",
+                  "});\r",
+                  "pm.test(\"User created with supplited first name\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtedFirstName = pm.collectionVariables.get(\"firstName\");\r",
+                  "    pm.expect(jsonData.firstName).to.eql(expedtedFirstName);\r",
+                  "});\r",
+                  "pm.test(\"User created with supplited first Email\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedteEmail = pm.collectionVariables.get(\"emailUser\");\r",
+                  "    pm.expect(jsonData.email).to.eql(expedteEmail);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User ID check\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtedID = pm.collectionVariables.get(\"userID\");\r",
+                  "    pm.expect(jsonData.email).to.eql(expedtedID);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"pass\");\r",
+                  "pm.collectionVariables.unset(\"phone\");\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/v2/user/{{nameUser}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v2",
+                "user",
+                "{{nameUser}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"pass\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
+                  "pm.collectionVariables.set(\"phone\", pm.variables.replaceIn('{{$randomPhoneNumber}}'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "  {\r\n    \"username\": \"{{nameUser}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"email\": \"{{emailUser}}\",\r\n    \"password\": \"{{pass}}\",\r\n    \"phone\": \"{{phone}}\"\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/v2/user/{{nameUser}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v2",
+                "user",
+                "{{nameUser}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get udated User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User created with supplited name\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtedLoginName = pm.collectionVariables.get(\"nameUser\");\r",
+                  "    pm.expect(jsonData.username).to.eql(expedtedLoginName);\r",
+                  "});\r",
+                  "pm.test(\"User created with supplited first name\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtedFirstName = pm.collectionVariables.get(\"firstName\");\r",
+                  "    pm.expect(jsonData.firstName).to.eql(expedtedFirstName);\r",
+                  "});\r",
+                  "pm.test(\"User created with supplited Email\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedteEmail = pm.collectionVariables.get(\"emailUser\");\r",
+                  "    pm.expect(jsonData.email).to.eql(expedteEmail);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User created with supplited phone number\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtePhone = pm.collectionVariables.get(\"phone\");\r",
+                  "    pm.expect(jsonData.phone).to.eql(expedtePhone);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User created with supplited phone number\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtePass = pm.collectionVariables.get(\"pass\");\r",
+                  "    pm.expect(jsonData.password).to.eql(expedtePass);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User ID check\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtedID = pm.collectionVariables.get(\"userID\");\r",
+                  "    pm.expect(jsonData.email).to.eql(expedtedID);\r",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/v2/user/{{nameUser}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v2",
+                "user",
+                "{{nameUser}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "LoginAndLogoutUser",
+      "item": [
+        {
+          "name": "LoginUser",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://petstore.swagger.io/v2/user/login?username={{nameUser}}&password={{pass}}",
+              "protocol": "https",
+              "host": [
+                "petstore",
+                "swagger",
+                "io"
+              ],
+              "path": [
+                "v2",
+                "user",
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "{{nameUser}}"
+                },
+                {
+                  "key": "password",
+                  "value": "{{pass}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "LogOut User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Confirmation of logout\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.message).to.eql(\"ok\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/v2/user/logout",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v2",
+                "user",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "DeleteUser",
+      "item": [
+        {
+          "name": "DeleteUser",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User created with supplited name\", function () {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    var expedtedMessage = pm.collectionVariables.get(\"nameUser\");\r",
+                  "    pm.expect(jsonData.message).to.eql(expedtedMessage);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"nameUser\");\r",
+                  "pm.collectionVariables.unset(\"firstName\");\r",
+                  "pm.collectionVariables.unset(\"lastName\");\r",
+                  "pm.collectionVariables.unset(\"emailUser\");\r",
+                  "pm.collectionVariables.unset(\"pass\");\r",
+                  "pm.collectionVariables.unset(\"phone\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/v2/user/{{nameUser}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v2",
+                "user",
+                "{{nameUser}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "userID",
+      "value": ""
+    },
+    {
+      "key": "nameUser",
+      "value": ""
+    },
+    {
+      "key": "firstName",
+      "value": ""
+    },
+    {
+      "key": "lastName",
+      "value": ""
+    },
+    {
+      "key": "emailUser",
+      "value": ""
+    },
+    {
+      "key": "pass",
+      "value": ""
+    },
+    {
+      "key": "phone",
+      "value": ""
+    }
+  ]
+}
