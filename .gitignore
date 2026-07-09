@@ -1,0 +1,94 @@
+# --- System Files ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- IDEs and Editors ---
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
+*.user
+*.userosscache
+*.sln.docstates
+
+# --- Node.js (Playwright, Cypress, WebdriverIO) ---
+node_modules/
+jspm_packages/
+web_modules/
+.npm
+.eslintcache
+.stylelintcache
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Node test outputs
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
+# --- Python (Pytest, Robot Framework, Selenium) ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+htmlcov/
+.venv
+venv/
+ENV/
+env/
+*_report.html
+log.html
+output.xml
+report.html
+
+# --- .NET / C# (SpecFlow, MSTest, NUnit) ---
+bin/
+obj/
+TestResults/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# --- Java (Maven, Gradle, JUnit) ---
+*.class
+*.log
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+build/
+out/
+
+# --- Environment and Secrets ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+
+# --- Reports & Screenshots (General) ---
+reports/
+screenshots/
+extent-report/
