@@ -1,0 +1,2 @@
+Method: GET
+URL: /api/getUserDetailByEmail?email=vbogdanov+api_20260531073347171@abv.bg

@@ -1,0 +1,2 @@
+Method: POST
+URL: /api/searchProduct

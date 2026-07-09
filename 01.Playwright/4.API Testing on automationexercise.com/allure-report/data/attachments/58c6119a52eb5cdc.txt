@@ -1,0 +1,6 @@
+Method: DELETE
+URL: /api/deleteAccount
+Body / Parameters:
+email: vbogdanov+api_20260531073347171@abv.bg
+password: SecretPassword123
+

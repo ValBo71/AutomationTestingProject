@@ -1,0 +1,21 @@
+Method: PUT
+URL: /api/updateAccount
+Body / Parameters:
+name: User_iozlppjh_Updated
+email: vbogdanov+api_20260531073347171@abv.bg
+password: SecretPassword123
+title: Mr
+birth_date: 15
+birth_month: May
+birth_year: 1990
+firstname: First_kueyfbvb_Updated
+lastname: Last_nnqhwuyg_Updated
+company: Company_ygxivnec_Updated
+address1: 123 Main Street_Updated
+address2: Apt 4B_Updated
+country: Canada
+zipcode: M4B 1B3
+state: Ontario
+city: Toronto_Updated
+mobile_number: 0658806749
+

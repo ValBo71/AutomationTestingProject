@@ -1,0 +1,2 @@
+Method: PUT
+URL: /api/brandsList

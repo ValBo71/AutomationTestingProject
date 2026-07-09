@@ -1,0 +1,21 @@
+Method: POST
+URL: /api/createAccount
+Body / Parameters:
+name: User_iozlppjh
+email: vbogdanov+api_20260531073347171@abv.bg
+password: SecretPassword123
+title: Mr
+birth_date: 15
+birth_month: May
+birth_year: 1990
+firstname: First_kueyfbvb
+lastname: Last_nnqhwuyg
+company: Company_ygxivnec
+address1: 123 Main Street
+address2: Apt 4B
+country: Canada
+zipcode: M4B 1B3
+state: Ontario
+city: Toronto
+mobile_number: 0658806749
+
