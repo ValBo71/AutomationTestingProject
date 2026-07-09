@@ -33,11 +33,25 @@ namespace AutomationExercise.Tests.Drivers
         {
             var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
             
+            // Allow overriding headless mode and slow motion via environment variables
+            string? headlessEnv = Environment.GetEnvironmentVariable("HEADLESS") 
+                                  ?? Environment.GetEnvironmentVariable("TestSettings__Headless");
+            bool headless = !string.IsNullOrEmpty(headlessEnv)
+                ? bool.Parse(headlessEnv)
+                : Settings.Headless;
+
+            string? slowMoEnv = Environment.GetEnvironmentVariable("SLOW_MO_MS") 
+                                ?? Environment.GetEnvironmentVariable("TestSettings__SlowMoMs");
+            int slowMoMs = !string.IsNullOrEmpty(slowMoEnv)
+                ? int.Parse(slowMoEnv)
+                : Settings.SlowMoMs;
+
             BrowserTypeLaunchOptions launchOptions = new BrowserTypeLaunchOptions
             {
-                Headless = Settings.Headless,
-                SlowMo = Settings.SlowMoMs > 0 ? Settings.SlowMoMs : null
+                Headless = headless,
+                SlowMo = slowMoMs > 0 ? slowMoMs : null
             };
+
 
             IBrowser browser;
             switch (Settings.Browser.ToLower())

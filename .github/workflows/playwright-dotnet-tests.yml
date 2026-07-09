@@ -1,0 +1,75 @@
+name: Playwright .NET Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run UI Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: "01.Playwright/3.AutomationАtАutomationexercise.com"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore Dependencies
+        run: dotnet restore AutomationExercise.sln
+
+      - name: Build Solution
+        run: dotnet build AutomationExercise.sln -c Release --no-restore
+
+      - name: Install Playwright Browsers and OS Dependencies
+        run: pwsh AutomationExercise.Tests/bin/Release/net9.0/playwright.ps1 install --with-deps
+
+      - name: Run NUnit Tests
+        env:
+          HEADLESS: "true"
+          SLOW_MO_MS: "0"
+        run: dotnet test AutomationExercise.sln -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload TRX Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-trx
+          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/test-results.trx"
+          if-no-files-found: warn
+
+      - name: Upload Failure Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots
+          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/Screenshots/"
+          if-no-files-found: ignore
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/bin/Release/net9.0/allure-results/"
+          if-no-files-found: ignore
+
+      - name: Upload Playwright Traces & Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-logs
+          path: |
+            01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/**/*.zip
+            01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/**/*.log
+          if-no-files-found: ignore
