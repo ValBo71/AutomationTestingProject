@@ -14,6 +14,9 @@ jobs:
   test:
     name: Run API Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
 
     defaults:
       run:
@@ -120,3 +123,13 @@ jobs:
             smtp_error.txt
             01.Playwright/4.APITestingОnАutomationexercise.com/smtp_error.txt
           if-no-files-found: ignore
+
+      - name: Commit and Push SMTP Error Log (if any)
+        if: failure()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp smtp_error.txt ../../smtp_error.txt || cp 01.Playwright/4.APITestingОnАutomationexercise.com/smtp_error.txt ../../smtp_error.txt || true
+          git add ../../smtp_error.txt || true
+          git commit -m "docs: add SMTP error log from run #${{ github.run_number }} [skip ci]" || true
+          git push origin main || true
