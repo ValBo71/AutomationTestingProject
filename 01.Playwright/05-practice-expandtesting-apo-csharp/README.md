@@ -71,6 +71,35 @@ ApiTests
 
 ---
 
+## 🧪 Automated Test Scenarios (Total: 21)
+
+This framework executes 21 distinct automated checks covering positive, negative, parameterized, and integration flows:
+
+### 👤 Users Module
+1. `RegisterUser_WithValidData_ShouldCreateAccount` - Positive user registration.
+2. `RegisterUser_WithDuplicateEmail_ShouldReturnConflict` - Duplicate registration error validation (409 Conflict).
+3. `RegisterUser_WithoutName_ShouldReturnBadRequest` - Missing required fields registration error (400 Bad Request).
+4. `LoginUser_WithValidCredentials_ShouldReturnToken` - Successful login and token retrieval.
+5. `LoginUser_WithInvalidCredentials_ShouldReturnBadRequest` - Login with invalid password/email.
+6. `GetProfile_WithValidToken_ShouldReturnProfile` - Retrieve profile info for authenticated user.
+7. `GetProfile_WithoutToken_ShouldReturnUnauthorized` - Profile access without token (401 Unauthorized).
+8. `UpdateProfile_WithValidData_ShouldUpdateProfile` - Update user names, phone, and company details.
+9. `ChangePassword_WithValidCredentials_ShouldChangePassword` - Updates password, logs out, and validates successful log-in with the new password.
+10. `ChangePassword_WithInvalidCurrentPassword_ShouldReturnBadRequest` - Password update with incorrect current credentials.
+
+### 📝 Notes Module
+11. `NoteCRUDLifecycle_ShouldSucceed` - Full CRUD lifecycle integration test (Create -> Get by ID -> Update Details PUT -> Complete Status PATCH -> Delete Note -> Verify 404).
+12-14. `CreateNote_WithValidCategories_ShouldCreateNote` - Parameterized checks for note creation under `Home`, `Work`, and `Personal` categories.
+15. `CreateNote_WithInvalidCategory_ShouldReturnBadRequest` - Invalid category format validation (400 Bad Request).
+16. `CreateNote_WithMissingTitle_ShouldReturnBadRequest` - Empty note title validation.
+17. `CreateNote_WithoutToken_ShouldReturnUnauthorized` - Create note attempt without token (401 Unauthorized).
+18. `GetAllNotes_ShouldReturnList` - Retrieve list of notes for the current user.
+19. `GetNoteById_WithNonExistentId_ShouldReturnNotFound` - Note fetch with invalid/non-existent ID (400/404).
+20. `GetNoteById_WithInvalidIdFormat_ShouldReturnBadRequest` - Note fetch with malformed ID string.
+21. `DeleteNote_WithNonExistentId_ShouldReturnNotFound` - Note deletion with non-existent ID.
+
+---
+
 ## 📡 List of Automated Endpoints
 
 | Tag | HTTP Method | Endpoint | Description |
