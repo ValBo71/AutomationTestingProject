@@ -65,7 +65,13 @@ def main():
             smtp.ehlo()
         
         masked_user = username if len(username) <= 4 else f"{username[:2]}***{username[-2:]}"
-        diag_info = f"Diag Info: User='{masked_user}', Length={len(username)}, Has_Domain={'@abv.bg' in username}"
+        pw_len = len(password) if password else 0
+        pw_starts_space = password.startswith(' ') if password else False
+        pw_ends_space = password.endswith(' ') if password else False
+        pw_has_quotes = ((password.startswith('"') and password.endswith('"')) or 
+                         (password.startswith("'") and password.endswith("'"))) if password else False
+        diag_info = (f"Diag Info: User='{masked_user}', Length={len(username)}, Has_Domain={'@abv.bg' in username}, "
+                     f"PW_Len={pw_len}, PW_StartsSpace={pw_starts_space}, PW_EndsSpace={pw_ends_space}, PW_HasQuotes={pw_has_quotes}")
         print(diag_info)
         smtp.login(username, password)
         print("Sending email...")
