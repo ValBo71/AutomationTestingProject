@@ -92,3 +92,9 @@ out/
 reports/
 screenshots/
 extent-report/
+
+# --- Allure and App Local Configs ---
+allure-results/
+allure-report/
+appsettings.local.json
+.auth/
