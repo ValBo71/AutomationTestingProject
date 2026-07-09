@@ -62,7 +62,8 @@ def main():
             smtp.ehlo()
         
         masked_user = username if len(username) <= 4 else f"{username[:2]}***{username[-2:]}"
-        print(f"Logging in as: '{masked_user}' (length: {len(username)}, contains @abv.bg: {'@abv.bg' in username})")
+        diag_info = f"Diag Info: User='{masked_user}', Length={len(username)}, Has_Domain={'@abv.bg' in username}"
+        print(diag_info)
         smtp.login(username, password)
         print("Sending email...")
         smtp.sendmail(username, [to_email], msg.as_string())
@@ -70,7 +71,18 @@ def main():
         print("Email sent successfully!")
         
     except Exception as e:
-        err_msg = f"Error sending email:\n{traceback.format_exc()}"
+        # Include diag_info in error log if username is defined
+        diag_log = ""
+        try:
+            diag_log = f"Diagnostics: {diag_info}\n"
+        except NameError:
+            try:
+                if 'username' in locals():
+                    masked = username if len(username) <= 4 else f"{username[:2]}***{username[-2:]}"
+                    diag_log = f"Diagnostics: User='{masked}', Length={len(username)}, Has_Domain={'@abv.bg' in username}\n"
+            except:
+                pass
+        err_msg = f"{diag_log}Error sending email:\n{traceback.format_exc()}"
         print(err_msg)
         with open('smtp_error.txt', 'w', encoding='utf-8') as f:
             f.write(err_msg)
