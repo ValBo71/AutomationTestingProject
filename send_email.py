@@ -1,5 +1,6 @@
-# Verification run trigger for email verification
+# Verification run trigger for email verification v2
 import smtplib
+
 
 import os
 import sys
