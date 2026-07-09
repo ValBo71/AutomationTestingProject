@@ -1,39 +1,39 @@
 # TS-Playwright-Project
 
-Това е automation проект, изграден с Playwright и TypeScript, базиран на Page Object Model (POM) патърн.
+This is an automation project built with Playwright and TypeScript, based on the Page Object Model (POM) pattern.
 
-## Структура на проекта
+## Project Structure
 
-Проектът следва следните най-добри практики:
-- **POM**: За всяка страница има отделен Page клас (в `pages/`), съдържащ само методи (actions).
-- **Селектори**: Изнесени са в отделни файлове (в `selectors/`).
-- **Тестови данни**: Изнесени са във външни файлове (в `data/`).
-- **Твърдения (Assertions)**: Playwright `expect` се използва само в самите тестове.
+The project follows these best practices:
+- **POM**: There is a separate Page class for each page (in `pages/`), containing only methods (actions).
+- **Selectors**: Centralized and stored in separate files (in `selectors/`).
+- **Test Data**: Centralized and stored in external files (in `data/`).
+- **Assertions**: Playwright `expect` is used only within the tests themselves.
 
-## Инсталация
+## Installation
 
-След като създадете проекта, инсталирайте нужните зависимости:
+After initializing the project, install the required dependencies:
 
 ```bash
 npm install
 npx playwright install
 ```
 
-## Стартиране на тестове
+## Running Tests
 
-За да стартирате всички тестове в **headless** режим:
+To run all tests in **headless** mode:
 
 ```bash
 npx playwright test
 ```
 
-За да стартирате всички тестове в **headed** режим:
+To run all tests in **headed** mode:
 
 ```bash
 npx playwright test --headed
 ```
 
-Или можете да използвате NPM скриптовете:
+Or you can use the NPM scripts:
 
 ```bash
 npm test
