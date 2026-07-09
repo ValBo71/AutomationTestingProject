@@ -16,7 +16,7 @@ This repository includes professional continuous integration (CI) pipelines impl
   * Every `pull_request` targeting the `main` branch.
   * Scheduled run: **Every day at 07:00 AM Bulgarian time** (04:00 UTC).
   * Manual execution via the GitHub UI (`workflow_dispatch`).
-* **Features:** Env-override for Headless mode, system dependency auto-install, TRX test results export, failure screenshot capture, Allure results archiving, and instant email reports with test failure diagnostics sent to `vbogdanov@abv.bg`.
+* **Features:** Env-override for Headless mode, system dependency auto-install, TRX test results export, failure screenshot capture, Allure results archiving, and instant email reports with test failure diagnostics sent to `vbogdanov.test@abv.bg`.
 
 ### 2. API Test Pipeline (Playwright API Tests)
 * **Target Project:** `01.Playwright/4.APITestingОnАutomationexercise.com/AutomationExercise.ApiTests.sln`
@@ -25,10 +25,10 @@ This repository includes professional continuous integration (CI) pipelines impl
   * Every `pull_request` targeting the `main` branch.
   * Scheduled run: **Every day at 07:30 AM Bulgarian time** (04:30 UTC).
   * Manual execution via the GitHub UI (`workflow_dispatch`).
-* **Features:** Lightweight running without full browser binary downloads (uses Playwright API Request Context), TRX results export, Allure results archiving, and instant email reports with test failure diagnostics sent to `vbogdanov@abv.bg`.
+* **Features:** Lightweight running without full browser binary downloads (uses Playwright API Request Context), TRX results export, Allure results archiving, and instant email reports with test failure diagnostics sent to `vbogdanov.test@abv.bg`.
 
 ### 📊 Email Notifications & Failure Diagnostics
-Both pipelines are configured to parse test execution results (.trx files) using a Python utility. After each run, a summary email containing execution statistics and detailed logs for failed tests is dispatched to `vbogdanov@abv.bg`.
+Both pipelines are configured to parse test execution results (.trx files) using a Python utility. After each run, a summary email containing execution statistics and detailed logs for failed tests is dispatched to `vbogdanov.test@abv.bg`.
 
 ### QA Automation / SDET Portfolio Showcase
 This setup demonstrates:
