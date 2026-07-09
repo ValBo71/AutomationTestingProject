@@ -26,7 +26,7 @@ namespace AutomationExercise.ApiTests.Base
 
             Settings = new TestSettings
             {
-                BaseUrl = config["BaseUrl"] ?? "https://automationexercise.com",
+                BaseUrl = config["BaseUrl"] ?? "https://automationexercise.com/",
                 DefaultUser = new DefaultUserCredentials
                 {
                     Email = config["DefaultUser:Email"] ?? "vbogdanov@abv.bg",
