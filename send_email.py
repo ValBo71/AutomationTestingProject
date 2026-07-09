@@ -10,12 +10,17 @@ from email.mime.multipart import MIMEMultipart
 
 def main():
     try:
-        server = os.environ.get('MAIL_SERVER')
-        port_str = os.environ.get('MAIL_PORT', '465')
         username = os.environ.get('MAIL_USERNAME')
         password = os.environ.get('MAIL_PASSWORD')
         to_email = os.environ.get('MAIL_TO', 'vbogdanov.test@abv.bg')
         
+        if username and '@gmail.com' in username.lower():
+            server = 'smtp.gmail.com'
+            port_str = '465'
+        else:
+            server = os.environ.get('MAIL_SERVER', 'smtp.abv.bg')
+            port_str = os.environ.get('MAIL_PORT', '465')
+            
         if not server or not username or not password:
             raise ValueError(f"Missing required SMTP configuration secrets. Server: {server}, Username: {username}")
             
