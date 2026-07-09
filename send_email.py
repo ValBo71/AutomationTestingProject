@@ -61,7 +61,8 @@ def main():
             smtp.starttls()
             smtp.ehlo()
         
-        print("Logging in...")
+        masked_user = username if len(username) <= 4 else f"{username[:2]}***{username[-2:]}"
+        print(f"Logging in as: '{masked_user}' (length: {len(username)}, contains @abv.bg: {'@abv.bg' in username})")
         smtp.login(username, password)
         print("Sending email...")
         smtp.sendmail(username, [to_email], msg.as_string())
