@@ -1,7 +1,7 @@
-Diagnostics: Diag Info: User='vb***ov', Length=9, Has_Domain=False
+Diagnostics: Diag Info: User='vb***bg', Length=16, Has_Domain=True
 Error sending email:
 Traceback (most recent call last):
-  File "/home/runner/work/AutomationTestingProject/AutomationTestingProject/01.Playwright/4.APITestingОnАutomationexercise.com/../../send_email.py", line 67, in main
+  File "/home/runner/work/AutomationTestingProject/AutomationTestingProject/01.Playwright/4.APITestingОnАutomationexercise.com/../../send_email.py", line 69, in main
     smtp.login(username, password)
   File "/usr/lib/python3.12/smtplib.py", line 750, in login
     raise last_exception
@@ -10,4 +10,4 @@ Traceback (most recent call last):
                    ^^^^^^^^^^
   File "/usr/lib/python3.12/smtplib.py", line 662, in auth
     raise SMTPAuthenticationError(code, resp)
-smtplib.SMTPAuthenticationError: (535, b'LOGIN authentication failed for vbogdanov from 128.24.162.144')
+smtplib.SMTPAuthenticationError: (535, b'LOGIN authentication failed for vbogdanov@abv.bg from 172.178.118.198 - authsql/login - wrong password')
