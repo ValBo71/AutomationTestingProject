@@ -46,3 +46,7 @@ This repository includes professional continuous integration (CI) pipelines impl
 ### 4. C# API Automation (Automation Exercise)
 * **Path:** [01.Playwright/04-automationexercise-api-csharp](file:///E:/Programing/My_project/GitHub/AutomationTestingProject/01.Playwright/04-automationexercise-api-csharp)
 * **Goal:** Backend API automation using Playwright `IAPIRequestContext` to validate web endpoints.
+
+### 5. C# API Automation (Expand Testing Notes API)
+* **Path:** [01.Playwright/05-practice-expandtesting-apo-csharp](file:///E:/Programing/My_project/GitHub/AutomationTestingProject/01.Playwright/05-practice-expandtesting-apo-csharp)
+* **Goal:** Backend API automation using Playwright `IAPIRequestContext` to validate Expand Testing Notes API endpoints.
