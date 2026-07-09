@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    # Runs at 04:30 UTC (07:30 Bulgarian Summer Time / 06:30 Winter Time) every day
-    - cron: '30 4 * * *'
+    # Runs at 04:00 UTC (07:00 Bulgarian Summer Time / 06:00 Winter Time) every day
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 jobs:
