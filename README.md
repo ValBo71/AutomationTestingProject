@@ -14,7 +14,9 @@ This repository includes a professional continuous integration (CI) pipeline imp
 * **Trigger Events:**
   * Every `push` to the `main` branch.
   * Every `pull_request` targeting the `main` branch.
+  * Scheduled run: **Every day at 07:00 AM Bulgarian time** (04:00 UTC).
   * Manual execution via the GitHub UI (`workflow_dispatch`).
+
 
 ### What the Pipeline Does
 1. **Environment Setup:** Provisions a clean `ubuntu-latest` runner and installs the **.NET 9 SDK**.
