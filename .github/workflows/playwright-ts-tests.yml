@@ -1,0 +1,48 @@
+name: Playwright TypeScript UI Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Runs at 04:00 UTC (07:00 Bulgarian Summer Time / 06:00 Winter Time) every day
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run TypeScript Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    defaults:
+      run:
+        working-directory: "01.Playwright/02-typescript-playwright/TS-Playwright-Project"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers with OS Dependencies
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright Tests
+        run: npx playwright test
+
+      - name: Upload Playwright Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-ts
+          path: "01.Playwright/02-typescript-playwright/TS-Playwright-Project/playwright-report/"
+          if-no-files-found: ignore
