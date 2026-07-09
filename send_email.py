@@ -14,7 +14,7 @@ def main():
         port_str = os.environ.get('MAIL_PORT', '465')
         username = os.environ.get('MAIL_USERNAME')
         password = os.environ.get('MAIL_PASSWORD')
-        to_email = 'testuser@example.com'
+        to_email = os.environ.get('MAIL_TO', 'testuser@example.com')
         
         if not server or not username or not password:
             raise ValueError(f"Missing required SMTP configuration secrets. Server: {server}, Username: {username}")
