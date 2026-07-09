@@ -1,6 +1,9 @@
 # Automation Exercise - Playwright & NUnit Test Suite
 
+[![Playwright .NET Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml)
+
 This repository contains a robust, fully automated UI test suite targeting [Automation Exercise](https://automationexercise.com/), featuring **100% test coverage (all 26 test cases)**. 
+
 
 The tests are written in C# utilizing **Playwright** for fast and reliable browser automation and **NUnit** as the test framework.
 
