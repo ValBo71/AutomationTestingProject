@@ -59,4 +59,4 @@ This repository includes professional continuous integration (CI) pipelines impl
 
 ### 5. C# API Automation (Expand Testing Notes API)
 * **Path:** [01.Playwright/05-practice-expandtesting-apo-csharp](file:///E:/Programing/My_project/GitHub/AutomationTestingProject/01.Playwright/05-practice-expandtesting-apo-csharp)
-* **Goal:** Backend API automation using Playwright `IAPIRequestContext` to validate Expand Testing Notes API endpoints.
+* **Goal:** Backend API automation using Playwright `IAPIRequestContext` to validate Expand Testing Notes API endpoints, executing 21 comprehensive test scenarios.
