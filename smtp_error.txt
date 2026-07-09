@@ -1,6 +1,6 @@
 Error sending email:
 Traceback (most recent call last):
-  File "/home/runner/work/AutomationTestingProject/AutomationTestingProject/01.Playwright/4.APITestingОnАutomationexercise.com/../../send_email.py", line 65, in main
+  File "/home/runner/work/AutomationTestingProject/AutomationTestingProject/01.Playwright/4.APITestingОnАutomationexercise.com/../../send_email.py", line 66, in main
     smtp.login(username, password)
   File "/usr/lib/python3.12/smtplib.py", line 750, in login
     raise last_exception
@@ -9,4 +9,4 @@ Traceback (most recent call last):
                    ^^^^^^^^^^
   File "/usr/lib/python3.12/smtplib.py", line 662, in auth
     raise SMTPAuthenticationError(code, resp)
-smtplib.SMTPAuthenticationError: (535, b'LOGIN authentication failed for vbogdanov from 172.212.167.87')
+smtplib.SMTPAuthenticationError: (535, b'LOGIN authentication failed for vbogdanov from 135.232.201.248')
