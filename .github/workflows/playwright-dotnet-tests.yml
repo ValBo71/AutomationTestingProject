@@ -128,15 +128,23 @@ jobs:
 
       - name: Send Email Notification
         if: always()
-        uses: dawidd6/action-send-mail@v4
+        env:
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+          JOB_STATUS: ${{ job.status }}
+          EMAIL_BODY_PATH: ../../email_body.txt
+        run: python ../../send_email.py
+
+      - name: Upload SMTP Error Log
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT }}
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "Test Report: ${{ github.workflow }} #${{ github.run_number }} - ${{ job.status }}"
-          to: vbogdanov@abv.bg
-          from: GitHub Actions <noreply@github.com>
-          body: file://email_body.txt
-          secure: true
+          name: smtp-error-log-ui
+          path: |
+            smtp_error.txt
+            01.Playwright/3.AutomationАtАutomationexercise.com/smtp_error.txt
+          if-no-files-found: ignore
 
