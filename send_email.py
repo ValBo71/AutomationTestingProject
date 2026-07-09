@@ -1,4 +1,6 @@
+# Verification run trigger for email verification
 import smtplib
+
 import os
 import sys
 import traceback
