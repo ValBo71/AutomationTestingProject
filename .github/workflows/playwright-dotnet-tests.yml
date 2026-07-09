@@ -23,7 +23,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: "01.Playwright/3.AutomationАtАutomationexercise.com"
+        working-directory: "01.Playwright/03-automationexercise-ui-csharp"
 
     steps:
       - name: Checkout Repository
@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-trx
-          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/test-results.trx"
+          path: "01.Playwright/03-automationexercise-ui-csharp/AutomationExercise.Tests/TestResults/test-results.trx"
           if-no-files-found: warn
 
       - name: Upload Failure Screenshots
@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: failure-screenshots
-          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/Screenshots/"
+          path: "01.Playwright/03-automationexercise-ui-csharp/AutomationExercise.Tests/TestResults/Screenshots/"
           if-no-files-found: ignore
 
       - name: Upload Allure Results
@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
-          path: "01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/bin/Release/net9.0/allure-results/"
+          path: "01.Playwright/03-automationexercise-ui-csharp/AutomationExercise.Tests/bin/Release/net9.0/allure-results/"
           if-no-files-found: ignore
 
       - name: Upload Playwright Traces & Logs
@@ -79,8 +79,8 @@ jobs:
         with:
           name: playwright-traces-logs
           path: |
-            01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/**/*.zip
-            01.Playwright/3.AutomationАtАutomationexercise.com/AutomationExercise.Tests/TestResults/**/*.log
+            01.Playwright/03-automationexercise-ui-csharp/AutomationExercise.Tests/TestResults/**/*.zip
+            01.Playwright/03-automationexercise-ui-csharp/AutomationExercise.Tests/TestResults/**/*.log
           if-no-files-found: ignore
 
       - name: Prepare Email Body with Test Results
@@ -148,7 +148,7 @@ jobs:
           name: smtp-error-log-ui
           path: |
             smtp_error.txt
-            01.Playwright/3.AutomationАtАutomationexercise.com/smtp_error.txt
+            01.Playwright/03-automationexercise-ui-csharp/smtp_error.txt
           if-no-files-found: ignore
 
       - name: Commit and Push SMTP Error Log (if any)
@@ -156,7 +156,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp smtp_error.txt ../../smtp_error.txt || cp 01.Playwright/3.AutomationАtАutomationexercise.com/smtp_error.txt ../../smtp_error.txt || true
+          cp smtp_error.txt ../../smtp_error.txt || cp 01.Playwright/03-automationexercise-ui-csharp/smtp_error.txt ../../smtp_error.txt || true
           git add ../../smtp_error.txt || true
           git commit -m "docs: add SMTP error log from run #${{ github.run_number }} [skip ci]" || true
           git push origin main || true

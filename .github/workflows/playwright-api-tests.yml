@@ -20,7 +20,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: "01.Playwright/4.APITestingОnАutomationexercise.com"
+        working-directory: "01.Playwright/04-automationexercise-api-csharp"
 
     steps:
       - name: Checkout Repository
@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-trx
-          path: "01.Playwright/4.APITestingОnАutomationexercise.com/AutomationExercise.ApiTests/TestResults/test-results.trx"
+          path: "01.Playwright/04-automationexercise-api-csharp/AutomationExercise.ApiTests/TestResults/test-results.trx"
           if-no-files-found: warn
 
       - name: Upload Allure Results
@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
-          path: "01.Playwright/4.APITestingОnАutomationexercise.com/AutomationExercise.ApiTests/bin/Release/net9.0/allure-results/"
+          path: "01.Playwright/04-automationexercise-api-csharp/AutomationExercise.ApiTests/bin/Release/net9.0/allure-results/"
           if-no-files-found: ignore
 
       - name: Prepare Email Body with Test Results
@@ -121,7 +121,7 @@ jobs:
           name: smtp-error-log-api
           path: |
             smtp_error.txt
-            01.Playwright/4.APITestingОnАutomationexercise.com/smtp_error.txt
+            01.Playwright/04-automationexercise-api-csharp/smtp_error.txt
           if-no-files-found: ignore
 
       - name: Commit and Push SMTP Error Log (if any)
@@ -129,7 +129,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp smtp_error.txt ../../smtp_error.txt || cp 01.Playwright/4.APITestingОnАutomationexercise.com/smtp_error.txt ../../smtp_error.txt || true
+          cp smtp_error.txt ../../smtp_error.txt || cp 01.Playwright/04-automationexercise-api-csharp/smtp_error.txt ../../smtp_error.txt || true
           git add ../../smtp_error.txt || true
           git commit -m "docs: add SMTP error log from run #${{ github.run_number }} [skip ci]" || true
           git push origin main || true
