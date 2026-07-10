@@ -1,0 +1,53 @@
+name: Performance & Load Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Runs at 04:00 UTC (07:00 Bulgarian Summer Time / 06:00 Winter Time) every day
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  k6-tests:
+    name: Run k6 Load Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 Load Test (Smoke Test)
+        run: k6 run -e USERS=2 -e RAMPUP=2s -e DURATION=10s 02-Performance-Tests/02-K6/k6_performance_test.js
+
+  jmeter-tests:
+    name: Run JMeter Load Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download & Install Apache JMeter
+        run: |
+          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz
+          tar -xzf apache-jmeter-5.6.3.tgz
+          echo "JMETER_HOME=$GITHUB_WORKSPACE/apache-jmeter-5.6.3" >> $GITHUB_ENV
+          echo "$GITHUB_WORKSPACE/apache-jmeter-5.6.3/bin" >> $GITHUB_PATH
+
+      - name: Run JMeter Load Test (Smoke Test)
+        working-directory: 02-Performance-Tests/01-JMeter/01-Automation-Exercise
+        run: |
+          jmeter -n -t AutomationExercise_Performance_Test.jmx -Jusers=2 -Jrampup=2 -Jduration=10 -l results.jtl
