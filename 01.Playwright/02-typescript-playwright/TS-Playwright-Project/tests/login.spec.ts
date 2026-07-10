@@ -41,7 +41,7 @@ test.describe('Login functionality - Smoke Tests', () => {
     await expect(appLogo).toBeVisible();
     await expect(appLogo).toHaveText('Swag Labs');
 
-    // Keeps the browser open after the test finishes (Playwright Inspector)
-    await page.pause();
+    // Keeps the browser open after the test finishes (Playwright Inspector) - commented out for CI/CD compatibility
+    // await page.pause();
   });
 });
