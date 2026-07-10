@@ -5,8 +5,8 @@ namespace AutomationExercise.ApiTests.TestData
 {
     public static class TestUsers
     {
-        public static readonly string DefaultEmail = "testuser@example.com";
-        public static readonly string DefaultPassword = "***REMOVED***";
+        public static readonly string DefaultEmail = System.Environment.GetEnvironmentVariable("AUTOMATION_USER_EMAIL") ?? "testuser_api@example.com";
+        public static readonly string DefaultPassword = System.Environment.GetEnvironmentVariable("AUTOMATION_USER_PASSWORD") ?? "placeholder_password";
 
         public static CreateUserRequest GenerateRegisterUserRequest()
         {

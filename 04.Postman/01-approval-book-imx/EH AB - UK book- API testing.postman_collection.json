@@ -1,0 +1,1790 @@
+{
+    "info": {
+        "_postman_id": "d158c5db-bde7-41be-abd4-ca301053e519",
+        "name": "_EH AB - UK book- API testing",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "24830478"
+    },
+    "item": [
+        {
+            "name": "Import data from an external file",
+            "item": [
+                {
+                    "name": "Import data from an external file",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Successful import of the data\", function () {\r",
+                                    "    pm.response.to.have.status(200);\r",
+                                    "});\r",
+                                    "\r",
+                                    "\r",
+                                    "// var jsonData = pm.response.json();\r",
+                                    "// for (i = 0; i < jsonData.length; i= i + 1 )\r",
+                                    "//  {\r",
+                                    "//     if (jsonData[i].typeCode === \"CL\")\r",
+                                    "//     {\r",
+                                    "// pm.test(\"Verification of the Client\", function () {\r",
+                                    "// var expedtedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                    "// pm.expect(pm.response.json()[i].companyId).to.eql(expedtedEhID+\"\");\r",
+                                    "// pm.collectionVariables.set(\"InternalIMXref_UK\", pm.response.json()[i].relationshipId);\r",
+                                    "// });\r",
+                                    "\r",
+                                    "//  } \r",
+                                    "//  else if (jsonData[i].typeCode === \"SU\") \r",
+                                    "//  {\r",
+                                    "// pm.test(\"Verification of the SU\", function () {\r",
+                                    "// var expedtedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                    "// pm.expect(pm.response.json()[i].companyId).to.eql(expedtedEhID+\"\");\r",
+                                    "// pm.collectionVariables.set(\"SuNumber_UK\", pm.response.json()[i].relationshipId);\r",
+                                    "// });\r",
+                                    "\r",
+                                    "//  } \r",
+                                    "//  else if (jsonData[i].typeCode ===\"DB\")\r",
+                                    "//  {\r",
+                                    "// pm.test(\"Verification of the Debtor\", function () {\r",
+                                    "// var expedtedEhID = pm.collectionVariables.get(\"debtorEhId1_UK\");\r",
+                                    "// pm.expect(pm.response.json()[i].companyId).to.eql(expedtedEhID+\"\");\r",
+                                    "// pm.collectionVariables.set(\"InternalIMXrefDB1_UK\", pm.response.json()[i].relationshipId);\r",
+                                    "// });\r",
+                                    "\r",
+                                    "//  }\r",
+                                    "//  else if (jsonData[i].typeCode ===\"SP\")\r",
+                                    "//  {\r",
+                                    "// pm.test(\"Verification of the SP\", function () {\r",
+                                    "// var expedtedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                    "// pm.expect(pm.response.json()[i].companyId).to.eql(expedtedEhID+\"\");\r",
+                                    "                                            \r",
+                                    "// });\r",
+                                    "\r",
+                                    "//  }\r",
+                                    "//  else if (jsonData[i].typeCode ===\"TA\")\r",
+                                    "//  {\r",
+                                    "\r",
+                                    "\r",
+                                    "// }\r",
+                                    "// }"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    ""
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{UATR_Extranet_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_1}}/relationships",
+                            "host": [
+                                "{{BaseUrl}}"
+                            ],
+                            "path": [
+                                "collectionCases",
+                                "{{collectionCaseId_UK_1}}",
+                                "relationships"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.collectionVariables.set(\"collectionCaseId_UK_1\", pm.iterationData.get(\"collectionCaseId_UK_1\"));",
+                            "pm.collectionVariables.set(\"claimCaseReferenceId_UK_1\", pm.iterationData.get(\"claimCaseReferenceId_UK_1\"));",
+                            "pm.collectionVariables.set(\"collectionCaseId_UK_2\", pm.iterationData.get(\"collectionCaseId_UK_2\"));",
+                            "pm.collectionVariables.set(\"claimCaseReferenceId_UK_2\", pm.iterationData.get(\"claimCaseReferenceId_UK_2\"));",
+                            "pm.collectionVariables.set(\"collectionCaseId_UK_3\", pm.iterationData.get(\"collectionCaseId_UK_3\"));",
+                            "pm.collectionVariables.set(\"claimCaseReferenceId_UK_3\", pm.iterationData.get(\"claimCaseReferenceId_UK_3\"));",
+                            "pm.collectionVariables.set(\"creditorEHId_UK\", pm.iterationData.get(\"creditorEHId_UK\"));",
+                            "pm.collectionVariables.set(\"serviceUser_UK\", pm.iterationData.get(\"serviceUser_UK\"));",
+                            "pm.collectionVariables.set(\"insuranceContractNumber_UK\", pm.iterationData.get(\"insuranceContractNumber_UK\"));",
+                            "pm.collectionVariables.set(\"insuranceContractExtensionNumber_UK\", pm.iterationData.get(\"insuranceContractExtensionNumber_UK\"));",
+                            "pm.collectionVariables.set(\"creditInsuranceBU_UK\", pm.iterationData.get(\"creditInsuranceBU_UK\"));",
+                            "pm.collectionVariables.set(\"collectionContractNumber_UK\", pm.iterationData.get(\"collectionContractNumber_UK\"));",
+                            "pm.collectionVariables.set(\"debtorEhId1_UK\", pm.iterationData.get(\"debtorEhId1_UK\"));",
+                            "pm.collectionVariables.set(\"debtorEhId2_UK\", pm.iterationData.get(\"debtorEhId2_UK\"));",
+                            "pm.collectionVariables.set(\"debtorEhId3_UK\", pm.iterationData.get(\"debtorEhId3_UK\"));",
+                            ""
+                        ]
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            ""
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Approval Book UK",
+            "item": [
+                {
+                    "name": "STEP 1",
+                    "item": [
+                        {
+                            "name": "Verification of the presence of SU and CL in the  Contract case",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Status code is 200\", function () {\r",
+                                            "    pm.response.to.have.status(200);\r",
+                                            "});\r",
+                                            "\r",
+                                            "var jsonData = pm.response.json();\r",
+                                            "var clientRelation = jsonData.find(function(item) { return item.typeCode === \"CL\"; });\r",
+                                            "var suRelation = jsonData.find(function(item) { return item.typeCode === \"SU\"; });\r",
+                                            "var spRelation = jsonData.find(function(item) { return item.typeCode === \"SP\"; });\r",
+                                            "\r",
+                                            "pm.test(\"Verification that the correct client is present\", function () {\r",
+                                            "    pm.expect(clientRelation).to.be.an('object', \"Client (CL) relationship is missing.\");\r",
+                                            "    var expectedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                            "    pm.expect(clientRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                            "    pm.collectionVariables.set(\"InternalIMXref_UK\", clientRelation.relationshipId);\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Verification of the SU\", function () {\r",
+                                            "    pm.expect(suRelation).to.be.an('object', \"Service User (SU) relationship is missing.\");\r",
+                                            "    var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                            "    pm.expect(suRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                            "    pm.collectionVariables.set(\"SuNumber_UK\", suRelation.relationshipId);\r",
+                                            "});\r",
+                                            "\r",
+                                            "if (spRelation) {\r",
+                                            "    pm.test(\"Verification of the SP\", function () {\r",
+                                            "        var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                            "        pm.expect(spRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                            "    });\r",
+                                            "}\r"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                },
+                                {
+                                    "listen": "prerequest",
+                                    "script": {
+                                        "exec": [
+                                            ""
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{UATR_Extranet_token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_1}}/relationships",
+                                    "host": [
+                                        "{{BaseUrl}}"
+                                    ],
+                                    "path": [
+                                        "collectionCases",
+                                        "{{collectionCaseId_UK_1}}",
+                                        "relationships"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Check BU -emal and phone number",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Status code is 200\", function () {\r",
+                                            "    pm.response.to.have.status(200);\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Verification the Internal IMX ref. of BU\", function () {\r",
+                                            "var expedtedImxRef = pm.collectionVariables.get(\"SuNumber_UK\");\r",
+                                            "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                            "pm.collectionVariables.set(\"BuName_UK\", pm.response.json().companyName);\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Verification Subject ID of BU\", function () {\r",
+                                            "var expedtedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                            "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                            "});\r",
+                                            "\r",
+                                            "\r",
+                                            "pm.test(\"Email availability check at BU\", function () {\r",
+                                            "pm.expect(pm.response.json().businessEmail).to.not.be.empty;\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Phone availability check at BU\", function () {\r",
+                                            "pm.expect(pm.response.json().phoneNumber).to.not.be.empty;\r",
+                                            "});\r",
+                                            "\r",
+                                            "\r",
+                                            "\r",
+                                            "\r",
+                                            "\r",
+                                            ""
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{UATR_Extranet_token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{BaseUrl}}/individualCompany/{{SuNumber_UK}}",
+                                    "host": [
+                                        "{{BaseUrl}}"
+                                    ],
+                                    "path": [
+                                        "individualCompany",
+                                        "{{SuNumber_UK}}"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Check CL -emal and phone number",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Status code is 200\", function () {\r",
+                                            "    pm.response.to.have.status(200);\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Verification of Internal IMX ref. the Client\", function () {\r",
+                                            "var expedtedImxRef = pm.collectionVariables.get(\"InternalIMXref_UK\");\r",
+                                            "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                            "pm.collectionVariables.set(\"CLName_UK\", pm.response.json().companyName);\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Verification of Subject ID the Client\", function () {\r",
+                                            "var expedtedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                            "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Verification of customer's email\", function () {\r",
+                                            "pm.expect(pm.response.json().businessEmail).to.not.be.empty;\r",
+                                            "});\r",
+                                            "\r",
+                                            "pm.test(\"Verification of customer's phone\", function () {\r",
+                                            "pm.expect(pm.response.json().phoneNumber).to.not.be.null;\r",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{UATR_Extranet_token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{BaseUrl}}/individualCompany/{{InternalIMXref_UK}}",
+                                    "host": [
+                                        "{{BaseUrl}}"
+                                    ],
+                                    "path": [
+                                        "individualCompany",
+                                        "{{InternalIMXref_UK}}"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "STEP 2",
+                    "item": [
+                        {
+                            "name": "Verification of data from the first case",
+                            "item": [
+                                {
+                                    "name": "First case - Verification of SU, CL, DB data",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "var jsonData = pm.response.json();\r",
+                                                    "var clientRelation = jsonData.find(function(item) { return item.typeCode === \"CL\"; });\r",
+                                                    "var suRelation = jsonData.find(function(item) { return item.typeCode === \"SU\"; });\r",
+                                                    "var dbRelation = jsonData.find(function(item) { return item.typeCode === \"DB\"; });\r",
+                                                    "var spRelation = jsonData.find(function(item) { return item.typeCode === \"SP\"; });\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the Client\", function () {\r",
+                                                    "    pm.expect(clientRelation).to.be.an('object', \"Client (CL) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                                    "    pm.expect(clientRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"InternalIMXref_UK\", clientRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the SU\", function () {\r",
+                                                    "    pm.expect(suRelation).to.be.an('object', \"Service User (SU) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "    pm.expect(suRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"SuNumber_UK\", suRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the Debtor\", function () {\r",
+                                                    "    pm.expect(dbRelation).to.be.an('object', \"Debtor (DB) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"debtorEhId1_UK\");\r",
+                                                    "    pm.expect(dbRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"InternalIMXrefDB1_UK\", dbRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "if (spRelation) {\r",
+                                                    "    pm.test(\"Verification of the SP\", function () {\r",
+                                                    "        var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "        pm.expect(spRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    });\r",
+                                                    "}\r"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_1}}/relationships",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_1}}",
+                                                "relationships"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "First Case - Check BU -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification the Internal IMX ref. of BU\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"SuNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"BuName_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification Subject ID of BU\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Email availability check at BU\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.empty;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Phone availability check at BU\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.empty;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "// console.log(pm.environment.get(\"dueGrossAmountInInitialCurrency\"));\r",
+                                                    "// console.log(pm.response.json().businessUnitCode);"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{SuNumber_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{SuNumber_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "First Case  Check CL -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Internal IMX ref. the Client\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"InternalIMXref_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"CLName_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Subject ID the Client\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's email\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's phone\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "// pm.test(\"Status code is 200\", function () {\r",
+                                                    "//     pm.response.to.have.status(200);\r",
+                                                    "// }); pm.test(\"Response has all the expected fields\", function () {\r",
+                                                    "//     pm.response.to.have.jsonBody(\r",
+                                                    "//         {\r",
+                                                    "//             \"relationshipId\": \"A700C2P7\",\r",
+                                                    "//             \"companyId\": \"951753\",\r",
+                                                    "//             \"companyClassificationCode\": \"LEGAL\",\r",
+                                                    "//             \"companyName\": \"UK API TEST CL\",\r",
+                                                    "//             \"phoneNumber\": \"5984222\",\r",
+                                                    "//             \"businessEmail\": \"API_CL@FAKEMAIL.UK\"\r",
+                                                    "//         }\r",
+                                                    "//     );\r",
+                                                    "// }); pm.test(\"relationshipId has the expected value\", function () {\r",
+                                                    "//     pm.expect(pm.response.json().relationshipId).to.eql(\"A700C2P7\");\r",
+                                                    "// }); pm.test(\"companyId has the expected value\", function () {\r",
+                                                    "//     pm.expect(pm.response.json().companyId).to.eql(\"951753\");\r",
+                                                    "// }); pm.test(\"companyClassificationCode has the expected value\", function () {\r",
+                                                    "//     pm.expect(pm.response.json().companyClassificationCode).to.eql(\"LEGAL\");\r",
+                                                    "// }); pm.test(\"companyName has the expected value\", function () {\r",
+                                                    "//     pm.expect(pm.response.json().companyName).to.eql(\"UK API TEST CL\");\r",
+                                                    "// }); pm.test(\"phoneNumber has the expected value\", function () {\r",
+                                                    "//     pm.expect(pm.response.json().phoneNumber).to.eql(\"5984222\");\r",
+                                                    "// }); pm.test(\"businessEmail has the expected value\", function () {\r",
+                                                    "//     pm.expect(pm.response.json().businessEmail).to.eql(\"API_CL@FAKEMAIL.UK\");\r",
+                                                    "// });"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{InternalIMXref_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{InternalIMXref_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "First Case  Check DB -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Internal IMX ref. the Debtor\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"InternalIMXrefDB1_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"DBName1_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Subject ID the Debtor\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"debtorEhId1_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's email\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's phone\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    ""
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{InternalIMXrefDB1_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{InternalIMXrefDB1_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "First case - insurance, invoice, currency",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Status Code\", function () {\r",
+                                                    "pm.expect(pm.response.json().statusCode).to.eql(\"ACTIVE\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking case numbers\", function () {\r",
+                                                    "var expedtedCaseRef = pm.collectionVariables.get(\"collectionCaseId_UK_1\");\r",
+                                                    "pm.expect(pm.response.json().collectionCaseId).to.eql(expedtedCaseRef+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Check claimId number\", function () {\r",
+                                                    "var expedtedClaimNumber = pm.collectionVariables.get(\"claimCaseReferenceId_UK_1\");\r",
+                                                    "pm.expect(pm.response.json().claimId).to.eql(expedtedClaimNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of invoice value\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].principalAmount).to.eql(10000);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking Case category\", function () {\r",
+                                                    "    pm.expect(pm.response.json().categoryCode).to.eql(\"INSURED\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of currency\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].currencyCode).to.eql(\"GBP\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking the insurer\", function () {\r",
+                                                    "var expedtedInsurer = pm.collectionVariables.get(\"creditInsuranceBU_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.businessUnitCode).to.eql(expedtedInsurer+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the policy number\", function () {\r",
+                                                    "var expedtedPolicyNumber = pm.collectionVariables.get(\"insuranceContractNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.policyId).to.eql(expedtedPolicyNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the insurer's external number\", function () {\r",
+                                                    "var expedtedExternelNumber = pm.collectionVariables.get(\"insuranceContractExtensionNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.extensionId).to.eql(expedtedExternelNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Clients name verification\", function () {\r",
+                                                    "var expedtedClientsName= pm.collectionVariables.get(\"CLName_UK\");\r",
+                                                    "pm.expect(pm.response.json().policyHolderName).to.eql(expedtedClientsName+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of EH ID of the debtor\", function () {\r",
+                                                    "var expedteddebtorEhId = pm.collectionVariables.get(\"debtorEhId1_UK\");\r",
+                                                    "pm.expect(pm.response.json().debtorReference).to.eql(expedteddebtorEhId+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the language of the debtor\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtorLanguageCode).to.eql(\"AN\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the debtor's country\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtorCountryCode).to.eql(\"GB\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of invoice value\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].principalAmount).to.eql(10000);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of counterpart file number\", function () {\r",
+                                                    "var expedtedINumber = pm.collectionVariables.get(\"collectionContractNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().collectionContractNumber).to.eql(expedtedINumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Invoice currency verification\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].currencyCode).to.eql(\"GBP\");\r",
+                                                    "});\r",
+                                                    ""
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_1}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_1}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Verification of data from the second case",
+                            "item": [
+                                {
+                                    "name": "SECOND case - Verification of SU, CL, DB data",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "var jsonData = pm.response.json();\r",
+                                                    "var clientRelation = jsonData.find(function(item) { return item.typeCode === \"CL\"; });\r",
+                                                    "var suRelation = jsonData.find(function(item) { return item.typeCode === \"SU\"; });\r",
+                                                    "var dbRelation = jsonData.find(function(item) { return item.typeCode === \"DB\"; });\r",
+                                                    "var spRelation = jsonData.find(function(item) { return item.typeCode === \"SP\"; });\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the Client\", function () {\r",
+                                                    "    pm.expect(clientRelation).to.be.an('object', \"Client (CL) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                                    "    pm.expect(clientRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"InternalIMXref_UK\", clientRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the SU\", function () {\r",
+                                                    "    pm.expect(suRelation).to.be.an('object', \"Service User (SU) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "    pm.expect(suRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"SuNumber_UK\", suRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the Debtor\", function () {\r",
+                                                    "    pm.expect(dbRelation).to.be.an('object', \"Debtor (DB) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"debtorEhId2_UK\");\r",
+                                                    "    pm.expect(dbRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"InternalIMXrefDB2_UK\", dbRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "if (spRelation) {\r",
+                                                    "    pm.test(\"Verification of the SP\", function () {\r",
+                                                    "        var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "        pm.expect(spRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    });\r",
+                                                    "}\r"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_2}}/relationships",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_2}}",
+                                                "relationships"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "SECOND case - Check BU -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification the Internal IMX ref. of BU\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"SuNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"BuName_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification Subject ID of BU\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Email availability check at BU\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.empty;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Phone availability check at BU\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.empty;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "// console.log(pm.environment.get(\"dueGrossAmountInInitialCurrency\"));\r",
+                                                    "// console.log(pm.response.json().businessUnitCode);"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{SuNumber_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{SuNumber_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "SECOND case - Check CL -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Internal IMX ref. the Client\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"InternalIMXref_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"CLName_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Subject ID the Client\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's email\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's phone\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.null;\r",
+                                                    "});"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{InternalIMXref_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{InternalIMXref_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "SECOND case - Check DB -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Internal IMX ref. the Debtor\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"InternalIMXrefDB2_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"DBName2_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Subject ID the Debtor\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"debtorEhId2_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's email\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's phone\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    ""
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{InternalIMXrefDB2_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{InternalIMXrefDB2_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Second case - insurance, invoice, currency",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Status Code\", function () {\r",
+                                                    "pm.expect(pm.response.json().statusCode).to.eql(\"ACTIVE\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking case numbers\", function () {\r",
+                                                    "var expedtedCaseRef = pm.collectionVariables.get(\"collectionCaseId_UK_2\");\r",
+                                                    "pm.expect(pm.response.json().collectionCaseId).to.eql(expedtedCaseRef+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Check claimId number\", function () {\r",
+                                                    "var expedtedClaimNumber = pm.collectionVariables.get(\"claimCaseReferenceId_UK_2\");\r",
+                                                    "pm.expect(pm.response.json().claimId).to.eql(expedtedClaimNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of invoice value\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].principalAmount).to.eql(10000);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking Case category\", function () {\r",
+                                                    "    pm.expect(pm.response.json().categoryCode).to.eql(\"INSURED\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of currency\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].currencyCode).to.eql(\"GBP\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking the insurer\", function () {\r",
+                                                    "var expedtedInsurer = pm.collectionVariables.get(\"creditInsuranceBU_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.businessUnitCode).to.eql(expedtedInsurer+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the policy number\", function () {\r",
+                                                    "var expedtedPolicyNumber = pm.collectionVariables.get(\"insuranceContractNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.policyId).to.eql(expedtedPolicyNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the insurer's external number\", function () {\r",
+                                                    "var expedtedExternelNumber = pm.collectionVariables.get(\"insuranceContractExtensionNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.extensionId).to.eql(expedtedExternelNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Clients name verification\", function () {\r",
+                                                    "var expedtedClientsName= pm.collectionVariables.get(\"CLName_UK\");\r",
+                                                    "pm.expect(pm.response.json().policyHolderName).to.eql(expedtedClientsName+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of EH ID of the debtor\", function () {\r",
+                                                    "var expedteddebtorEhId = pm.collectionVariables.get(\"debtorEhId2_UK\");\r",
+                                                    "pm.expect(pm.response.json().debtorReference).to.eql(expedteddebtorEhId+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the language of the debtor\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtorLanguageCode).to.eql(\"AN\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the debtor's country\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtorCountryCode).to.eql(\"GB\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of invoice value\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].principalAmount).to.eql(10000);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of counterpart file number\", function () {\r",
+                                                    "var expedtedINumber = pm.collectionVariables.get(\"collectionContractNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().collectionContractNumber).to.eql(expedtedINumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Invoice currency verification\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].currencyCode).to.eql(\"GBP\");\r",
+                                                    "});\r",
+                                                    ""
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_2}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_2}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Verification of data from the third  case",
+                            "item": [
+                                {
+                                    "name": "Third case - Verification of SU, CL, DB data",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "var jsonData = pm.response.json();\r",
+                                                    "var clientRelation = jsonData.find(function(item) { return item.typeCode === \"CL\"; });\r",
+                                                    "var suRelation = jsonData.find(function(item) { return item.typeCode === \"SU\"; });\r",
+                                                    "var dbRelation = jsonData.find(function(item) { return item.typeCode === \"DB\"; });\r",
+                                                    "var spRelation = jsonData.find(function(item) { return item.typeCode === \"SP\"; });\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the Client\", function () {\r",
+                                                    "    pm.expect(clientRelation).to.be.an('object', \"Client (CL) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                                    "    pm.expect(clientRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"InternalIMXref_UK\", clientRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the SU\", function () {\r",
+                                                    "    pm.expect(suRelation).to.be.an('object', \"Service User (SU) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "    pm.expect(suRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"SuNumber_UK\", suRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the Debtor\", function () {\r",
+                                                    "    pm.expect(dbRelation).to.be.an('object', \"Debtor (DB) relationship is missing.\");\r",
+                                                    "    var expectedEhID = pm.collectionVariables.get(\"debtorEhId3_UK\");\r",
+                                                    "    pm.expect(dbRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    pm.collectionVariables.set(\"InternalIMXrefDB3_UK\", dbRelation.relationshipId);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "if (spRelation) {\r",
+                                                    "    pm.test(\"Verification of the SP\", function () {\r",
+                                                    "        var expectedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "        pm.expect(spRelation.companyId).to.eql(expectedEhID + \"\");\r",
+                                                    "    });\r",
+                                                    "}\r"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_3}}/relationships",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_3}}",
+                                                "relationships"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Third case - Check BU -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification the Internal IMX ref. of BU\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"SuNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"BuName_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification Subject ID of BU\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"serviceUser_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Email availability check at BU\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.empty;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Phone availability check at BU\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.empty;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "// console.log(pm.environment.get(\"dueGrossAmountInInitialCurrency\"));\r",
+                                                    "// console.log(pm.response.json().businessUnitCode);"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{SuNumber_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{SuNumber_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Third case - Check CL -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Internal IMX ref. the Client\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"InternalIMXref_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"CLName_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Subject ID the Client\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"creditorEHId_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's email\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's phone\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.null;\r",
+                                                    "});"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{InternalIMXref_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{InternalIMXref_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Third case -Check DB -emal and phone number",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Internal IMX ref. the Debtor\", function () {\r",
+                                                    "var expedtedImxRef = pm.collectionVariables.get(\"InternalIMXrefDB3_UK\");\r",
+                                                    "pm.expect(pm.response.json().relationshipId).to.eql(expedtedImxRef+\"\");\r",
+                                                    "pm.collectionVariables.set(\"DBName1_UK\", pm.response.json().companyName);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Subject ID the Debtor\", function () {\r",
+                                                    "var expedtedEhID = pm.collectionVariables.get(\"debtorEhId3_UK\");\r",
+                                                    "pm.expect(pm.response.json().companyId).to.eql(expedtedEhID+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's email\", function () {\r",
+                                                    "pm.expect(pm.response.json().businessEmail).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of customer's phone\", function () {\r",
+                                                    "pm.expect(pm.response.json().phoneNumber).to.not.be.null;\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    ""
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/individualCompany/{{InternalIMXrefDB3_UK}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "individualCompany",
+                                                "{{InternalIMXrefDB3_UK}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                },
+                                {
+                                    "name": "Third case - insurance, invoice, currency",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of Status Code\", function () {\r",
+                                                    "// var expedtedCaseRef = pm.collectionVariables.get(\"collectionCaseId_UK_1\");\r",
+                                                    "pm.expect(pm.response.json().statusCode).to.eql(\"ACTIVE\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking case numbers\", function () {\r",
+                                                    "var expedtedCaseRef = pm.collectionVariables.get(\"collectionCaseId_UK_3\");\r",
+                                                    "pm.expect(pm.response.json().collectionCaseId).to.eql(expedtedCaseRef+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Check claimId number\", function () {\r",
+                                                    "var expedtedClaimNumber = pm.collectionVariables.get(\"claimCaseReferenceId_UK_3\");\r",
+                                                    "pm.expect(pm.response.json().claimId).to.eql(expedtedClaimNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of invoice value\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].principalAmount).to.eql(10000);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking Case category\", function () {\r",
+                                                    "    pm.expect(pm.response.json().categoryCode).to.eql(\"INSURED\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of currency\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].currencyCode).to.eql(\"GBP\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Checking the insurer\", function () {\r",
+                                                    "var expedtedInsurer = pm.collectionVariables.get(\"creditInsuranceBU_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.businessUnitCode).to.eql(expedtedInsurer+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the policy number\", function () {\r",
+                                                    "var expedtedPolicyNumber = pm.collectionVariables.get(\"insuranceContractNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.policyId).to.eql(expedtedPolicyNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the insurer's external number\", function () {\r",
+                                                    "var expedtedExternelNumber = pm.collectionVariables.get(\"insuranceContractExtensionNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().policy.extensionId).to.eql(expedtedExternelNumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Clients name verification\", function () {\r",
+                                                    "var expedtedClientsName= pm.collectionVariables.get(\"CLName_UK\");\r",
+                                                    "pm.expect(pm.response.json().policyHolderName).to.eql(expedtedClientsName+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of EH ID of the debtor\", function () {\r",
+                                                    "var expedteddebtorEhId = pm.collectionVariables.get(\"debtorEhId3_UK\");\r",
+                                                    "pm.expect(pm.response.json().debtorReference).to.eql(expedteddebtorEhId+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the language of the debtor\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtorLanguageCode).to.eql(\"AN\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the debtor's country\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtorCountryCode).to.eql(\"GB\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of invoice value\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].principalAmount).to.eql(10000);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of counterpart file number\", function () {\r",
+                                                    "var expedtedINumber = pm.collectionVariables.get(\"collectionContractNumber_UK\");\r",
+                                                    "pm.expect(pm.response.json().collectionContractNumber).to.eql(expedtedINumber+\"\");\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "pm.test(\"Invoice currency verification\", function () {\r",
+                                                    "pm.expect(pm.response.json().debtAmounts[0].currencyCode).to.eql(\"GBP\");\r",
+                                                    "});\r",
+                                                    ""
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_3}}",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_3}}"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "STEP 5",
+                    "item": [
+                        {
+                            "name": "First Case",
+                            "item": [
+                                {
+                                    "name": "Check TA - case 1",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "var jsonData = pm.response.json();\r",
+                                                    "var hasTA = jsonData.some(function(item) { return item.typeCode === \"TA\"; });\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the presence of TA\", function () {\r",
+                                                    "    pm.expect(hasTA).to.be.true;\r",
+                                                    "});\r"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_1}}/relationships",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_1}}",
+                                                "relationships"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Second Case",
+                            "item": [
+                                {
+                                    "name": "Check TA - case 1",
+                                    "event": [
+                                        {
+                                            "listen": "test",
+                                            "script": {
+                                                "exec": [
+                                                    "pm.test(\"Status code is 200\", function () {\r",
+                                                    "    pm.response.to.have.status(200);\r",
+                                                    "});\r",
+                                                    "\r",
+                                                    "var jsonData = pm.response.json();\r",
+                                                    "var hasTA = jsonData.some(function(item) { return item.typeCode === \"TA\"; });\r",
+                                                    "\r",
+                                                    "pm.test(\"Verification of the absence of TA\", function () {\r",
+                                                    "    pm.expect(hasTA).to.be.false;\r",
+                                                    "});\r"
+                                                ],
+                                                "type": "text/javascript"
+                                            }
+                                        }
+                                    ],
+                                    "request": {
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{UATR_Extranet_token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{BaseUrl}}/collectionCases/{{collectionCaseId_UK_2}}/relationships",
+                                            "host": [
+                                                "{{BaseUrl}}"
+                                            ],
+                                            "path": [
+                                                "collectionCases",
+                                                "{{collectionCaseId_UK_2}}",
+                                                "relationships"
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "// pm.collectionVariables.set(\"collectionCaseId_UK_1\", pm.iterationData.get(\"collectionCaseId_UK_1\"));",
+                            "// pm.collectionVariables.set(\"claimCaseReferenceId_UK_1\", pm.iterationData.get(\"claimCaseReferenceId_UK_1\"));",
+                            "// pm.collectionVariables.set(\"collectionCaseId_UK_2\", pm.iterationData.get(\"collectionCaseId_UK_2\"));",
+                            "// pm.collectionVariables.set(\"claimCaseReferenceId_UK_2\", pm.iterationData.get(\"claimCaseReferenceId_UK_2\"));",
+                            "// pm.collectionVariables.set(\"collectionCaseId_UK_3\", pm.iterationData.get(\"collectionCaseId_UK_3\"));",
+                            "// pm.collectionVariables.set(\"claimCaseReferenceId_UK_3\", pm.iterationData.get(\"claimCaseReferenceId_UK_3\"));",
+                            "// pm.collectionVariables.set(\"creditorEHId_UK\", pm.iterationData.get(\"creditorEHId_UK\"));",
+                            "// pm.collectionVariables.set(\"serviceUser_UK\", pm.iterationData.get(\"serviceUser_UK\"));",
+                            "// pm.collectionVariables.set(\"insuranceContractNumber_UK\", pm.iterationData.get(\"insuranceContractNumber_UK\"));",
+                            "// pm.collectionVariables.set(\"insuranceContractExtensionNumber_UK\", pm.iterationData.get(\"insuranceContractExtensionNumber_UK\"));",
+                            "// pm.collectionVariables.set(\"creditInsuranceBU_UK\", pm.iterationData.get(\"creditInsuranceBU_UK\"));",
+                            "// pm.collectionVariables.set(\"collectionContractNumber_UK\", pm.iterationData.get(\"collectionContractNumber_UK\"));",
+                            "// pm.collectionVariables.set(\"debtorEhId1_UK\", pm.iterationData.get(\"debtorEhId1_UK\"));",
+                            "// pm.collectionVariables.set(\"debtorEhId2_UK\", pm.iterationData.get(\"debtorEhId2_UK\"));",
+                            "// pm.collectionVariables.set(\"debtorEhId3_UK\", pm.iterationData.get(\"debtorEhId3_UK\"));",
+                            ""
+                        ]
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            ""
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "CheckTA",
+            "value": ""
+        },
+        {
+            "key": "collectionCaseId_UK_1",
+            "value": ""
+        },
+        {
+            "key": "claimCaseReferenceId_UK_1",
+            "value": ""
+        },
+        {
+            "key": "collectionCaseId_UK_2",
+            "value": ""
+        },
+        {
+            "key": "claimCaseReferenceId_UK_2",
+            "value": ""
+        },
+        {
+            "key": "collectionCaseId_UK_3",
+            "value": ""
+        },
+        {
+            "key": "claimCaseReferenceId_UK_3",
+            "value": ""
+        },
+        {
+            "key": "creditorEHId_UK",
+            "value": ""
+        },
+        {
+            "key": "serviceUser_UK",
+            "value": ""
+        },
+        {
+            "key": "insuranceContractNumber_UK",
+            "value": ""
+        },
+        {
+            "key": "insuranceContractExtensionNumber_UK",
+            "value": ""
+        },
+        {
+            "key": "creditInsuranceBU_UK",
+            "value": ""
+        },
+        {
+            "key": "collectionContractNumber_UK",
+            "value": ""
+        },
+        {
+            "key": "debtorEhId1_UK",
+            "value": ""
+        },
+        {
+            "key": "debtorEhId2_UK",
+            "value": ""
+        },
+        {
+            "key": "debtorEhId3_UK",
+            "value": ""
+        }
+    ]
+}

@@ -127,7 +127,7 @@ namespace ApiTests.Tests
         [AllureSeverity(SeverityLevel.normal)]
         public async Task LoginUser_WithInvalidCredentials_ShouldReturnBadRequest()
         {
-            var email = "nonexistent_user_expand@abv.bg";
+            var email = "nonexistent_user_expand@example.com";
             var password = "WrongPassword";
 
             var loginResponse = await UsersClient.LoginAsync(email, password);

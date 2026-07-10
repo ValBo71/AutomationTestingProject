@@ -1,0 +1,12 @@
+{
+  "name": "approval-book-imx-postman",
+  "version": "1.0.0",
+  "description": "Postman API testing for iMX Approval Book using Newman",
+  "scripts": {
+    "test": "npx newman run \"EH AB - UK book- API testing.postman_collection.json\" -e \"EH _environments_ODIN.postman_environment.json\" -r cli,htmlextra"
+  },
+  "devDependencies": {
+    "newman": "^6.1.1",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}

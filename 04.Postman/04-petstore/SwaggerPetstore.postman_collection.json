@@ -1,0 +1,1065 @@
+{
+    "info": {
+        "_postman_id": "bb33f78b-c919-4b8c-b94f-cd8a7cba8b1c",
+        "name": "Swagger Petstore API",
+        "description": "Postman Collection for Swagger Petstore v2 API containing both Unit APIs and a complete E2E Booking & User Lifecycle integration flow.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. Pet Operations",
+            "description": "Pet management endpoints.",
+            "item": [
+                {
+                    "name": "Add a new pet to the store",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "// Dynamically generate unique pet data for unit tests",
+                                    "const unitPetId = Math.floor(Math.random() * 1000000) + 100000;",
+                                    "pm.collectionVariables.set(\"unitPetId\", unitPetId);",
+                                    "",
+                                    "const unitPetName = \"unit_doggie_\" + unitPetId;",
+                                    "pm.collectionVariables.set(\"unitPetName\", unitPetName);",
+                                    "",
+                                    "const unitPhotoUrl = \"https://example.com/photos/unit_dog_\" + unitPetId + \".jpg\";",
+                                    "pm.collectionVariables.set(\"unitPhotoUrl\", unitPhotoUrl);",
+                                    "console.log(\"Unit Pet Created - ID: \" + unitPetId + \", Name: \" + unitPetName);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": {{unitPetId}},\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Dogs\"\n  },\n  \"name\": \"{{unitPetName}}\",\n  \"photoUrls\": [\n    \"{{unitPhotoUrl}}\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"friendly\"\n    }\n  ],\n  \"status\": \"available\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/pet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "pet"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Find pet by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/pet/{{unitPetId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "pet",
+                                "{{unitPetId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing pet",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": {{unitPetId}},\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Dogs\"\n  },\n  \"name\": \"{{unitPetName}}_updated\",\n  \"photoUrls\": [\n    \"{{unitPhotoUrl}}\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"friendly\"\n    }\n  ],\n  \"status\": \"pending\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/pet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "pet"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Deletes a pet",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "api_key",
+                                "value": "special-key"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/pet/{{unitPetId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "pet",
+                                "{{unitPetId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "2. Store Operations",
+            "description": "Order management endpoints.",
+            "item": [
+                {
+                    "name": "Returns pet inventories by status",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/store/inventory",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "store",
+                                "inventory"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Place an order for a pet",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "// Dynamically generate unique order ID",
+                                    "const unitOrderId = Math.floor(Math.random() * 100000) + 10000;",
+                                    "pm.collectionVariables.set(\"unitOrderId\", unitOrderId);",
+                                    "console.log(\"Unit Order Created - ID: \" + unitOrderId);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": {{unitOrderId}},\n  \"petId\": {{unitPetId}},\n  \"quantity\": 1,\n  \"shipDate\": \"2026-07-10T12:00:00.000Z\",\n  \"status\": \"placed\",\n  \"complete\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/store/order",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "store",
+                                "order"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Find purchase order by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/store/order/{{unitOrderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "store",
+                                "order",
+                                "{{unitOrderId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete purchase order by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/store/order/{{unitOrderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "store",
+                                "order",
+                                "{{unitOrderId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "3. User Operations",
+            "description": "User management endpoints.",
+            "item": [
+                {
+                    "name": "Create user",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "// Dynamically generate unique user data for unit tests",
+                                    "const timestamp = Date.now();",
+                                    "const unitUsername = \"unit_user_\" + timestamp;",
+                                    "pm.collectionVariables.set(\"unitUsername\", unitUsername);",
+                                    "",
+                                    "const unitEmail = \"unit_email_\" + timestamp + \"@example.com\";",
+                                    "pm.collectionVariables.set(\"unitEmail\", unitEmail);",
+                                    "",
+                                    "const unitPhone = \"1\" + String(timestamp).substring(4);",
+                                    "pm.collectionVariables.set(\"unitPhone\", unitPhone);",
+                                    "console.log(\"Unit User Created - Username: \" + unitUsername);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": 111222,\n  \"username\": \"{{unitUsername}}\",\n  \"firstName\": \"{{unitFirstName}}\",\n  \"lastName\": \"{{unitLastName}}\",\n  \"email\": \"{{unitEmail}}\",\n  \"password\": \"{{unitPassword}}\",\n  \"phone\": \"{{unitPhone}}\",\n  \"userStatus\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get user by user name",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user/{{unitUsername}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user",
+                                "{{unitUsername}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Updated user",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": 111222,\n  \"username\": \"{{unitUsername}}\",\n  \"firstName\": \"{{unitFirstName}}_Updated\",\n  \"lastName\": \"{{unitLastName}}_Updated\",\n  \"email\": \"john_updated@doe.com\",\n  \"password\": \"{{unitPassword}}\",\n  \"phone\": \"0987654321\",\n  \"userStatus\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user/{{unitUsername}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user",
+                                "{{unitUsername}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete user",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user/{{unitUsername}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user",
+                                "{{unitUsername}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logs user into the system",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user/login?username={{unitUsername}}&password={{unitPassword}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user",
+                                "login"
+                            ],
+                            "query": [
+                                {
+                                    "key": "username",
+                                    "value": "{{unitUsername}}"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "{{unitPassword}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logs out current logged in user session",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user/logout",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user",
+                                "logout"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "4. E2E Integration Scenario",
+            "description": "Chained E2E flow: Create User -> Login -> Create Pet -> Verify Pet -> Place Order -> Verify Order -> Delete Order -> Delete Pet -> Delete User.",
+            "item": [
+                {
+                    "name": "E2E 1: POST Create User",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "// Generate dynamic username and store in collectionVariables",
+                                    "const timestamp = Date.now();",
+                                    "const username = \"e2e_user_\" + timestamp;",
+                                    "pm.collectionVariables.set(\"username\", username);",
+                                    "",
+                                    "const e2eEmail = \"e2e_email_\" + timestamp + \"@example.com\";",
+                                    "pm.collectionVariables.set(\"e2eEmail\", e2eEmail);",
+                                    "",
+                                    "const e2ePhone = \"1\" + String(timestamp).substring(4);",
+                                    "pm.collectionVariables.set(\"e2ePhone\", e2ePhone);",
+                                    "console.log(\"E2E User Generated - Username: \" + username);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": 999111,\n  \"username\": \"{{username}}\",\n  \"firstName\": \"E2E\",\n  \"lastName\": \"User\",\n  \"email\": \"{{e2eEmail}}\",\n  \"password\": \"SecretPassword123\",\n  \"phone\": \"{{e2ePhone}}\",\n  \"userStatus\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 2: GET User Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user/login?username={{username}}&password=SecretPassword123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user",
+                                "login"
+                            ],
+                            "query": [
+                                {
+                                    "key": "username",
+                                    "value": "{{username}}"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 3: POST Add Pet",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "// Generate unique petId and name, and store in collectionVariables",
+                                    "const petId = Math.floor(Math.random() * 1000000) + 100000;",
+                                    "pm.collectionVariables.set(\"petId\", petId);",
+                                    "",
+                                    "const petName = \"E2E_Buddy_\" + petId;",
+                                    "pm.collectionVariables.set(\"petName\", petName);",
+                                    "",
+                                    "const photoUrl = \"https://example.com/photos/e2e_buddy_\" + petId + \".jpg\";",
+                                    "pm.collectionVariables.set(\"photoUrl\", photoUrl);",
+                                    "console.log(\"E2E Pet Generated - ID: \" + petId + \", Name: \" + petName);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": {{petId}},\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Dogs\"\n  },\n  \"name\": \"{{petName}}\",\n  \"photoUrls\": [\n    \"{{photoUrl}}\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"friendly\"\n    }\n  ],\n  \"status\": \"available\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/pet",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "pet"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 4: GET Find Pet by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Verify pet details match registration\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.id).to.eql(parseInt(pm.collectionVariables.get(\"petId\"), 10));",
+                                    "    pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"petName\"));",
+                                    "    pm.expect(jsonData.status).to.eql(\"available\");",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/pet/{{petId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "pet",
+                                "{{petId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 5: POST Place Order for Pet",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "// Generate dynamic orderId and store in collectionVariables",
+                                    "const orderId = Math.floor(Math.random() * 100000) + 10000;",
+                                    "pm.collectionVariables.set(\"orderId\", orderId);",
+                                    "console.log(\"Generated orderId: \" + orderId);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": {{orderId}},\n  \"petId\": {{petId}},\n  \"quantity\": 1,\n  \"shipDate\": \"2026-07-10T12:00:00.000Z\",\n  \"status\": \"placed\",\n  \"complete\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/store/order",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "store",
+                                "order"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 6: GET Find Order by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Verify order references the correct pet ID\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.id).to.eql(parseInt(pm.collectionVariables.get(\"orderId\"), 10));",
+                                    "    pm.expect(jsonData.petId).to.eql(parseInt(pm.collectionVariables.get(\"petId\"), 10));",
+                                    "    pm.expect(jsonData.status).to.eql(\"placed\");",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/store/order/{{orderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "store",
+                                "order",
+                                "{{orderId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 7: DELETE Order by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/store/order/{{orderId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "store",
+                                "order",
+                                "{{orderId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 8: DELETE Pet by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/pet/{{petId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "pet",
+                                "{{petId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 9: DELETE User by Username",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v2/user/{{username}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v2",
+                                "user",
+                                "{{username}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "username",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "e2eEmail",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "e2ePhone",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "petId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "petName",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "photoUrl",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "orderId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "unitPetId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "unitPetName",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "unitPhotoUrl",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "unitOrderId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "unitUsername",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "unitEmail",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "unitPassword",
+            "value": "password123",
+            "type": "string"
+        },
+        {
+            "key": "unitFirstName",
+            "value": "John",
+            "type": "string"
+        },
+        {
+            "key": "unitLastName",
+            "value": "Doe",
+            "type": "string"
+        },
+        {
+            "key": "unitPhone",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

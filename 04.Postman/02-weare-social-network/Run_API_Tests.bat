@@ -1,0 +1,1 @@
+newman run WEareSocialNetwork.postman_collection.json -e PlutoFinalProject.postman_environment.json -r htmlextra

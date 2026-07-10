@@ -94,7 +94,19 @@ screenshots/
 extent-report/
 
 # --- Allure and App Local Configs ---
-allure-results/
-allure-report/
+**/allure-results/
+**/allure-report/
 appsettings.local.json
+
 .auth/
+
+# --- Project Specific Custom Rules ---
+.vs/
+*.trx
+.playwright/
+playwright-log.txt
+
+# Node.js and Newman Ignore
+**/node_modules/
+**/newman/
+

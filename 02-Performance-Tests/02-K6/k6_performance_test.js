@@ -9,6 +9,12 @@ const DURATION = __ENV.DURATION || '60s';
 
 // Load test users JSON
 const testUsers = JSON.parse(open('./test-users.json'));
+const envEmail = __ENV.AUTOMATION_USER_EMAIL;
+const envPassword = __ENV.AUTOMATION_USER_PASSWORD;
+
+if (envEmail && envPassword) {
+  testUsers[0] = { email: envEmail, password: envPassword };
+}
 
 export const options = {
   scenarios: {
@@ -157,7 +163,7 @@ export function accountLifecycleScenario() {
   const threadNum = exec.vu.idInTest;
   const timestamp = Date.now();
   const randomNum = Math.floor(Math.random() * 1000);
-  const uniqueEmail = `performance_k6_${threadNum}_${timestamp}_${randomNum}@abv.bg`;
+  const uniqueEmail = `performance_k6_${threadNum}_${timestamp}_${randomNum}@example.com`;
   const uniqueName = `User_K6_${threadNum}_${timestamp}`;
   const password = 'pass1234';
 
