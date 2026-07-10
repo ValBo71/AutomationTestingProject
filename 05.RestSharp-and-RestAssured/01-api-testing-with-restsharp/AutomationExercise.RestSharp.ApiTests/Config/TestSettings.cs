@@ -16,8 +16,9 @@ namespace AutomationExercise.RestSharp.ApiTests.Config
         }
 
         public static string BaseUrl => Configuration["BaseUrl"] ?? "https://automationexercise.com";
-        public static string DefaultEmail => Configuration["DefaultUser:Email"] ?? "vbogdanov@abv.bg";
-        public static string DefaultPassword => Configuration["DefaultUser:Password"] ?? "valentin";
+        public static string DefaultEmail => Configuration["DefaultUser:Email"] ?? "testuser_api@example.com";
+        public static string DefaultPassword => Configuration["DefaultUser:Password"] ?? "placeholder_password";
+
         public static int TimeoutMilliseconds => int.TryParse(Configuration["Api:TimeoutMilliseconds"], out var timeout) ? timeout : 30000;
     }
 }
