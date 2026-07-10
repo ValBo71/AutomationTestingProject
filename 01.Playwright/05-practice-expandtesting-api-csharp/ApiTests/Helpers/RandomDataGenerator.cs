@@ -8,7 +8,7 @@ namespace ApiTests.Helpers
 
         public static string GenerateUniqueEmail()
         {
-            return $"vbogdanov+expand_{DateTime.UtcNow:yyyyMMddHHmmssfff}@abv.bg";
+            return $"testuser+expand_{DateTime.UtcNow:yyyyMMddHHmmssfff}@example.com";
         }
 
         public static string GenerateRandomString(string prefix, int length = 8)

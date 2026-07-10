@@ -38,7 +38,7 @@ namespace ApiTests.Helpers
                 using var doc = JsonDocument.Parse(content);
                 return true;
             }
-            catch
+            catch (System.Text.Json.JsonException)
             {
                 return false;
             }

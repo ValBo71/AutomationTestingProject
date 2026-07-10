@@ -23,21 +23,9 @@ namespace AutomationExercise.ApiTests.Clients
                 options.Params = queryParams;
             }
 
-            var url = endpoint;
-            if (queryParams != null)
-            {
-                var sb = new StringBuilder();
-                foreach (var param in queryParams)
-                {
-                    sb.Append(sb.Length == 0 ? "?" : "&");
-                    sb.Append($"{param.Key}={param.Value}");
-                }
-                url += sb.ToString();
-            }
-
-            AllureHelper.AttachRequest("GET", url);
-            
             var response = await Request.GetAsync(endpoint, options);
+
+            AllureHelper.AttachRequest("GET", response.Url);
             
             var body = await response.TextAsync();
             AllureHelper.AttachResponse(response.Status, body: body);
@@ -63,9 +51,9 @@ namespace AutomationExercise.ApiTests.Clients
                 bodyString = sb.ToString();
             }
 
-            AllureHelper.AttachRequest("POST", endpoint, body: bodyString);
-            
             var response = await Request.PostAsync(endpoint, options);
+
+            AllureHelper.AttachRequest("POST", response.Url, body: bodyString);
             
             var body = await response.TextAsync();
             AllureHelper.AttachResponse(response.Status, body: body);
@@ -91,9 +79,9 @@ namespace AutomationExercise.ApiTests.Clients
                 bodyString = sb.ToString();
             }
 
-            AllureHelper.AttachRequest("PUT", endpoint, body: bodyString);
-            
             var response = await Request.PutAsync(endpoint, options);
+
+            AllureHelper.AttachRequest("PUT", response.Url, body: bodyString);
             
             var body = await response.TextAsync();
             AllureHelper.AttachResponse(response.Status, body: body);
@@ -119,9 +107,9 @@ namespace AutomationExercise.ApiTests.Clients
                 bodyString = sb.ToString();
             }
 
-            AllureHelper.AttachRequest("DELETE", endpoint, body: bodyString);
-            
             var response = await Request.DeleteAsync(endpoint, options);
+
+            AllureHelper.AttachRequest("DELETE", response.Url, body: bodyString);
             
             var body = await response.TextAsync();
             AllureHelper.AttachResponse(response.Status, body: body);

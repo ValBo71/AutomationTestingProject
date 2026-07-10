@@ -1,0 +1,1388 @@
+{
+    "info": {
+        "_postman_id": "ae27e77b-8919-4c8d-b94f-cc8a7cba8b1b",
+        "name": "Automation Exercise API",
+        "description": "Postman Collection for Automation Exercise APIs containing both the official Unit APIs (1-14) and a chained E2E Integration Scenario.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. Official API Scenarios",
+            "description": "Standard individual API scenarios (API 1 to 14) as documented on the website.",
+            "item": [
+                {
+                    "name": "API 1: Get All Products List",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/productsList",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "productsList"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 2: POST To All Products List",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 405\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(405);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/productsList",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "productsList"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 3: Get All Brands List",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/brandsList",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "brandsList"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 4: PUT To All Brands List",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 405\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(405);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/brandsList",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "brandsList"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 5: POST To Search Product",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "search_product",
+                                    "value": "tshirt",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/searchProduct",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "searchProduct"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 6: POST To Search Product without search_product",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 400\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(400);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/searchProduct",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "searchProduct"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 7: POST To Verify Login with valid details",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "{{email}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "{{password}}",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/verifyLogin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "verifyLogin"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 8: POST To Verify Login without email parameter",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 400\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(400);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "password",
+                                    "value": "{{password}}",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/verifyLogin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "verifyLogin"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 9: DELETE To Verify Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 405\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(405);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/verifyLogin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "verifyLogin"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 10: POST To Verify Login with invalid details",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 404\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(404);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "invaliduser@nonexistent.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "wrongpassword",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/verifyLogin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "verifyLogin"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 11: POST To Create/Register User Account",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "const uniqueEmail = \"postman_user_\" + Date.now() + \"@example.com\";",
+                                    "pm.environment.set(\"registerEmail\", uniqueEmail);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 201\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(201);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "Postman Test User",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "title",
+                                    "value": "Mr",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_date",
+                                    "value": "15",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_month",
+                                    "value": "May",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_year",
+                                    "value": "1990",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "firstname",
+                                    "value": "First",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "lastname",
+                                    "value": "Last",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company",
+                                    "value": "QA Org",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address1",
+                                    "value": "123 Test Street",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address2",
+                                    "value": "Apt 2B",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "country",
+                                    "value": "Canada",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "zipcode",
+                                    "value": "M4B 1B3",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "state",
+                                    "value": "Ontario",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "city",
+                                    "value": "Toronto",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "mobile_number",
+                                    "value": "1234567890",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/createAccount",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "createAccount"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 14: GET user account detail by email",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/getUserDetailByEmail?email={{registerEmail}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "getUserDetailByEmail"
+                            ],
+                            "query": [
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 13: PUT METHOD To Update User Account",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "Updated Postman Test User",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "title",
+                                    "value": "Mr",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_date",
+                                    "value": "16",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_month",
+                                    "value": "June",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_year",
+                                    "value": "1991",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "firstname",
+                                    "value": "FirstUpdated",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "lastname",
+                                    "value": "LastUpdated",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company",
+                                    "value": "QA Org Updated",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address1",
+                                    "value": "456 New Road",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address2",
+                                    "value": "Apt 5",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "country",
+                                    "value": "Canada",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "zipcode",
+                                    "value": "M4B 1B3",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "state",
+                                    "value": "Ontario",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "city",
+                                    "value": "Toronto",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "mobile_number",
+                                    "value": "0987654321",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/updateAccount",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "updateAccount"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "API 12: DELETE METHOD To Delete User Account",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/deleteAccount",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "deleteAccount"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "2. E2E Integration Scenario",
+            "description": "A chained End-to-End integration scenario verifying user lifecycle and catalogue search flow sequentially.",
+            "item": [
+                {
+                    "name": "E2E 1: GET Products List & Extract Name",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Extract product name for next search step\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "    pm.expect(jsonData.products).to.be.an('array').that.is.not.empty;",
+                                    "    ",
+                                    "    // Save first product name",
+                                    "    var firstProductName = jsonData.products[0].name;",
+                                    "    pm.environment.set(\"searchedProduct\", firstProductName);",
+                                    "    console.log(\"Saved searchedProduct: \" + firstProductName);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/productsList",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "productsList"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 2: POST Search Product & Validate Result",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Validate search results contain the product\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "    pm.expect(jsonData.products).to.be.an('array').that.is.not.empty;",
+                                    "    ",
+                                    "    // Verify name matches or contains expected value",
+                                    "    var expected = pm.environment.get(\"searchedProduct\");",
+                                    "    var found = jsonData.products.some(p => p.name.includes(expected) || expected.includes(p.name));",
+                                    "    pm.expect(found).to.be.true;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "search_product",
+                                    "value": "{{searchedProduct}}",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/searchProduct",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "searchProduct"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 3: POST Verify Login (Unregistered Check)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 404\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(404);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "postman_unregistered_email@invalid.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "anypass",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/verifyLogin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "verifyLogin"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 4: POST Create Account & Set unique email",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "// Generate unique email dynamically before registration",
+                                    "const uniqueEmail = \"e2e_postman_\" + Date.now() + \"@example.com\";",
+                                    "pm.environment.set(\"registerEmail\", uniqueEmail);",
+                                    "console.log(\"Generated registerEmail for E2E: \" + uniqueEmail);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 201\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(201);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "E2E Postman User",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "title",
+                                    "value": "Mr",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_date",
+                                    "value": "15",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_month",
+                                    "value": "May",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_year",
+                                    "value": "1990",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "firstname",
+                                    "value": "First",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "lastname",
+                                    "value": "Last",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company",
+                                    "value": "E2E Org",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address1",
+                                    "value": "123 Test Street",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address2",
+                                    "value": "Apt 2B",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "country",
+                                    "value": "Canada",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "zipcode",
+                                    "value": "M4B 1B3",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "state",
+                                    "value": "Ontario",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "city",
+                                    "value": "Toronto",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "mobile_number",
+                                    "value": "1234567890",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/createAccount",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "createAccount"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 5: POST Verify Login (Registered Check)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/verifyLogin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "verifyLogin"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 6: GET User Details",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Verify user details are correct\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "    pm.expect(jsonData.user.email).to.eql(pm.environment.get(\"registerEmail\"));",
+                                    "    pm.expect(jsonData.user.name).to.eql(\"E2E Postman User\");",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/getUserDetailByEmail?email={{registerEmail}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "getUserDetailByEmail"
+                            ],
+                            "query": [
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 7: PUT Update User Account",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "Updated E2E Postman User",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "title",
+                                    "value": "Mr",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_date",
+                                    "value": "16",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_month",
+                                    "value": "June",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "birth_year",
+                                    "value": "1991",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "firstname",
+                                    "value": "FirstUpdated",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "lastname",
+                                    "value": "LastUpdated",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "company",
+                                    "value": "E2E Org Updated",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address1",
+                                    "value": "456 New Road",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address2",
+                                    "value": "Apt 5",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "country",
+                                    "value": "Canada",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "zipcode",
+                                    "value": "M4B 1B3",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "state",
+                                    "value": "Ontario",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "city",
+                                    "value": "Toronto",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "mobile_number",
+                                    "value": "0987654321",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/updateAccount",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "updateAccount"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 8: DELETE Account & Confirm deletion message",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 200\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "SecretPassword123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/deleteAccount",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "deleteAccount"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "E2E 9: GET User Details (Deleted Check)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response body responseCode is 404\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.responseCode).to.eql(404);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/getUserDetailByEmail?email={{registerEmail}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "getUserDetailByEmail"
+                            ],
+                            "query": [
+                                {
+                                    "key": "email",
+                                    "value": "{{registerEmail}}"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

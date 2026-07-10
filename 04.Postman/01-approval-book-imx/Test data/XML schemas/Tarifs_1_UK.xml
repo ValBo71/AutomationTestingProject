@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+  <tns:priceQueryBodyResponse xmlns:pricequery="http://imx.externalinterfaces.dcs.eulerhermes.com/imxxsd/CommonPriceQuery" xmlns:tns="http://imx.externalinterfaces.dcs.eulerhermes.com/imxxsd/PriceQueryMqResponse">
+  <tns:priceQueryResponse>
+  <pricequery:responseBody>
+  <pricequery:caseId>
+  <caseIdentifierValue>2210170017</caseIdentifierValue>
+  </pricequery:caseId>
+  <pricequery:collectionDuration>150</pricequery:collectionDuration>
+  <pricequery:tariff>
+  <initialFee>100.00</initialFee> 
+  <provisionCollected>
+  <provision>10.00</provision> 
+  <minValue>0</minValue> 
+  </provisionCollected>
+  </pricequery:tariff>
+  <pricequery:tariffPol>
+  <provisionCollected>
+  <provision>10.00</provision> 
+  <minValue>0</minValue> 
+  </provisionCollected>
+  </pricequery:tariffPol>
+  <pricequery:tariffCbmCase>
+  <provisionCollected>
+  <provision>10.00</provision> 
+  <minValue>0</minValue> 
+  </provisionCollected>
+  </pricequery:tariffCbmCase>
+  </pricequery:responseBody>
+  </tns:priceQueryResponse>
+  </tns:priceQueryBodyResponse>

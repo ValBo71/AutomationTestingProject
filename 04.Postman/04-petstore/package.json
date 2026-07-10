@@ -1,0 +1,12 @@
+{
+  "name": "swagger-petstore-postman",
+  "version": "1.0.0",
+  "description": "Postman API testing for Swagger Petstore using Newman",
+  "scripts": {
+    "test": "npx newman run SwaggerPetstore.postman_collection.json -e SwaggerPetstore.postman_environment.json -r cli,htmlextra --delay-request 1000"
+  },
+  "devDependencies": {
+    "newman": "^6.1.1",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}

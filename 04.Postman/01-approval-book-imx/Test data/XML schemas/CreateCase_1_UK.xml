@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:creationOfCollectionOrder xmlns:ns2="http://convergence.collection.eulerhermes.com/cvgImx1">
+    <claimCaseReferenceId>17102022/001/DEU</claimCaseReferenceId>
+    <creditInsuranceContract>
+        <insuranceContractNumber>10000105</insuranceContractNumber>
+        <insuranceContractExtensionNumber>046</insuranceContractExtensionNumber> 
+        <creditInsuranceBU>CBNL</creditInsuranceBU>
+    </creditInsuranceContract>
+    <collectionContractNumber>VB/17102022/001/UK</collectionContractNumber>
+    <creditorEHId>951753</creditorEHId>
+    <orginalCreditorEHId>951753</orginalCreditorEHId>
+    <debtorEhId>665588</debtorEhId>
+    <collectionReceptionOrderDate>2050-07-01</collectionReceptionOrderDate>
+    <caseCategory>INS</caseCategory>
+    <nonInclusiveCase>N</nonInclusiveCase>
+    <claimFileStatus>OPN</claimFileStatus>
+ <disputeFlag>N</disputeFlag>
+  <financialElement>
+    <claimType>ITLC</claimType>
+    <issueDate>2022-06-01</issueDate>
+    <dueDate>2022-07-30</dueDate>
+    <debitCreditIndicator>+</debitCreditIndicator>
+    <initialCurrency>GBP</initialCurrency>
+    <dueGrossAmountInInitialCurrency>10000</dueGrossAmountInInitialCurrency>
+    <dueVatAmountInInitialCurrency>2000</dueVatAmountInInitialCurrency>
+    <modificationTimestamp>2022-10-17T14:50:44.56</modificationTimestamp>
+    <convergenceInternalFinancialElementId>VB0012995</convergenceInternalFinancialElementId>
+  </financialElement>
+  <assessor>
+    <lastName>Bo</lastName>
+    <firstName>Val</firstName>
+    <email>john2@mail.uk</email>
+    <phoneNumber>1234987557</phoneNumber>
+  </assessor>
+  <expectedIndemnificationDate>2022-12-25</expectedIndemnificationDate>
+</ns2:creationOfCollectionOrder>
+

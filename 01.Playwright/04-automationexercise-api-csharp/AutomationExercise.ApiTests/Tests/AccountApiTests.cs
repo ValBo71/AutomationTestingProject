@@ -41,9 +41,9 @@ namespace AutomationExercise.ApiTests.Tests
                 {
                     await _accountClient.DeleteAccountAsync(_testUser.Email, _testUser.Password);
                 }
-                catch
+                catch (System.Exception ex)
                 {
-                    // Ignore errors during fallback cleanup
+                    System.Console.WriteLine($"[TearDown Cleanup Warning] Failed to delete user {_testUser.Email} during fallback cleanup: {ex.Message}");
                 }
             }
         }

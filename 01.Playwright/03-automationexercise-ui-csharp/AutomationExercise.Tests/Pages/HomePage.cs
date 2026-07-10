@@ -52,9 +52,13 @@ namespace AutomationExercise.Tests.Pages
                 await consentButton.ClickAsync(new LocatorClickOptions { Force = true, Timeout = 2000 });
                 await _page.WaitForTimeoutAsync(500);
             }
-            catch (System.Exception)
+            catch (System.TimeoutException)
             {
-                // Dialog did not appear, ignore
+                System.Console.WriteLine("[Consent Dialog] Info: Consent dialog did not appear within timeout. Continuing...");
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine($"[Consent Dialog] Warning: An unexpected error occurred while handling the consent dialog: {ex.Message}");
             }
         }
 
