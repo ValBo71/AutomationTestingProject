@@ -2,7 +2,7 @@
 
 [![Playwright .NET Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml)
 
-This repository contains a robust, fully automated UI test suite targeting [Automation Exercise](https://automationexercise.com/), featuring **100% test coverage (all 26 test cases)**. 
+This repository contains a maintainable Playwright test framework using the Page Object Model targeting [Automation Exercise](https://automationexercise.com/), covering all 26 official test scenarios. 
 
 
 The tests are written in C# utilizing **Playwright** for fast and reliable browser automation and **NUnit** as the test framework.
@@ -60,7 +60,7 @@ The tests are written in C# utilizing **Playwright** for fast and reliable brows
 
 ## ⚙️ Configuration
 
-Configurations can be changed in [appsettings.json](file:///E:/Programing/My_project/GitHub/MyProject/08.Playwright/4.Automation%20at%20automationexercise.com/AutomationExercise.Tests/Config/appsettings.json):
+Configurations can be changed in [appsettings.json](./AutomationExercise.Tests/Config/appsettings.json):
 
 ```json
 {

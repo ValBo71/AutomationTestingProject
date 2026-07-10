@@ -20,7 +20,6 @@ jobs:
     permissions:
       contents: write
 
-
     defaults:
       run:
         working-directory: "01.Playwright/04-automationexercise-api-csharp"
@@ -58,81 +57,3 @@ jobs:
           name: allure-results
           path: "01.Playwright/04-automationexercise-api-csharp/AutomationExercise.ApiTests/bin/Release/net9.0/allure-results/"
           if-no-files-found: ignore
-
-      - name: Prepare Email Body with Test Results
-        if: always()
-        shell: python
-        run: |
-          import xml.etree.ElementTree as ET
-          import os
-
-          trx_path = 'AutomationExercise.ApiTests/TestResults/test-results.trx'
-          email_body = []
-          email_body.append(f"GitHub Actions Workflow: {os.environ.get('GITHUB_WORKFLOW')}")
-          email_body.append(f"Run Number: #{os.environ.get('GITHUB_RUN_NUMBER')}")
-          email_body.append(f"Branch: {os.environ.get('GITHUB_REF_NAME')}")
-          email_body.append(f"View Run: https://github.com/ValBo71/AutomationTestingProject/actions/runs/{os.environ.get('GITHUB_RUN_ID')}\n")
-
-          if os.path.exists(trx_path):
-              try:
-                  tree = ET.parse(trx_path)
-                  root = tree.getroot()
-                  ns = {'ns': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
-                  
-                  counters = root.find('.//ns:ResultSummary/ns:Counters', ns)
-                  if counters is not None:
-                      total = counters.get('total', '0')
-                      passed = counters.get('passed', '0')
-                      failed = counters.get('failed', '0')
-                      email_body.append(f"📊 SUMMARY: Total: {total} | Passed: {passed} | Failed: {failed}\n")
-                  
-                  failed_results = root.findall('.//ns:UnitTestResult[@outcome="Failed"]', ns)
-                  if failed_results:
-                      email_body.append("❌ FAILED TESTS DETAILS:")
-                      email_body.append("=======================")
-                      for result in failed_results:
-                          test_name = result.get('testName')
-                          message_node = result.find('.//ns:Output/ns:ErrorInfo/ns:Message', ns)
-                          message = message_node.text.strip() if message_node is not None else "No error message provided."
-                          email_body.append(f"- Test: {test_name}\n  Error: {message}\n")
-                  else:
-                      email_body.append("✅ All tests passed successfully!")
-              except Exception as e:
-                  email_body.append(f"⚠️ Error parsing TRX file: {str(e)}")
-          else:
-              email_body.append("⚠️ No test results file (.trx) found.")
-
-          with open('../../email_body.txt', 'w', encoding='utf-8') as f:
-              f.write('\n'.join(email_body))
-
-      - name: Send Email Notification
-        if: false # always() - disabled for now
-        env:
-          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
-          MAIL_PORT: ${{ secrets.MAIL_PORT }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          WORKFLOW_NAME: ${{ github.workflow }}
-          JOB_STATUS: ${{ job.status }}
-          EMAIL_BODY_PATH: ../../email_body.txt
-        run: python ../../send_email.py
-
-      - name: Upload SMTP Error Log
-        if: false # failure() - disabled for now
-        uses: actions/upload-artifact@v4
-        with:
-          name: smtp-error-log-api
-          path: |
-            smtp_error.txt
-            01.Playwright/04-automationexercise-api-csharp/smtp_error.txt
-          if-no-files-found: ignore
-
-      - name: Commit and Push SMTP Error Log (if any)
-        if: false # failure() - disabled for now
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp smtp_error.txt ../../smtp_error.txt || cp 01.Playwright/04-automationexercise-api-csharp/smtp_error.txt ../../smtp_error.txt || true
-          git add ../../smtp_error.txt || true
-          git commit -m "docs: add SMTP error log from run #${{ github.run_number }} [skip ci]" || true
-          git push origin main || true

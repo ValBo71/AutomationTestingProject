@@ -47,7 +47,7 @@ ApiTests
 ### Steps
 1. Navigate to the project folder:
    ```bash
-   cd 01.Playwright/05-practice-expandtesting-apo-csharp/ApiTests
+   cd 01.Playwright/05-practice-expandtesting-api-csharp/ApiTests
    ```
 2. Build the project:
    ```bash
