@@ -4,6 +4,7 @@
 [![Playwright API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml)
 [![Expand Testing API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml)
 [![Playwright TS UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml)
+[![Performance Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml)
 
 A professional repository containing automated testing solutions.
 
@@ -47,6 +48,15 @@ This repository includes professional continuous integration (CI) pipelines impl
   * Manual execution via the GitHub UI (`workflow_dispatch`).
 * **Features:** OS dependencies auto-install, Node.js environment configuration, and Playwright HTML test report archiving.
 
+### 5. Performance & Load Test Pipeline (JMeter & k6)
+* **Target Project:** `02-Performance-Tests/`
+* **Trigger Events:**
+  * Every `push` to the `main` branch.
+  * Every `pull_request` targeting the `main` branch.
+  * Scheduled run: **Every day at 07:00 AM Bulgarian time** (04:00 UTC).
+  * Manual execution via the GitHub UI (`workflow_dispatch`).
+* **Features:** Automatic Java configuration, Apache JMeter installation, Grafana k6 setup, and execution of concurrent thread/VU load smoke tests.
+
 ---
 
 ## 📂 Projects in this Repository
@@ -70,3 +80,7 @@ This repository includes professional continuous integration (CI) pipelines impl
 ### 5. C# API Automation (Expand Testing Notes API)
 * **Path:** [01.Playwright/05-practice-expandtesting-apo-csharp](file:///E:/Programing/My_project/GitHub/AutomationTestingProject/01.Playwright/05-practice-expandtesting-apo-csharp)
 * **Goal:** Backend API automation using Playwright `IAPIRequestContext` to validate Expand Testing Notes API endpoints, executing 21 comprehensive test scenarios.
+
+### 6. Performance & Load Testing (JMeter & k6)
+* **Path:** [02-Performance-Tests](file:///E:/Programing/My_project/GitHub/AutomationTestingProject/02-Performance-Tests)
+* **Goal:** API load and performance test suites built with **Apache JMeter** (.jmx Test Plans) and **Grafana k6** (JavaScript scripts) validating target endpoints under simulated concurrent workloads.
