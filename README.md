@@ -23,8 +23,9 @@ This repository acts as a showcase of senior-level test automation concepts, str
 | **Expand Testing Notes API** | C#, Playwright API, NUnit | Yes | CRUD and authentication-focused API test scenarios. |
 | **TypeScript Playwright UI** | TypeScript, Playwright | Yes | UI automation examples using Playwright TypeScript. |
 | **Performance Tests** | JMeter, k6 | Yes | Performance and load smoke testing suitable for CI pipelines. |
-| **Postman API Tests** | JS, Postman, Newman | No | API testing collections & E2E scenarios for Petstore and Automation Exercise. |
-| **Rest Assured API Tests** | Java, RestAssured, JUnit 5, Allure | No | API automation framework targeting Swagger Petstore. |
+| **Postman API Tests** | JS, Postman, Newman | No | API testing suites for iMX Approval Book, WEare, Petstore and Automation Exercise. |
+| **RestSharp API Tests** | C#, RestSharp, NUnit, Allure | No | C# API automation framework targeting Automation Exercise. |
+| **Rest Assured API Tests** | Java, RestAssured, JUnit 5, Allure | No | Java API automation framework targeting Swagger Petstore. |
 
 ---
 
@@ -54,11 +55,19 @@ This repository acts as a showcase of senior-level test automation concepts, str
 * **Path:** [01.Playwright/01-api-testing](./01.Playwright/01-api-testing)
 * **Description:** Simple, raw Playwright API verification tests in C# validating the Swagger Petstore API endpoints. Note: This project serves as an early, raw example of inline endpoint tests kept for comparison; [Automation Exercise API](./01.Playwright/04-automationexercise-api-csharp) is the reference implementation demonstrating modular clients and advanced patterns.
 
-### 7. Postman API Testing (Petstore & Automation Exercise)
+### 7. Postman API Testing (Newman)
 * **Path:** [04.Postman](./04.Postman)
-* **Description:** API validation collections for [Swagger Petstore](./04.Postman/04-petstore) and [Automation Exercise](./04.Postman/03-automationexercise-com). Features dynamic Pre-request Scripts for unique runtime data generation and local/CI Newman CLI runner script integrations.
+* **Description:** API validation collections covering multiple automation suites:
+  * [01-approval-book-imx](./04.Postman/01-approval-book-imx) — Regression suite verifying XML data loading via CSV files.
+  * [02-weare-social-network](./04.Postman/02-weare-social-network) — Cleaned regression suite containing 91 scripts.
+  * [03-automationexercise-com](./04.Postman/03-automationexercise-com) — Chained E2E user registration and validation suite.
+  * [04-petstore](./04.Postman/04-petstore) — Dynamic Pre-request Scripts generating non-repeating user and pet data.
 
-### 8. Java API Automation (Swagger Petstore)
+### 8. C# API Automation (RestSharp)
+* **Path:** [05.RestSharp-and-RestAssured/01-api-testing-with-restsharp](./05.RestSharp-and-RestAssured/01-api-testing-with-restsharp)
+* **Description:** Complete C# API automation framework built with RestSharp, .NET 8, NUnit, and Allure. Features client-based architecture, dynamic form parameter handling, dynamic user generators, and a robust teardown data cleanup hook.
+
+### 9. Java API Automation (RestAssured - Swagger Petstore)
 * **Path:** [05.RestSharp-and-RestAssured/02-petstore-rest-assured](./05.RestSharp-and-RestAssured/02-petstore-rest-assured)
 * **Description:** Advanced API test automation framework built with Java 17, RestAssured, JUnit 5, and Allure. Implements decoupled API client wrappers, JSON configuration files, thread-safe runtime variable memory, dynamic Jackson DTO requests/responses, and structured Unit & E2E integration suites.
 
