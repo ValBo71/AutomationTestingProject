@@ -21,7 +21,7 @@ namespace AutomationExercise.Tests.Tests
     public class ContactUsTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 6: Contact Us Form")]
         public async Task ContactUsForm_ShouldSubmitSuccessfully()
@@ -72,7 +72,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.minor)]
         [Description("Test Case 7: Verify Test Cases page")]
         public async Task VerifyTestCasesPage_ShouldLoadSuccessfully()

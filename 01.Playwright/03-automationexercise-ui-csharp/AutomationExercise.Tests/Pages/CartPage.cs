@@ -1,6 +1,7 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
+using AutomationExercise.Tests.Infrastructure;
 
 namespace AutomationExercise.Tests.Pages
 {
@@ -34,7 +35,7 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task<int> GetCartItemQuantityAsync(int rowIndex)
         {
-            var selector = $"tr[id^='product-']:nth-child({rowIndex}) {CartPageSelectors.CartItemQuantity}";
+            var selector = $"{CartPageSelectors.CartItems}:nth-child({rowIndex}) {CartPageSelectors.CartItemQuantity}";
             var locator = Locator(selector);
             await locator.WaitForAsync(new() { State = WaitForSelectorState.Visible });
             var qtyText = await locator.InnerTextAsync();
@@ -46,11 +47,30 @@ namespace AutomationExercise.Tests.Pages
             await Locator(CartPageSelectors.ProceedToCheckoutButton).ClickAsync();
         }
 
+        /// <summary>
+        /// Clicks the "Register / Login" link inside the checkout modal that appears after
+        /// Proceed to Checkout for a guest. If the modal is slow to appear, retries once by
+        /// clicking Proceed to Checkout again instead of failing immediately.
+        /// </summary>
+        public async Task ClickRegisterLoginInCheckoutModalAsync()
+        {
+            var registerLoginLocator = Locator(CartPageSelectors.RegisterLoginModalLink);
+            try
+            {
+                await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
+            }
+            catch (PlaywrightException ex)
+            {
+                TestLog.Warn($"Register/Login link did not appear: {ex.Message}. Retrying proceed to checkout...");
+                await ClickProceedToCheckoutAsync();
+                await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
+            }
+            await registerLoginLocator.ClickAsync();
+        }
+
         public async Task<bool> IsEmptyCartMessageVisibleAsync()
         {
-            var emptyCartMsg = Locator(CartPageSelectors.EmptyCartContainer);
-            await emptyCartMsg.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await emptyCartMsg.IsVisibleAsync();
+            return await IsVisibleAfterWaitAsync(CartPageSelectors.EmptyCartContainer);
         }
     }
 }

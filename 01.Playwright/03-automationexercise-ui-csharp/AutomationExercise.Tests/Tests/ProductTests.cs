@@ -18,7 +18,7 @@ namespace AutomationExercise.Tests.Tests
     public class ProductTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 8: Verify All Products and product detail page")]
         public async Task ProductDetails_ShouldDisplayCorrectFields()
@@ -64,7 +64,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 9: Search Product")]
         public async Task SearchProduct_ShouldDisplayMatchingProducts()
@@ -93,7 +93,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.minor)]
         [Description("Test Case 21: Add review on product")]
         public async Task SubmitProductReview_ShouldSucceed()
@@ -125,7 +125,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 18: View Category Products")]
         public async Task ViewCategoryProducts_ShouldShowCorrectProducts()
@@ -165,7 +165,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 19: View & Cart Brand Products")]
         public async Task ViewAndCartBrandProducts_ShouldShowCorrectBrandProducts()

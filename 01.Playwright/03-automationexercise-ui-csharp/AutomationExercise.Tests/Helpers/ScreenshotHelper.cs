@@ -2,6 +2,7 @@ using Microsoft.Playwright;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using AutomationExercise.Tests.Infrastructure;
 
 namespace AutomationExercise.Tests.Helpers
 {
@@ -33,7 +34,7 @@ namespace AutomationExercise.Tests.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to take screenshot: {ex.Message}");
+                TestLog.Warn($"Failed to take screenshot: {ex.Message}");
                 return string.Empty;
             }
         }

@@ -15,6 +15,14 @@ namespace AutomationExercise.Tests.Base
         protected IBrowserContext Context { get; private set; } = null!;
         protected IPage Page { get; private set; } = null!;
 
+        /// <summary>
+        /// Set to true right after a test registers/logs into an account on the live site, and back to
+        /// false once the test's own "delete account" cleanup step succeeds. If a test fails or throws
+        /// in between, TearDown uses this flag to attempt a best-effort deletion so failed runs don't
+        /// leak accounts on the shared public demo site.
+        /// </summary>
+        protected bool AccountPendingCleanup { get; set; }
+
         [SetUp]
         public async Task Setup()
         {
@@ -82,6 +90,21 @@ namespace AutomationExercise.Tests.Base
                 catch
                 {
                     // Ignore trace stop failures on success
+                }
+            }
+
+            if (AccountPendingCleanup)
+            {
+                try
+                {
+                    var homePage = new Pages.HomePage(Page);
+                    await homePage.NavigateAsync();
+                    await homePage.ClickDeleteAccountAsync();
+                    Infrastructure.TestLog.Warn("TearDown safety-net: deleted a leftover account after the test did not reach its own cleanup step.");
+                }
+                catch (System.Exception ex)
+                {
+                    Infrastructure.TestLog.Warn($"TearDown safety-net account cleanup failed (account may already be gone or session lost): {ex.Message}");
                 }
             }
 

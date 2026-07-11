@@ -15,9 +15,7 @@ namespace AutomationExercise.Tests.Pages
 
         protected async Task<bool> IsHeaderVisibleAsync()
         {
-            var header = Locator(_headerSelector);
-            await header.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await header.IsVisibleAsync();
+            return await IsVisibleAfterWaitAsync(_headerSelector);
         }
 
         public async Task ClickContinueAsync()

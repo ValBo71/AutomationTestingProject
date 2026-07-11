@@ -19,7 +19,7 @@ namespace AutomationExercise.Tests.Tests
     public class ScrollTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.minor)]
         [Description("Test Case 25: Verify Scroll Up using 'Arrow' button and Scroll Down")]
         public async Task ScrollUp_WithArrowButton_ShouldSucceed()
@@ -52,7 +52,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.minor)]
         [Description("Test Case 26: Verify Scroll Up without 'Arrow' button and Scroll Down")]
         public async Task ScrollUp_WithoutArrowButton_ShouldSucceed()

@@ -10,7 +10,8 @@ namespace AutomationExercise.Tests.Selectors
         public const string CartItemTotalPrice = "td.cart_total p";
         public const string ProceedToCheckoutButton = "a.check_out";
         public const string EmptyCartContainer = "span#empty_cart";
-        
+        public const string RegisterLoginModalLink = "u:has-text('Register / Login')";
+
         // Checkout Form Selectors
         public const string AddressDeliveryList = "#address_delivery";
         public const string AddressInvoiceList = "#address_invoice";

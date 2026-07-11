@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using System.Threading.Tasks;
-using Microsoft.Playwright;
 using AutomationExercise.Tests.Base;
 using AutomationExercise.Tests.Pages;
 using AutomationExercise.Tests.Helpers;
@@ -21,7 +20,7 @@ namespace AutomationExercise.Tests.Tests
     public class CheckoutTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 14: Place Order: Register while Checkout")]
         public async Task PlaceOrder_RegisterWhileCheckout()
@@ -55,20 +54,7 @@ namespace AutomationExercise.Tests.Tests
 
             await AllureHelper.StepAsync("Click 'Register / Login' button in checkout modal", async () =>
             {
-                // Wait for the modal Register / Login link to be visible. If it doesn't show up (e.g. if the page reloaded or lagged), click Proceed to Checkout again.
-                var registerLoginLocator = Page.Locator("u:has-text('Register / Login')");
-                try
-                {
-                    await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
-                }
-                catch (PlaywrightException ex)
-                {
-                    System.Console.WriteLine($"[Checkout UI Warning] Register/Login link did not appear: {ex.Message}. Retrying proceed to checkout...");
-                    // Click Proceed to Checkout again
-                    await cartPage.ClickProceedToCheckoutAsync();
-                    await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
-                }
-                await Page.Locator("u:has-text('Register / Login')").ClickAsync();
+                await cartPage.ClickRegisterLoginInCheckoutModalAsync();
             });
 
             await AllureHelper.StepAsync("Register a new user during checkout", async () =>
@@ -91,6 +77,7 @@ namespace AutomationExercise.Tests.Tests
                 await signupPage.ClickCreateAccountAsync();
                 Assert.IsTrue(await createdPage.IsAccountCreatedVisibleAsync(), "Account was not created successfully.");
                 await createdPage.ClickContinueAsync();
+                AccountPendingCleanup = true;
             });
 
             await AllureHelper.StepAsync("Verify logged in status and go back to cart", async () =>
@@ -132,11 +119,12 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickDeleteAccountAsync();
                 Assert.IsTrue(await deletedPage.IsAccountDeletedVisibleAsync(), "Account deletion failed.");
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 15: Place Order: Register before Checkout")]
         public async Task PlaceOrder_RegisterBeforeCheckout()
@@ -175,6 +163,7 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
+                AccountPendingCleanup = true;
                 Assert.IsTrue(await homePage.IsLoggedInUserVisibleAsync(username), "Login state is incorrect.");
             });
 
@@ -206,11 +195,12 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 16: Place Order: Login before Checkout")]
         public async Task PlaceOrder_LoginBeforeCheckout()
@@ -250,7 +240,8 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                
+                AccountPendingCleanup = true;
+
                 // Logout to clear the session so we can test Login before Checkout
                 await homePage.ClickLogoutAsync();
             });
@@ -290,11 +281,12 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 23: Verify address details in checkout page")]
         public async Task VerifyAddressDetails_InCheckoutPage()
@@ -335,6 +327,7 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
+                AccountPendingCleanup = true;
                 Assert.IsTrue(await homePage.IsLoggedInUserVisibleAsync(username), "Incorrect login state.");
             });
 
@@ -361,11 +354,12 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 24: Download Invoice after purchase order")]
         public async Task DownloadInvoice_AfterOrderPurchase()
@@ -389,20 +383,7 @@ namespace AutomationExercise.Tests.Tests
                 await productsPage.AddFirstProductToCartAsync();
                 await productsPage.ClickModalViewCartAsync();
                 await cartPage.ClickProceedToCheckoutAsync();
-
-                // Wait for the modal Register / Login link to be visible. If it doesn't show up, click Proceed to Checkout again.
-                var registerLoginLocator = Page.Locator("u:has-text('Register / Login')");
-                try
-                {
-                    await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
-                }
-                catch (PlaywrightException ex)
-                {
-                    System.Console.WriteLine($"[Checkout UI Warning] Register/Login link did not appear: {ex.Message}. Retrying proceed to checkout...");
-                    await cartPage.ClickProceedToCheckoutAsync();
-                    await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
-                }
-                await Page.Locator("u:has-text('Register / Login')").ClickAsync();
+                await cartPage.ClickRegisterLoginInCheckoutModalAsync();
                 await loginPage.SignUpInitAsync(username, randomUser);
                 await signupPage.FillSignupDetailsAsync(
                     password: "Password123!",
@@ -420,6 +401,7 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
+                AccountPendingCleanup = true;
                 await homePage.ClickCartAsync();
                 await cartPage.ClickProceedToCheckoutAsync();
             });
@@ -459,6 +441,7 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
     }

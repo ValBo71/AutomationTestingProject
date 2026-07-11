@@ -1,6 +1,7 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
+using AutomationExercise.Tests.Infrastructure;
 
 namespace AutomationExercise.Tests.Pages
 {
@@ -29,7 +30,19 @@ namespace AutomationExercise.Tests.Pages
 
             void DialogHandler(object? sender, IDialog dialog)
             {
-                dialog.AcceptAsync().ConfigureAwait(false);
+                _ = AcceptDialogAsync(dialog);
+            }
+
+            static async Task AcceptDialogAsync(IDialog dialog)
+            {
+                try
+                {
+                    await dialog.AcceptAsync();
+                }
+                catch (PlaywrightException ex)
+                {
+                    TestLog.Warn($"Failed to accept confirmation dialog: {ex.Message}");
+                }
             }
 
             Page.Dialog += DialogHandler;
@@ -46,9 +59,7 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task<bool> IsSuccessAlertVisibleAsync()
         {
-            var successAlert = Locator(ContactUsPageSelectors.SuccessAlert);
-            await successAlert.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await successAlert.IsVisibleAsync();
+            return await IsVisibleAfterWaitAsync(ContactUsPageSelectors.SuccessAlert);
         }
 
         public async Task ClickReturnHomeAsync()
