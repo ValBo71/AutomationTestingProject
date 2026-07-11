@@ -10,6 +10,8 @@ export default defineConfig({
   use: {
     baseURL: 'https://www.saucedemo.com',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     headless: !!process.env.CI, // Headed locally for debugging, headless in CI (no display server available)
     launchOptions: {
       slowMo: process.env.CI ? 0 : 1000, // Slows down every action by 1 second locally to make steps visible
