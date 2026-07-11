@@ -109,4 +109,5 @@ playwright-log.txt
 # Node.js and Newman Ignore
 **/node_modules/
 **/newman/
+**/*-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.html
 
