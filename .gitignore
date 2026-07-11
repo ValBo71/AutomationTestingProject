@@ -30,6 +30,9 @@ yarn.lock
 pnpm-lock.yaml
 bun.lockb
 
+# Keep a committed lockfile for the TS Playwright suite so CI installs are reproducible (npm ci)
+!01.Playwright/02-typescript-playwright/TS-Playwright-Project/package-lock.json
+
 # Node test outputs
 test-results/
 playwright-report/
