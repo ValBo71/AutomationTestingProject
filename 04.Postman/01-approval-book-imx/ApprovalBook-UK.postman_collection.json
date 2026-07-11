@@ -1,7 +1,7 @@
 {
     "info": {
         "_postman_id": "d158c5db-bde7-41be-abd4-ca301053e519",
-        "name": "_EH AB - UK book- API testing",
+        "name": "ApprovalBook UK",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "_exporter_id": "24830478"
     },
@@ -715,7 +715,7 @@
                                                     "pm.expect(pm.response.json().policyHolderName).to.eql(expedtedClientsName+\"\");\r",
                                                     "});\r",
                                                     "\r",
-                                                    "pm.test(\"Verification of EH ID of the debtor\", function () {\r",
+                                                    "pm.test(\"Verification of the debtor ID\", function () {\r",
                                                     "var expedteddebtorEhId = pm.collectionVariables.get(\"debtorEhId1_UK\");\r",
                                                     "pm.expect(pm.response.json().debtorReference).to.eql(expedteddebtorEhId+\"\");\r",
                                                     "});\r",
@@ -1103,7 +1103,7 @@
                                                     "pm.expect(pm.response.json().policyHolderName).to.eql(expedtedClientsName+\"\");\r",
                                                     "});\r",
                                                     "\r",
-                                                    "pm.test(\"Verification of EH ID of the debtor\", function () {\r",
+                                                    "pm.test(\"Verification of the debtor ID\", function () {\r",
                                                     "var expedteddebtorEhId = pm.collectionVariables.get(\"debtorEhId2_UK\");\r",
                                                     "pm.expect(pm.response.json().debtorReference).to.eql(expedteddebtorEhId+\"\");\r",
                                                     "});\r",
@@ -1489,7 +1489,7 @@
                                                     "pm.expect(pm.response.json().policyHolderName).to.eql(expedtedClientsName+\"\");\r",
                                                     "});\r",
                                                     "\r",
-                                                    "pm.test(\"Verification of EH ID of the debtor\", function () {\r",
+                                                    "pm.test(\"Verification of the debtor ID\", function () {\r",
                                                     "var expedteddebtorEhId = pm.collectionVariables.get(\"debtorEhId3_UK\");\r",
                                                     "pm.expect(pm.response.json().debtorReference).to.eql(expedteddebtorEhId+\"\");\r",
                                                     "});\r",
