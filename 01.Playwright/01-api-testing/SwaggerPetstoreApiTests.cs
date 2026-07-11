@@ -63,68 +63,91 @@ public class SwaggerPetstoreApiTests : PlaywrightTest
         });
         
         Assert.That(createResponse.Status, Is.EqualTo(200), "Create User статус кодът трябва да е 200");
-        
+
         var createJson = await createResponse.JsonAsync();
-        string userId = createJson?.GetProperty("message").GetString() ?? "";
+        Assert.That(createJson.HasValue && createJson.Value.TryGetProperty("message", out _), Is.True,
+            "Create User отговорът трябва да съдържа поле 'message' с ID-то на потребителя");
+        string userId = createJson!.Value.GetProperty("message").GetString() ?? "";
 
-        // 2. Get User
-        var getResponse = await _request.GetAsync($"/v2/user/{_nameUser}");
-        Assert.That(getResponse.Status, Is.EqualTo(200), "Get User статус кодът трябва да е 200");
-        
-        var getJson = await getResponse.JsonAsync();
-        Assert.That(getJson?.GetProperty("username").GetString(), Is.EqualTo(_nameUser), "Потребителското име съвпада с подаденото");
-        Assert.That(getJson?.GetProperty("firstName").GetString(), Is.EqualTo(_firstName), "Първото име съвпада с подаденото");
-        Assert.That(getJson?.GetProperty("email").GetString(), Is.EqualTo(_emailUser), "Имейлът съвпада с подадения");
-
-        // 3. Update User
-        _pass = "UpdatedPass123";
-        _phone = "0987654321";
-        
-        var updatePayload = new Dictionary<string, object>
+        var userDeleted = false;
+        try
         {
-            { "id", long.Parse(userId) },
-            { "username", _nameUser },
-            { "firstName", _firstName },
-            { "lastName", _lastName },
-            { "email", _emailUser },
-            { "password", _pass },
-            { "phone", _phone },
-            { "userStatus", 0 }
-        };
+            // 2. Get User
+            var getResponse = await _request.GetAsync($"/v2/user/{_nameUser}");
+            Assert.That(getResponse.Status, Is.EqualTo(200), "Get User статус кодът трябва да е 200");
 
-        var updateResponse = await _request.PutAsync($"/v2/user/{_nameUser}", new APIRequestContextOptions
+            var getJson = await getResponse.JsonAsync();
+            Assert.That(getJson?.GetProperty("username").GetString(), Is.EqualTo(_nameUser), "Потребителското име съвпада с подаденото");
+            Assert.That(getJson?.GetProperty("firstName").GetString(), Is.EqualTo(_firstName), "Първото име съвпада с подаденото");
+            Assert.That(getJson?.GetProperty("email").GetString(), Is.EqualTo(_emailUser), "Имейлът съвпада с подадения");
+
+            // 3. Update User
+            _pass = "UpdatedPass123";
+            _phone = "0987654321";
+
+            var updatePayload = new Dictionary<string, object>
+            {
+                { "id", long.Parse(userId) },
+                { "username", _nameUser },
+                { "firstName", _firstName },
+                { "lastName", _lastName },
+                { "email", _emailUser },
+                { "password", _pass },
+                { "phone", _phone },
+                { "userStatus", 0 }
+            };
+
+            var updateResponse = await _request.PutAsync($"/v2/user/{_nameUser}", new APIRequestContextOptions
+            {
+                DataObject = updatePayload
+            });
+            Assert.That(updateResponse.Status, Is.EqualTo(200), "Update User статус кодът трябва да е 200");
+
+            // Петстор API-то понякога иска време за опресняване
+            await Task.Delay(1000);
+
+            // 4. Get Updated User
+            var getUpdatedResponse = await _request.GetAsync($"/v2/user/{_nameUser}");
+            Assert.That(getUpdatedResponse.Status, Is.EqualTo(200), "Get Updated User статус кодът трябва да е 200");
+
+            var getUpdatedJson = await getUpdatedResponse.JsonAsync();
+            Assert.That(getUpdatedJson?.GetProperty("phone").GetString(), Is.EqualTo(_phone), "Телефонният номер съвпада с обновения");
+            Assert.That(getUpdatedJson?.GetProperty("password").GetString(), Is.EqualTo(_pass), "Паролата съвпада с обновената");
+
+            // 5. Login User
+            var loginResponse = await _request.GetAsync($"/v2/user/login?username={_nameUser}&password={_pass}");
+            Assert.That(loginResponse.Status, Is.EqualTo(200), "Login статус кодът трябва да е 200");
+
+            // 6. Logout User
+            var logoutResponse = await _request.GetAsync("/v2/user/logout");
+            Assert.That(logoutResponse.Status, Is.EqualTo(200), "Logout статус кодът трябва да е 200");
+
+            var logoutJson = await logoutResponse.JsonAsync();
+            Assert.That(logoutJson?.GetProperty("message").GetString(), Is.EqualTo("ok"), "Съобщението при изход трябва да е 'ok'");
+
+            // 7. Delete User
+            var deleteResponse = await _request.DeleteAsync($"/v2/user/{_nameUser}");
+            Assert.That(deleteResponse.Status, Is.EqualTo(200), "Delete статус кодът трябва да е 200");
+
+            var deleteJson = await deleteResponse.JsonAsync();
+            Assert.That(deleteJson?.GetProperty("message").GetString(), Is.EqualTo(_nameUser), "Съобщението при изтриване трябва да съдържа потребителското име");
+            userDeleted = true;
+        }
+        finally
         {
-            DataObject = updatePayload
-        });
-        Assert.That(updateResponse.Status, Is.EqualTo(200), "Update User статус кодът трябва да е 200");
-        
-        // Петстор API-то понякога иска време за опресняване
-        await Task.Delay(1000);
-
-        // 4. Get Updated User
-        var getUpdatedResponse = await _request.GetAsync($"/v2/user/{_nameUser}");
-        Assert.That(getUpdatedResponse.Status, Is.EqualTo(200), "Get Updated User статус кодът трябва да е 200");
-        
-        var getUpdatedJson = await getUpdatedResponse.JsonAsync();
-        Assert.That(getUpdatedJson?.GetProperty("phone").GetString(), Is.EqualTo(_phone), "Телефонният номер съвпада с обновения");
-        Assert.That(getUpdatedJson?.GetProperty("password").GetString(), Is.EqualTo(_pass), "Паролата съвпада с обновената");
-
-        // 5. Login User
-        var loginResponse = await _request.GetAsync($"/v2/user/login?username={_nameUser}&password={_pass}");
-        Assert.That(loginResponse.Status, Is.EqualTo(200), "Login статус кодът трябва да е 200");
-
-        // 6. Logout User
-        var logoutResponse = await _request.GetAsync("/v2/user/logout");
-        Assert.That(logoutResponse.Status, Is.EqualTo(200), "Logout статус кодът трябва да е 200");
-        
-        var logoutJson = await logoutResponse.JsonAsync();
-        Assert.That(logoutJson?.GetProperty("message").GetString(), Is.EqualTo("ok"), "Съобщението при изход трябва да е 'ok'");
-
-        // 7. Delete User
-        var deleteResponse = await _request.DeleteAsync($"/v2/user/{_nameUser}");
-        Assert.That(deleteResponse.Status, Is.EqualTo(200), "Delete статус кодът трябва да е 200");
-        
-        var deleteJson = await deleteResponse.JsonAsync();
-        Assert.That(deleteJson?.GetProperty("message").GetString(), Is.EqualTo(_nameUser), "Съобщението при изтриване трябва да съдържа потребителското име");
+            // Best-effort safety net: if any assertion above failed before the explicit Delete step,
+            // still remove the user from the shared petstore.swagger.io sandbox instead of leaking it.
+            if (!userDeleted)
+            {
+                try
+                {
+                    await _request.DeleteAsync($"/v2/user/{_nameUser}");
+                }
+                catch
+                {
+                    // Best effort only - the original assertion failure above is what should surface.
+                }
+            }
+        }
     }
 }

@@ -28,6 +28,8 @@ namespace ApiTests.Tests
             var password = "Password123";
 
             var registerResponse = await UsersClient.RegisterAsync(name, email, password);
+            PendingCleanupEmail = email;
+            PendingCleanupPassword = password;
 
             Assert.That(registerResponse.Status, Is.EqualTo(201));
 
@@ -43,6 +45,8 @@ namespace ApiTests.Tests
                 BaseClient.SetToken(loginData.Data.Token);
                 await UsersClient.DeleteAccountAsync();
                 BaseClient.ClearToken();
+                PendingCleanupEmail = null;
+                PendingCleanupPassword = null;
             }
         }
 
@@ -57,6 +61,8 @@ namespace ApiTests.Tests
             var password = "Password123";
 
             await UsersClient.RegisterAsync(name, email, password);
+            PendingCleanupEmail = email;
+            PendingCleanupPassword = password;
 
             var secondRegisterResponse = await UsersClient.RegisterAsync(name, email, password);
 
@@ -74,6 +80,8 @@ namespace ApiTests.Tests
                 BaseClient.SetToken(loginData.Data.Token);
                 await UsersClient.DeleteAccountAsync();
                 BaseClient.ClearToken();
+                PendingCleanupEmail = null;
+                PendingCleanupPassword = null;
             }
         }
 
@@ -104,6 +112,8 @@ namespace ApiTests.Tests
             var password = "Password123";
 
             await UsersClient.RegisterAsync(name, email, password);
+            PendingCleanupEmail = email;
+            PendingCleanupPassword = password;
 
             var loginResponse = await UsersClient.LoginAsync(email, password);
 
@@ -119,6 +129,8 @@ namespace ApiTests.Tests
             BaseClient.SetToken(loginData.Data.Token);
             await UsersClient.DeleteAccountAsync();
             BaseClient.ClearToken();
+            PendingCleanupEmail = null;
+            PendingCleanupPassword = null;
         }
 
         [Test]
@@ -149,6 +161,8 @@ namespace ApiTests.Tests
             var password = "Password123";
 
             await UsersClient.RegisterAsync(name, email, password);
+            PendingCleanupEmail = email;
+            PendingCleanupPassword = password;
             var loginResponse = await UsersClient.LoginAsync(email, password);
             var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
 
@@ -165,6 +179,8 @@ namespace ApiTests.Tests
             // Cleanup
             await UsersClient.DeleteAccountAsync();
             BaseClient.ClearToken();
+            PendingCleanupEmail = null;
+            PendingCleanupPassword = null;
         }
 
         [Test]
@@ -189,6 +205,8 @@ namespace ApiTests.Tests
             var password = "Password123";
 
             await UsersClient.RegisterAsync(name, email, password);
+            PendingCleanupEmail = email;
+            PendingCleanupPassword = password;
             var loginResponse = await UsersClient.LoginAsync(email, password);
             var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
 
@@ -211,6 +229,8 @@ namespace ApiTests.Tests
             // Cleanup
             await UsersClient.DeleteAccountAsync();
             BaseClient.ClearToken();
+            PendingCleanupEmail = null;
+            PendingCleanupPassword = null;
         }
 
         [Test]
@@ -225,6 +245,8 @@ namespace ApiTests.Tests
             var newPassword = "NewPassword123!";
 
             await UsersClient.RegisterAsync(name, email, currentPassword);
+            PendingCleanupEmail = email;
+            PendingCleanupPassword = currentPassword;
             var loginResponse = await UsersClient.LoginAsync(email, currentPassword);
             var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
 
@@ -232,6 +254,7 @@ namespace ApiTests.Tests
 
             var changePassResponse = await UsersClient.ChangePasswordAsync(currentPassword, newPassword);
             Assert.That(changePassResponse.Status, Is.EqualTo(200));
+            PendingCleanupPassword = newPassword;
 
             var changePassResult = await ResponseHelper.DeserializeAsync<GenericResponse>(changePassResponse);
             Assert.That(changePassResult.Success, Is.True);
@@ -247,6 +270,8 @@ namespace ApiTests.Tests
             // Cleanup
             await UsersClient.DeleteAccountAsync();
             BaseClient.ClearToken();
+            PendingCleanupEmail = null;
+            PendingCleanupPassword = null;
         }
 
         [Test]
@@ -260,6 +285,8 @@ namespace ApiTests.Tests
             var password = "Password123";
 
             await UsersClient.RegisterAsync(name, email, password);
+            PendingCleanupEmail = email;
+            PendingCleanupPassword = password;
             var loginResponse = await UsersClient.LoginAsync(email, password);
             var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
 
@@ -274,6 +301,8 @@ namespace ApiTests.Tests
             // Cleanup
             await UsersClient.DeleteAccountAsync();
             BaseClient.ClearToken();
+            PendingCleanupEmail = null;
+            PendingCleanupPassword = null;
         }
     }
 }
