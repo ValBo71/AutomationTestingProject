@@ -1,80 +1,83 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class ProductDetailsPage
+    public class ProductDetailsPage : BasePage
     {
-        private readonly IPage _page;
-
-        public ProductDetailsPage(IPage page)
+        public ProductDetailsPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         public async Task<string> GetProductNameAsync()
         {
-            await _page.CheckAndReloadIfOverloadedAsync();
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.DetailProductName);
-            return await _page.InnerTextAsync(ProductsPageSelectors.DetailProductName);
+            var detailName = Locator(ProductsPageSelectors.DetailProductName);
+            await detailName.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await detailName.InnerTextAsync();
         }
 
         public async Task<string> GetProductCategoryAsync()
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.DetailProductCategory);
-            return await _page.InnerTextAsync(ProductsPageSelectors.DetailProductCategory);
+            var detailCategory = Locator(ProductsPageSelectors.DetailProductCategory);
+            await detailCategory.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await detailCategory.InnerTextAsync();
         }
 
         public async Task<string> GetProductPriceAsync()
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.DetailProductPrice);
-            return await _page.InnerTextAsync(ProductsPageSelectors.DetailProductPrice);
+            var detailPrice = Locator(ProductsPageSelectors.DetailProductPrice);
+            await detailPrice.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await detailPrice.InnerTextAsync();
         }
 
         public async Task<string> GetProductAvailabilityAsync()
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.DetailProductAvailability);
-            return await _page.InnerTextAsync(ProductsPageSelectors.DetailProductAvailability);
+            var detailAvailability = Locator(ProductsPageSelectors.DetailProductAvailability);
+            await detailAvailability.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await detailAvailability.InnerTextAsync();
         }
 
         public async Task<string> GetProductConditionAsync()
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.DetailProductCondition);
-            return await _page.InnerTextAsync(ProductsPageSelectors.DetailProductCondition);
+            var detailCondition = Locator(ProductsPageSelectors.DetailProductCondition);
+            await detailCondition.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await detailCondition.InnerTextAsync();
         }
 
         public async Task<string> GetProductBrandAsync()
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.DetailProductBrand);
-            return await _page.InnerTextAsync(ProductsPageSelectors.DetailProductBrand);
+            var detailBrand = Locator(ProductsPageSelectors.DetailProductBrand);
+            await detailBrand.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await detailBrand.InnerTextAsync();
         }
 
         public async Task SetQuantityAsync(int quantity)
         {
-            await _page.FillAsync(ProductsPageSelectors.DetailProductQuantityInput, quantity.ToString());
+            await Locator(ProductsPageSelectors.DetailProductQuantityInput).FillAsync(quantity.ToString());
         }
 
         public async Task ClickAddToCartAsync()
         {
-            await _page.ClickAsync(ProductsPageSelectors.DetailProductAddToCartButton);
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ModalContinueShoppingButton);
+            await Locator(ProductsPageSelectors.DetailProductAddToCartButton).ClickAsync();
+            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).WaitForAsync(new() { State = WaitForSelectorState.Visible });
         }
 
         public async Task SubmitReviewAsync(string name, string email, string reviewText)
         {
-            await _page.Locator(ProductsPageSelectors.ReviewNameInput).ScrollIntoViewIfNeededAsync();
-            await _page.FillAsync(ProductsPageSelectors.ReviewNameInput, name);
-            await _page.FillAsync(ProductsPageSelectors.ReviewEmailInput, email);
-            await _page.FillAsync(ProductsPageSelectors.ReviewTextInput, reviewText);
-            await _page.ClickAsync(ProductsPageSelectors.ReviewSubmitButton);
+            var nameInput = Locator(ProductsPageSelectors.ReviewNameInput);
+            await nameInput.ScrollIntoViewIfNeededAsync();
+            await nameInput.FillAsync(name);
+            await Locator(ProductsPageSelectors.ReviewEmailInput).FillAsync(email);
+            await Locator(ProductsPageSelectors.ReviewTextInput).FillAsync(reviewText);
+            await Locator(ProductsPageSelectors.ReviewSubmitButton).ClickAsync();
         }
 
         public async Task<bool> IsReviewSuccessAlertVisibleAsync()
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ReviewSuccessAlert);
-            return await _page.IsVisibleAsync(ProductsPageSelectors.ReviewSuccessAlert);
+            var successAlert = Locator(ProductsPageSelectors.ReviewSuccessAlert);
+            await successAlert.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await successAlert.IsVisibleAsync();
         }
     }
 }

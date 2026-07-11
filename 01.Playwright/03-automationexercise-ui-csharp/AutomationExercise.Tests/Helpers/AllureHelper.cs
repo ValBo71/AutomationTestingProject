@@ -36,5 +36,10 @@ namespace AutomationExercise.Tests.Helpers
         {
             AllureApi.AddAttachment(name, "image/png", path);
         }
+
+        public static void AddTraceAttachment(string name, string path)
+        {
+            AllureApi.AddAttachment(name, "application/zip", path);
+        }
     }
 }

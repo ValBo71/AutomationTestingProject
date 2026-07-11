@@ -1,17 +1,13 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class ContactUsPage
+    public class ContactUsPage : BasePage
     {
-        private readonly IPage _page;
-
-        public ContactUsPage(IPage page)
+        public ContactUsPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         public async Task SubmitContactFormAsync(
@@ -21,34 +17,43 @@ namespace AutomationExercise.Tests.Pages
             string message,
             string? filePath = null)
         {
-            await _page.FillAsync(ContactUsPageSelectors.NameInput, name);
-            await _page.FillAsync(ContactUsPageSelectors.EmailInput, email);
-            await _page.FillAsync(ContactUsPageSelectors.SubjectInput, subject);
-            await _page.FillAsync(ContactUsPageSelectors.MessageInput, message);
+            await Locator(ContactUsPageSelectors.NameInput).FillAsync(name);
+            await Locator(ContactUsPageSelectors.EmailInput).FillAsync(email);
+            await Locator(ContactUsPageSelectors.SubjectInput).FillAsync(subject);
+            await Locator(ContactUsPageSelectors.MessageInput).FillAsync(message);
 
             if (!string.IsNullOrEmpty(filePath))
             {
-                await _page.SetInputFilesAsync(ContactUsPageSelectors.UploadFileInput, filePath);
+                await Locator(ContactUsPageSelectors.UploadFileInput).SetInputFilesAsync(filePath);
             }
 
-            // Bind click handler to accept confirm dialog
-            _page.Dialog += async (_, dialog) =>
+            void DialogHandler(object? sender, IDialog dialog)
             {
-                await dialog.AcceptAsync();
-            };
+                dialog.AcceptAsync().ConfigureAwait(false);
+            }
 
-            await _page.ClickWithOverloadCheckAsync(ContactUsPageSelectors.SubmitButton);
+            Page.Dialog += DialogHandler;
+
+            try
+            {
+                await Locator(ContactUsPageSelectors.SubmitButton).ClickAsync();
+            }
+            finally
+            {
+                Page.Dialog -= DialogHandler;
+            }
         }
 
         public async Task<bool> IsSuccessAlertVisibleAsync()
         {
-            await _page.WaitForSelectorAsync(ContactUsPageSelectors.SuccessAlert);
-            return await _page.IsVisibleAsync(ContactUsPageSelectors.SuccessAlert);
+            var successAlert = Locator(ContactUsPageSelectors.SuccessAlert);
+            await successAlert.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await successAlert.IsVisibleAsync();
         }
 
         public async Task ClickReturnHomeAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(ContactUsPageSelectors.ReturnHomeButton);
+            await Locator(ContactUsPageSelectors.ReturnHomeButton).ClickAsync();
         }
     }
 }

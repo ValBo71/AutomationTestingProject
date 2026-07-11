@@ -42,8 +42,8 @@ namespace AutomationExercise.Tests.Tests
             await AllureHelper.StepAsync("Click on scroll up arrow button and verify page scrolled up", async () =>
             {
                 await Page.ClickAsync("#scrollUp");
-                // Wait for scroll transition
-                await Page.WaitForTimeoutAsync(1000);
+                // Wait for scroll transition to top
+                await Page.WaitForFunctionAsync("window.scrollY === 0", null, new() { Timeout = 3000 });
                 
                 var headerLocator = Page.Locator("section#slider h2:has-text('Full-Fledged practice website')").First;
                 await headerLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
@@ -75,8 +75,8 @@ namespace AutomationExercise.Tests.Tests
             await AllureHelper.StepAsync("Scroll up to top of page and verify header is visible", async () =>
             {
                 await Page.EvaluateAsync("window.scrollTo(0, 0)");
-                // Wait for scroll transition
-                await Page.WaitForTimeoutAsync(1000);
+                // Wait for scroll transition to top
+                await Page.WaitForFunctionAsync("window.scrollY === 0", null, new() { Timeout = 3000 });
                 
                 var headerLocator = Page.Locator("section#slider h2:has-text('Full-Fledged practice website')").First;
                 await headerLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });

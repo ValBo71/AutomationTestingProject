@@ -2,127 +2,104 @@ using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
 using AutomationExercise.Tests.Drivers;
-using AutomationExercise.Tests.Helpers;
+using AutomationExercise.Tests.Infrastructure;
+using System;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class HomePage
+    public class HomePage : BasePage
     {
-        private readonly IPage _page;
-
-        public HomePage(IPage page)
+        public HomePage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         public async Task NavigateAsync()
         {
-            int maxRetries = 3;
-            for (int i = 1; i <= maxRetries; i++)
-            {
-                try
-                {
-                    await _page.GotoAsync(PlaywrightDriver.Settings.BaseUrl, new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
-                    var content = await _page.ContentAsync();
-                    if (content.Contains("heavy load (queue full)") || content.Contains("too many people are accessing this website"))
-                    {
-                        if (i == maxRetries)
-                        {
-                            throw new System.Exception("The website is under heavy load (queue full) after multiple retries.");
-                        }
-                        await _page.WaitForTimeoutAsync(3000 * i);
-                        continue;
-                    }
-                    break;
-                }
-                catch (System.Exception) when (i < maxRetries)
-                {
-                    await _page.WaitForTimeoutAsync(3000 * i);
-                }
-            }
+            await SiteAvailability.GotoWithRetryAsync(Page, PlaywrightDriver.Settings.BaseUrl);
             await HandleConsentDialogAsync();
         }
 
         public async Task HandleConsentDialogAsync()
         {
-            var consentButton = _page.Locator(".fc-consent-root button.fc-cta-consent");
+            var consentButton = Locator(".fc-consent-root button.fc-cta-consent");
             try
             {
                 await consentButton.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 3000 });
                 await consentButton.ClickAsync(new LocatorClickOptions { Force = true, Timeout = 2000 });
-                await _page.WaitForTimeoutAsync(500);
             }
-            catch (System.TimeoutException)
+            catch (TimeoutException)
             {
-                System.Console.WriteLine("[Consent Dialog] Info: Consent dialog did not appear within timeout. Continuing...");
+                TestLog.Debug("Consent dialog did not appear within timeout. Continuing...");
             }
-            catch (System.Exception ex)
+            catch (PlaywrightException ex)
             {
-                System.Console.WriteLine($"[Consent Dialog] Warning: An unexpected error occurred while handling the consent dialog: {ex.Message}");
+                TestLog.Warn($"Playwright error while handling the consent dialog: {ex.Message}");
             }
         }
 
         public async Task ClickProductsAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CommonSelectors.NavigationProducts);
+            await Locator(CommonSelectors.NavigationProducts).ClickAsync();
         }
 
         public async Task ClickCartAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CommonSelectors.NavigationCart);
+            await Locator(CommonSelectors.NavigationCart).ClickAsync();
         }
 
         public async Task ClickLoginSignupAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CommonSelectors.NavigationSignupLogin);
+            await Locator(CommonSelectors.NavigationSignupLogin).ClickAsync();
         }
 
         public async Task ClickContactUsAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CommonSelectors.NavigationContactUs);
+            await Locator(CommonSelectors.NavigationContactUs).ClickAsync();
         }
 
         public async Task ClickTestCasesAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CommonSelectors.NavigationTestCases);
+            await Locator(CommonSelectors.NavigationTestCases).ClickAsync();
         }
 
         public async Task ClickLogoutAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CommonSelectors.NavigationLogout);
+            await Locator(CommonSelectors.NavigationLogout).ClickAsync();
         }
 
         public async Task ClickDeleteAccountAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CommonSelectors.NavigationDeleteAccount);
+            await Locator(CommonSelectors.NavigationDeleteAccount).ClickAsync();
         }
 
         public async Task<bool> IsLoggedInUserVisibleAsync(string username)
         {
-            await _page.WaitForSelectorAsync(CommonSelectors.LoggedInUserText);
-            var text = await _page.InnerTextAsync(CommonSelectors.LoggedInUserText);
+            var loggedInText = Locator(CommonSelectors.LoggedInUserText);
+            await loggedInText.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            var text = await loggedInText.InnerTextAsync();
             return text.Contains(username);
         }
 
         public async Task SubscribeAsync(string email)
         {
-            await _page.Locator(HomePageSelectors.SubscriptionEmailInput).ScrollIntoViewIfNeededAsync();
-            await _page.FillAsync(HomePageSelectors.SubscriptionEmailInput, email);
-            await _page.ClickAsync(HomePageSelectors.SubscriptionButton);
+            var emailInput = Locator(HomePageSelectors.SubscriptionEmailInput);
+            await emailInput.ScrollIntoViewIfNeededAsync();
+            await emailInput.FillAsync(email);
+            await Locator(HomePageSelectors.SubscriptionButton).ClickAsync();
         }
 
         public async Task<bool> IsSubscriptionSuccessVisibleAsync()
         {
-            await _page.WaitForSelectorAsync(HomePageSelectors.SubscriptionSuccessMessage);
-            return await _page.IsVisibleAsync(HomePageSelectors.SubscriptionSuccessMessage);
+            var successMsg = Locator(HomePageSelectors.SubscriptionSuccessMessage);
+            await successMsg.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await successMsg.IsVisibleAsync();
         }
 
         public async Task AddFirstRecommendedItemToCartAsync()
         {
-            await _page.Locator(HomePageSelectors.RecommendedItemsHeader).First.ScrollIntoViewIfNeededAsync();
-            await _page.ClickAsync(HomePageSelectors.FirstRecommendedItemAddToCart);
-            // Click continue shopping or modal view cart
-            await _page.ClickAsync(ProductsPageSelectors.ModalContinueShoppingButton);
+            await Locator(HomePageSelectors.RecommendedItemsHeader).First.ScrollIntoViewIfNeededAsync();
+            await Locator(HomePageSelectors.FirstRecommendedItemAddToCart).ClickAsync();
+            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).ClickAsync();
         }
     }
 }

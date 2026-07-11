@@ -68,7 +68,7 @@ namespace AutomationExercise.Tests.Tests
                     await cartPage.ClickProceedToCheckoutAsync();
                     await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
                 }
-                await Page.ClickWithOverloadCheckAsync("u:has-text('Register / Login')");
+                await Page.Locator("u:has-text('Register / Login')").ClickAsync();
             });
 
             await AllureHelper.StepAsync("Register a new user during checkout", async () =>
@@ -402,7 +402,7 @@ namespace AutomationExercise.Tests.Tests
                     await cartPage.ClickProceedToCheckoutAsync();
                     await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
                 }
-                await Page.ClickWithOverloadCheckAsync("u:has-text('Register / Login')");
+                await Page.Locator("u:has-text('Register / Login')").ClickAsync();
                 await loginPage.SignUpInitAsync(username, randomUser);
                 await signupPage.FillSignupDetailsAsync(
                     password: "Password123!",

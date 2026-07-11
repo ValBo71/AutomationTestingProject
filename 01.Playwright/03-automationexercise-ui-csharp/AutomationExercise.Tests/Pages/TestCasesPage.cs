@@ -1,25 +1,22 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class TestCasesPage
+    public class TestCasesPage : BasePage
     {
-        private readonly IPage _page;
-
-        public TestCasesPage(IPage page)
+        public TestCasesPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         private const string TestCasesHeader = "h2.title";
 
         public async Task<bool> IsTestCasesPageLoadedAsync()
         {
-            await _page.CheckAndReloadIfOverloadedAsync();
-            await _page.WaitForURLAsync("**/test_cases");
-            return await _page.IsVisibleAsync(TestCasesHeader);
+            await Page.WaitForURLAsync("**/test_cases");
+            var header = Locator(TestCasesHeader);
+            await header.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await header.IsVisibleAsync();
         }
     }
 }

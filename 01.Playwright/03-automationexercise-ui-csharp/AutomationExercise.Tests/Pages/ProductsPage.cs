@@ -1,37 +1,34 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class ProductsPage
+    public class ProductsPage : BasePage
     {
-        private readonly IPage _page;
-
-        public ProductsPage(IPage page)
+        public ProductsPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         public async Task SearchProductAsync(string productName)
         {
-            await _page.FillAsync(ProductsPageSelectors.SearchInput, productName);
-            await _page.ClickWithOverloadCheckAsync(ProductsPageSelectors.SearchButton);
+            await Locator(ProductsPageSelectors.SearchInput).FillAsync(productName);
+            await Locator(ProductsPageSelectors.SearchButton).ClickAsync();
         }
 
         public async Task<bool> IsProductsHeaderVisibleAsync(string headerText)
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ProductsHeader);
-            var text = await _page.InnerTextAsync(ProductsPageSelectors.ProductsHeader);
+            var header = Locator(ProductsPageSelectors.ProductsHeader);
+            await header.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            var text = await header.InnerTextAsync();
             return text.Contains(headerText);
         }
 
         public async Task<int> GetProductListCountAsync()
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ProductListItems);
-            var items = await _page.QuerySelectorAllAsync(ProductsPageSelectors.ProductListItems);
-            return items.Count;
+            var items = Locator(ProductsPageSelectors.ProductListItems);
+            await items.First.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await items.CountAsync();
         }
 
         public async Task ClickFirstProductDetailsAsync()
@@ -41,80 +38,81 @@ namespace AutomationExercise.Tests.Pages
         
         public async Task ClickProductDetailsByIdAsync(int productId)
         {
-            await _page.ClickWithOverloadCheckAsync($"a[href='/product_details/{productId}']");
+            await Locator($"a[href='/product_details/{productId}']").ClickAsync();
         }
 
         public async Task AddFirstProductToCartAsync()
         {
-            // Hover over first product and click Add to Cart
-            var locator = _page.Locator("a.add-to-cart[data-product-id='1']").First;
+            var locator = Locator("a.add-to-cart[data-product-id='1']").First;
             await locator.ScrollIntoViewIfNeededAsync();
             await locator.ClickAsync();
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ModalContinueShoppingButton);
+            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).WaitForAsync(new() { State = WaitForSelectorState.Visible });
         }
 
         public async Task AddSecondProductToCartAsync()
         {
-            var locator = _page.Locator("a.add-to-cart[data-product-id='2']").First;
+            var locator = Locator("a.add-to-cart[data-product-id='2']").First;
             await locator.ScrollIntoViewIfNeededAsync();
             await locator.ClickAsync();
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ModalContinueShoppingButton);
+            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).WaitForAsync(new() { State = WaitForSelectorState.Visible });
         }
 
         public async Task AddProductToCartByIdAsync(int productId)
         {
-            var locator = _page.Locator($"a.add-to-cart[data-product-id='{productId}']").First;
+            var locator = Locator($"a.add-to-cart[data-product-id='{productId}']").First;
             await locator.ScrollIntoViewIfNeededAsync();
             await locator.ClickAsync();
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ModalContinueShoppingButton);
+            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).WaitForAsync(new() { State = WaitForSelectorState.Visible });
         }
 
         public async Task ClickModalViewCartAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(ProductsPageSelectors.ModalViewCartButton);
+            await Locator(ProductsPageSelectors.ModalViewCartButton).ClickAsync();
         }
 
         public async Task ClickModalContinueShoppingAsync()
         {
-            await _page.ClickAsync(ProductsPageSelectors.ModalContinueShoppingButton);
+            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).ClickAsync();
         }
 
         public async Task<bool> IsProductVisibleInListAsync(string productName)
         {
-            await _page.WaitForSelectorAsync(ProductsPageSelectors.ProductListItems);
-            var text = await _page.InnerTextAsync(ProductsPageSelectors.ProductListItems);
+            var items = Locator(ProductsPageSelectors.ProductListItems);
+            await items.First.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            var text = await items.InnerTextAsync();
             return text.Contains(productName);
         }
 
         public async Task ClickCategoryWomenAsync()
         {
-            await _page.ClickWithOverloadCheckAsync("a[href='#Women']");
+            await Locator("a[href='#Women']").ClickAsync();
         }
 
         public async Task ClickCategoryWomenDressAsync()
         {
-            await _page.ClickWithOverloadCheckAsync("a[href='/category_products/1']");
+            await Locator("a[href='/category_products/1']").ClickAsync();
         }
 
         public async Task ClickCategoryMenAsync()
         {
-            await _page.ClickWithOverloadCheckAsync("a[href='#Men']");
+            await Locator("a[href='#Men']").ClickAsync();
         }
 
         public async Task ClickCategoryMenTshirtsAsync()
         {
-            await _page.ClickWithOverloadCheckAsync("a[href='/category_products/3']");
+            await Locator("a[href='/category_products/3']").ClickAsync();
         }
 
         public async Task<string> GetProductsTitleTextAsync()
         {
-            await _page.WaitForSelectorAsync("h2.title.text-center");
-            return await _page.InnerTextAsync("h2.title.text-center");
+            var title = Locator("h2.title.text-center");
+            await title.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await title.InnerTextAsync();
         }
 
         public async Task ClickBrandAsync(string brandName)
         {
-            await _page.ClickWithOverloadCheckAsync($"a[href='/brand_products/{brandName}']");
+            await Locator($"a[href='/brand_products/{brandName}']").ClickAsync();
         }
     }
 }
