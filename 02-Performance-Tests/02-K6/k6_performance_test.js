@@ -3,6 +3,7 @@ import { check, sleep } from 'k6';
 import exec from 'k6/execution';
 
 // Read environment variables with defaults
+const BASE_URL = __ENV.BASE_URL || 'https://automationexercise.com';
 const USERS = parseInt(__ENV.USERS || '20', 10);
 const RAMPUP = __ENV.RAMPUP || '60s';
 const DURATION = __ENV.DURATION || '60s';
@@ -59,8 +60,8 @@ const headers = {
 
 // 1. MAIN LOAD SCENARIO
 export function mainLoadScenario() {
-  const baseUrl = 'https://automationexercise.com';
-  
+  const baseUrl = BASE_URL;
+
   // GET All Products List
   let resProducts = http.get(`${baseUrl}/api/productsList`, { headers });
   check(resProducts, {
@@ -157,8 +158,8 @@ export function mainLoadScenario() {
 
 // 2. ACCOUNT LIFECYCLE SCENARIO
 export function accountLifecycleScenario() {
-  const baseUrl = 'https://automationexercise.com';
-  
+  const baseUrl = BASE_URL;
+
   // Generate unique credentials per execution
   const threadNum = exec.vu.idInTest;
   const timestamp = Date.now();
