@@ -27,14 +27,14 @@ namespace AutomationExercise.ApiTests.Base
             var email = System.Environment.GetEnvironmentVariable("AUTOMATION_USER_EMAIL") ?? config["DefaultUser:Email"];
             var password = System.Environment.GetEnvironmentVariable("AUTOMATION_USER_PASSWORD") ?? config["DefaultUser:Password"];
 
-            if (string.IsNullOrEmpty(email) || email == "testuser_api@example.com")
+            if (string.IsNullOrEmpty(email) || email == "your_email@example.com")
             {
-                throw new System.InvalidOperationException("Test execution email credential is not configured. Please set the AUTOMATION_USER_EMAIL environment variable or configure DefaultUser:Email in appsettings.json to a valid, registered automationexercise.com account.");
+                throw new System.InvalidOperationException("Test execution email credential is not configured. Please set the AUTOMATION_USER_EMAIL environment variable or configure DefaultUser:Email in appsettings.json to a valid non-personal email.");
             }
 
-            if (string.IsNullOrEmpty(password) || password == "placeholder_password")
+            if (string.IsNullOrEmpty(password) || password == "your_password")
             {
-                throw new System.InvalidOperationException("Test execution password credential is not configured. Please set the AUTOMATION_USER_PASSWORD environment variable or configure DefaultUser:Password in appsettings.json to match the registered account's password.");
+                throw new System.InvalidOperationException("Test execution password credential is not configured. Please set the AUTOMATION_USER_PASSWORD environment variable or configure DefaultUser:Password in appsettings.json to a valid non-personal password.");
             }
 
 
