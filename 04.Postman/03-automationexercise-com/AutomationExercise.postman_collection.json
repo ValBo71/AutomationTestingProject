@@ -472,7 +472,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123",
+                                    "value": "{{password}}",
                                     "type": "text"
                                 },
                                 {
@@ -640,7 +640,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123",
+                                    "value": "{{password}}",
                                     "type": "text"
                                 },
                                 {
@@ -761,7 +761,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123",
+                                    "value": "{{password}}",
                                     "type": "text"
                                 }
                             ]
@@ -980,7 +980,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123",
+                                    "value": "{{password}}",
                                     "type": "text"
                                 },
                                 {
@@ -1101,7 +1101,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123",
+                                    "value": "{{password}}",
                                     "type": "text"
                                 }
                             ]
@@ -1201,7 +1201,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123",
+                                    "value": "{{password}}",
                                     "type": "text"
                                 },
                                 {
@@ -1322,7 +1322,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123",
+                                    "value": "{{password}}",
                                     "type": "text"
                                 }
                             ]
