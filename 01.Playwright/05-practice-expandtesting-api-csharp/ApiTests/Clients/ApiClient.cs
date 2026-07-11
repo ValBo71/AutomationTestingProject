@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,18 +90,7 @@ namespace ApiTests.Clients
 
         public async Task<IAPIResponse> PostFormAsync(string endpoint, Dictionary<string, object> formData, Dictionary<string, string>? headers = null)
         {
-            var options = GetOptions(formData: formData, customHeaders: headers);
-            var sb = new StringBuilder();
-            foreach (var kvp in formData)
-            {
-                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
-            }
-
-            AllureHelper.AttachRequest("POST", endpoint, body: sb.ToString());
-            var response = await Request.PostAsync(endpoint, options);
-            var body = await response.TextAsync();
-            AllureHelper.AttachResponse(response.Status, body: body);
-            return response;
+            return await SendFormAsync("POST", endpoint, Request.PostAsync, formData, headers);
         }
 
         public async Task<IAPIResponse> PostJsonAsync(string endpoint, object jsonBody, Dictionary<string, string>? headers = null)
@@ -117,34 +107,12 @@ namespace ApiTests.Clients
 
         public async Task<IAPIResponse> PutFormAsync(string endpoint, Dictionary<string, object> formData, Dictionary<string, string>? headers = null)
         {
-            var options = GetOptions(formData: formData, customHeaders: headers);
-            var sb = new StringBuilder();
-            foreach (var kvp in formData)
-            {
-                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
-            }
-
-            AllureHelper.AttachRequest("PUT", endpoint, body: sb.ToString());
-            var response = await Request.PutAsync(endpoint, options);
-            var body = await response.TextAsync();
-            AllureHelper.AttachResponse(response.Status, body: body);
-            return response;
+            return await SendFormAsync("PUT", endpoint, Request.PutAsync, formData, headers);
         }
 
         public async Task<IAPIResponse> PatchFormAsync(string endpoint, Dictionary<string, object> formData, Dictionary<string, string>? headers = null)
         {
-            var options = GetOptions(formData: formData, customHeaders: headers);
-            var sb = new StringBuilder();
-            foreach (var kvp in formData)
-            {
-                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
-            }
-
-            AllureHelper.AttachRequest("PATCH", endpoint, body: sb.ToString());
-            var response = await Request.PatchAsync(endpoint, options);
-            var body = await response.TextAsync();
-            AllureHelper.AttachResponse(response.Status, body: body);
-            return response;
+            return await SendFormAsync("PATCH", endpoint, Request.PatchAsync, formData, headers);
         }
 
         public async Task<IAPIResponse> DeleteAsync(string endpoint, Dictionary<string, string>? headers = null)
@@ -152,6 +120,27 @@ namespace ApiTests.Clients
             var options = GetOptions(customHeaders: headers);
             AllureHelper.AttachRequest("DELETE", endpoint);
             var response = await Request.DeleteAsync(endpoint, options);
+            var body = await response.TextAsync();
+            AllureHelper.AttachResponse(response.Status, body: body);
+            return response;
+        }
+
+        private async Task<IAPIResponse> SendFormAsync(
+            string method,
+            string endpoint,
+            Func<string, APIRequestContextOptions, Task<IAPIResponse>> send,
+            Dictionary<string, object> formData,
+            Dictionary<string, string>? headers)
+        {
+            var options = GetOptions(formData: formData, customHeaders: headers);
+            var sb = new StringBuilder();
+            foreach (var kvp in formData)
+            {
+                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
+            }
+
+            AllureHelper.AttachRequest(method, endpoint, body: sb.ToString());
+            var response = await send(endpoint, options);
             var body = await response.TextAsync();
             AllureHelper.AttachResponse(response.Status, body: body);
             return response;

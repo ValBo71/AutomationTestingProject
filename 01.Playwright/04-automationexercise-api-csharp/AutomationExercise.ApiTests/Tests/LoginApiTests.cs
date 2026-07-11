@@ -28,8 +28,9 @@ namespace AutomationExercise.ApiTests.Tests
         public async Task ClassSetUp()
         {
             // Check if default user exists, if not, create it.
-            using var playwright = await Playwright.CreateAsync();
-            await using var context = await playwright.APIRequest.NewContextAsync(new APIRequestNewContextOptions
+            // Reuses the Playwright driver instance BaseApiTest.OneTimeSetUp already created (NUnit
+            // runs base-class OneTimeSetUp before the derived class's), instead of launching a second one.
+            await using var context = await PlaywrightInstance.APIRequest.NewContextAsync(new APIRequestNewContextOptions
             {
                 BaseURL = Settings.BaseUrl
             });
