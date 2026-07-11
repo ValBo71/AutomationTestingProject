@@ -24,9 +24,13 @@ jobs:
       - name: Setup k6
         uses: grafana/setup-k6-action@v1
 
-      - name: Run k6 Load Test (Smoke Test)
+      - name: Run k6 Load Test (Smoke Test) - Automation Exercise
         working-directory: 02-Performance-Tests/02-K6/01-Automation-Exercise
         run: k6 run -e USERS=2 -e RAMPUP=2s -e DURATION=10s k6_performance_test.js
+
+      - name: Run k6 Load Test (Smoke Test) - QuickPizza
+        working-directory: 02-Performance-Tests/02-K6/02-QuickPizza
+        run: k6 run -e USERS=2 -e RAMPUP=2s -e DURATION=10s -e REGISTRATION_USERS=1 k6_performance_test.js
 
   jmeter-tests:
     name: Run JMeter Load Tests
