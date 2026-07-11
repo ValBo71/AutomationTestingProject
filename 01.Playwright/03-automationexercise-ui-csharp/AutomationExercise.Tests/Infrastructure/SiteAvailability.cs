@@ -33,10 +33,16 @@ namespace AutomationExercise.Tests.Infrastructure
                     
                     return;
                 }
-                catch (System.Exception ex) when (attempt < maxAttempts)
+                catch (PlaywrightException ex) when (attempt < maxAttempts)
                 {
                     int delay = baseDelayMs * attempt;
-                    TestLog.Warn($"Navigation error: {ex.Message}. Retrying in {delay}ms...");
+                    TestLog.Warn($"Navigation Playwright error: {ex.Message}. Retrying in {delay}ms...");
+                    await page.WaitForTimeoutAsync(delay);
+                }
+                catch (TimeoutException ex) when (attempt < maxAttempts)
+                {
+                    int delay = baseDelayMs * attempt;
+                    TestLog.Warn($"Navigation timeout error: {ex.Message}. Retrying in {delay}ms...");
                     await page.WaitForTimeoutAsync(delay);
                 }
             }

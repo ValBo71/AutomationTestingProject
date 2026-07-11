@@ -74,10 +74,15 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task<bool> IsLoggedInUserVisibleAsync(string username)
         {
-            var loggedInText = Locator(CommonSelectors.LoggedInUserText);
-            await loggedInText.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            var text = await loggedInText.InnerTextAsync();
-            return text.Contains(username);
+            try
+            {
+                await Assertions.Expect(Locator(CommonSelectors.LoggedInUserText)).ToContainTextAsync(username);
+                return true;
+            }
+            catch (PlaywrightException)
+            {
+                return false;
+            }
         }
 
         public async Task SubscribeAsync(string email)
@@ -90,9 +95,15 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task<bool> IsSubscriptionSuccessVisibleAsync()
         {
-            var successMsg = Locator(HomePageSelectors.SubscriptionSuccessMessage);
-            await successMsg.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await successMsg.IsVisibleAsync();
+            try
+            {
+                await Assertions.Expect(Locator(HomePageSelectors.SubscriptionSuccessMessage)).ToBeVisibleAsync();
+                return true;
+            }
+            catch (PlaywrightException)
+            {
+                return false;
+            }
         }
 
         public async Task AddFirstRecommendedItemToCartAsync()
