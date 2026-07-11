@@ -10,6 +10,8 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.qameta.allure.restassured.AllureRestAssured;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 public class ApiClient {
@@ -63,6 +65,29 @@ public class ApiClient {
                 .body(body)
                 .when()
                 .put(endpoint)
+                .then()
+                .extract()
+                .response();
+    }
+
+    protected Response putJson(String endpoint, String paramName, Object paramValue, Object body) {
+        return given()
+                .spec(getRequestSpec())
+                .pathParam(paramName, paramValue)
+                .body(body)
+                .when()
+                .put(endpoint)
+                .then()
+                .extract()
+                .response();
+    }
+
+    protected Response get(String endpoint, Map<String, ?> queryParams) {
+        return given()
+                .spec(getRequestSpec())
+                .queryParams(queryParams)
+                .when()
+                .get(endpoint)
                 .then()
                 .extract()
                 .response();

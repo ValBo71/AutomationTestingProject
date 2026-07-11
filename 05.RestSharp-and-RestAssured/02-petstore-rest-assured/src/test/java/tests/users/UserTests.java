@@ -5,6 +5,7 @@ import helpers.RandomDataGenerator;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import models.requests.UserRequest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,17 @@ public class UserTests extends BaseApiTest {
                 RandomDataGenerator.generatePhone(),
                 0
         );
+    }
+
+    @AfterEach
+    void cleanupUser() {
+        // Best-effort: remove the user created in this test from the shared Swagger Petstore sandbox.
+        // Safe to call even if the test already deleted it or never actually created it.
+        try {
+            userApiClient.deleteUser(username);
+        } catch (Exception ignored) {
+            // Nothing to clean up, or the sandbox is unreachable - don't fail the test on cleanup.
+        }
     }
 
     @Test

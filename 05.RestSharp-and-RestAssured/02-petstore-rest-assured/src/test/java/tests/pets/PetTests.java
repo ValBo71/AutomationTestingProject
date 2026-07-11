@@ -5,6 +5,7 @@ import helpers.RandomDataGenerator;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import models.requests.PetRequest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,17 @@ public class PetTests extends BaseApiTest {
                 Collections.singletonList(new PetRequest.Tag(1, "friendly")),
                 "available"
         );
+    }
+
+    @AfterEach
+    void cleanupPet() {
+        // Best-effort: remove the pet created in this test from the shared Swagger Petstore sandbox.
+        // Safe to call even if the test already deleted it or never actually created it.
+        try {
+            petApiClient.deletePet(petId);
+        } catch (Exception ignored) {
+            // Nothing to clean up, or the sandbox is unreachable - don't fail the test on cleanup.
+        }
     }
 
     @Test
