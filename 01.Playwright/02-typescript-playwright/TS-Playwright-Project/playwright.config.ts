@@ -10,9 +10,9 @@ export default defineConfig({
   use: {
     baseURL: 'https://www.saucedemo.com',
     trace: 'on-first-retry',
-    headless: false, // Opens the browser by default
+    headless: !!process.env.CI, // Headed locally for debugging, headless in CI (no display server available)
     launchOptions: {
-      slowMo: 1000, // Slows down every action by 1 second to make steps visible
+      slowMo: process.env.CI ? 0 : 1000, // Slows down every action by 1 second locally to make steps visible
     },
   },
   projects: [
