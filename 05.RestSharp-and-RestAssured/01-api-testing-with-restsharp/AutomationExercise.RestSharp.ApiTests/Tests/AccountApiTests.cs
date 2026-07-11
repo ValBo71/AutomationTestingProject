@@ -181,6 +181,7 @@ namespace AutomationExercise.RestSharp.ApiTests.Tests
                 City = RandomDataGenerator.GenerateCity(),
                 MobileNumber = RandomDataGenerator.GenerateMobileNumber()
             };
+            _emailToCleanup = email;
             await AccountClient.CreateAccountAsync(createRequest);
 
             // Act - Delete user
@@ -192,6 +193,7 @@ namespace AutomationExercise.RestSharp.ApiTests.Tests
             var deleteBody = ResponseHelper.Deserialize<ApiMessageResponse>(deleteResponse);
             Assert.That(deleteBody.ResponseCode, Is.EqualTo(200));
             Assert.That(deleteBody.Message, Is.EqualTo(ExpectedMessages.AccountDeleted));
+            _emailToCleanup = null;
 
             // Verify account is gone
             var getResponse = await AccountClient.GetUserDetailByEmailAsync(email);

@@ -20,7 +20,7 @@ namespace AutomationExercise.RestSharp.ApiTests.Base
         {
             var options = new RestClientOptions(TestSettings.BaseUrl)
             {
-                MaxTimeout = TestSettings.TimeoutMilliseconds,
+                Timeout = TimeSpan.FromMilliseconds(TestSettings.TimeoutMilliseconds),
                 UserAgent = "RestSharp API Test Automation"
             };
 

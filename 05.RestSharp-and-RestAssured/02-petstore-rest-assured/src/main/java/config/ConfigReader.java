@@ -2,9 +2,12 @@ package config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 
 public class ConfigReader {
+    private static final Logger logger = LoggerFactory.getLogger(ConfigReader.class);
     private static JsonNode appSettings;
     private static JsonNode collectionVariables;
 
@@ -15,7 +18,7 @@ public class ConfigReader {
                 appSettings = mapper.readTree(appStream);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to load appsettings.json, falling back to defaults", e);
         }
 
         try (InputStream collStream = ConfigReader.class.getClassLoader().getResourceAsStream("collectionVariables.json")) {
@@ -23,7 +26,7 @@ public class ConfigReader {
                 collectionVariables = mapper.readTree(collStream);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Failed to load collectionVariables.json", e);
         }
     }
 

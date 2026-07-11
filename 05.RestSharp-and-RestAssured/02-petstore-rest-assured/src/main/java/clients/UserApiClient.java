@@ -3,7 +3,8 @@ package clients;
 import models.requests.UserRequest;
 import constants.ApiEndpoints;
 import io.restassured.response.Response;
-import static io.restassured.RestAssured.given;
+
+import java.util.Map;
 
 public class UserApiClient extends ApiClient {
     public Response createUser(UserRequest body) {
@@ -15,15 +16,7 @@ public class UserApiClient extends ApiClient {
     }
 
     public Response updateUser(String username, UserRequest body) {
-        return given()
-                .spec(getRequestSpec())
-                .pathParam("username", username)
-                .body(body)
-                .when()
-                .put(ApiEndpoints.USER_BY_USERNAME)
-                .then()
-                .extract()
-                .response();
+        return putJson(ApiEndpoints.USER_BY_USERNAME, "username", username, body);
     }
 
     public Response deleteUser(String username) {
@@ -31,15 +24,7 @@ public class UserApiClient extends ApiClient {
     }
 
     public Response loginUser(String username, String password) {
-        return given()
-                .spec(getRequestSpec())
-                .queryParam("username", username)
-                .queryParam("password", password)
-                .when()
-                .get(ApiEndpoints.USER_LOGIN)
-                .then()
-                .extract()
-                .response();
+        return get(ApiEndpoints.USER_LOGIN, Map.of("username", username, "password", password));
     }
 
     public Response logoutUser() {

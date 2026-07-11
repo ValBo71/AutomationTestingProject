@@ -1,6 +1,5 @@
 using System;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using NUnit.Framework;
 using RestSharp;
 
@@ -22,26 +21,6 @@ namespace AutomationExercise.RestSharp.ApiTests.Helpers
                 Assert.Fail($"Exception occurred during deserialization to {typeof(T).Name}: {ex.Message}. Content was: {response.Content}");
                 throw;
             }
-        }
-
-        public static int GetResponseCode(RestResponse response)
-        {
-            Assert.That(response.Content, Is.Not.Null.And.Not.Empty);
-            var node = JsonNode.Parse(response.Content!);
-            Assert.That(node, Is.Not.Null);
-            var codeNode = node!["responseCode"];
-            Assert.That(codeNode, Is.Not.Null, "JSON response does not contain 'responseCode' property.");
-            return codeNode!.GetValue<int>();
-        }
-
-        public static string GetMessage(RestResponse response)
-        {
-            Assert.That(response.Content, Is.Not.Null.And.Not.Empty);
-            var node = JsonNode.Parse(response.Content!);
-            Assert.That(node, Is.Not.Null);
-            var msgNode = node!["message"];
-            Assert.That(msgNode, Is.Not.Null, "JSON response does not contain 'message' property.");
-            return msgNode!.GetValue<string>();
         }
 
         public static string FormatJson(string json)
