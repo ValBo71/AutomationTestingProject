@@ -61,7 +61,7 @@ namespace AutomationExercise.Tests.Tests
                 {
                     await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
                 }
-                catch (System.Exception ex)
+                catch (PlaywrightException ex)
                 {
                     System.Console.WriteLine($"[Checkout UI Warning] Register/Login link did not appear: {ex.Message}. Retrying proceed to checkout...");
                     // Click Proceed to Checkout again
@@ -396,7 +396,7 @@ namespace AutomationExercise.Tests.Tests
                 {
                     await registerLoginLocator.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 5000 });
                 }
-                catch (System.Exception ex)
+                catch (PlaywrightException ex)
                 {
                     System.Console.WriteLine($"[Checkout UI Warning] Register/Login link did not appear: {ex.Message}. Retrying proceed to checkout...");
                     await cartPage.ClickProceedToCheckoutAsync();
