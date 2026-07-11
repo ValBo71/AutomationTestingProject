@@ -16,4 +16,8 @@ export class LoginPage extends BasePage {
     await this.page.locator(LoginSelectors.passwordInput).fill(password);
     await this.page.locator(LoginSelectors.loginButton).click();
   }
+
+  async getErrorMessageAsync(): Promise<string> {
+    return (await this.page.locator(LoginSelectors.errorMessage).innerText()).trim();
+  }
 }

@@ -30,10 +30,11 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: "01.Playwright/02-typescript-playwright/TS-Playwright-Project/package-lock.json"
 
       - name: Install Dependencies
-        run: npm install
-
+        run: npm ci
 
       - name: Install Playwright Browsers with OS Dependencies
         run: npx playwright install --with-deps
@@ -47,4 +48,12 @@ jobs:
         with:
           name: playwright-report-ts
           path: "01.Playwright/02-typescript-playwright/TS-Playwright-Project/playwright-report/"
+          if-no-files-found: ignore
+
+      - name: Upload Playwright Traces & Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-ts
+          path: "01.Playwright/02-typescript-playwright/TS-Playwright-Project/test-results/"
           if-no-files-found: ignore
