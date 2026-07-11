@@ -1,16 +1,12 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class SignupPage
+    public class SignupPage : BasePage
     {
-        private readonly IPage _page;
-
-        public SignupPage(IPage page)
+        public SignupPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         // Form Fields Selectors
@@ -50,40 +46,40 @@ namespace AutomationExercise.Tests.Pages
             string company = "",
             string address2 = "")
         {
-            await _page.ClickAsync(GenderMaleRadio);
-            await _page.FillAsync(PasswordInput, password);
-            await _page.SelectOptionAsync(DaysSelect, new[] { day });
-            await _page.SelectOptionAsync(MonthsSelect, new[] { month });
-            await _page.SelectOptionAsync(YearsSelect, new[] { year });
+            await Locator(GenderMaleRadio).ClickAsync();
+            await Locator(PasswordInput).FillAsync(password);
+            await Locator(DaysSelect).SelectOptionAsync(day);
+            await Locator(MonthsSelect).SelectOptionAsync(month);
+            await Locator(YearsSelect).SelectOptionAsync(year);
             
-            await _page.CheckAsync(NewsletterCheckbox);
-            await _page.CheckAsync(OptinCheckbox);
+            await Locator(NewsletterCheckbox).CheckAsync();
+            await Locator(OptinCheckbox).CheckAsync();
 
-            await _page.FillAsync(FirstNameInput, firstName);
-            await _page.FillAsync(LastNameInput, lastName);
+            await Locator(FirstNameInput).FillAsync(firstName);
+            await Locator(LastNameInput).FillAsync(lastName);
             
             if (!string.IsNullOrEmpty(company))
             {
-                await _page.FillAsync(CompanyInput, company);
+                await Locator(CompanyInput).FillAsync(company);
             }
             
-            await _page.FillAsync(Address1Input, address1);
+            await Locator(Address1Input).FillAsync(address1);
             
             if (!string.IsNullOrEmpty(address2))
             {
-                await _page.FillAsync(Address2Input, address2);
+                await Locator(Address2Input).FillAsync(address2);
             }
             
-            await _page.SelectOptionAsync(CountrySelect, new[] { country });
-            await _page.FillAsync(StateInput, state);
-            await _page.FillAsync(CityInput, city);
-            await _page.FillAsync(ZipcodeInput, zipcode);
-            await _page.FillAsync(MobileNumberInput, mobileNumber);
+            await Locator(CountrySelect).SelectOptionAsync(country);
+            await Locator(StateInput).FillAsync(state);
+            await Locator(CityInput).FillAsync(city);
+            await Locator(ZipcodeInput).FillAsync(zipcode);
+            await Locator(MobileNumberInput).FillAsync(mobileNumber);
         }
 
         public async Task ClickCreateAccountAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CreateAccountButton);
+            await Locator(CreateAccountButton).ClickAsync();
         }
     }
 }

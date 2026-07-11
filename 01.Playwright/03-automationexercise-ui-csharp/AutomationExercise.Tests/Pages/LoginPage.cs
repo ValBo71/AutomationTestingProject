@@ -1,48 +1,46 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class LoginPage
+    public class LoginPage : BasePage
     {
-        private readonly IPage _page;
-
-        public LoginPage(IPage page)
+        public LoginPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         public async Task LoginAsync(string email, string password)
         {
-            await _page.FillAsync(LoginPageSelectors.LoginEmailInput, email);
-            await _page.FillAsync(LoginPageSelectors.LoginPasswordInput, password);
-            await _page.ClickWithOverloadCheckAsync(LoginPageSelectors.LoginButton);
+            await Locator(LoginPageSelectors.LoginEmailInput).FillAsync(email);
+            await Locator(LoginPageSelectors.LoginPasswordInput).FillAsync(password);
+            await Locator(LoginPageSelectors.LoginButton).ClickAsync();
         }
 
         public async Task SignUpInitAsync(string name, string email)
         {
-            await _page.FillAsync(LoginPageSelectors.SignupNameInput, name);
-            await _page.FillAsync(LoginPageSelectors.SignupEmailInput, email);
-            await _page.ClickWithOverloadCheckAsync(LoginPageSelectors.SignupButton);
+            await Locator(LoginPageSelectors.SignupNameInput).FillAsync(name);
+            await Locator(LoginPageSelectors.SignupEmailInput).FillAsync(email);
+            await Locator(LoginPageSelectors.SignupButton).ClickAsync();
         }
 
         public async Task<string> GetLoginErrorTextAsync()
         {
-            await _page.WaitForSelectorAsync(LoginPageSelectors.LoginErrorMessage);
-            return await _page.InnerTextAsync(LoginPageSelectors.LoginErrorMessage);
+            var errorMsg = Locator(LoginPageSelectors.LoginErrorMessage);
+            await errorMsg.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await errorMsg.InnerTextAsync();
         }
 
         public async Task<string> GetSignupErrorTextAsync()
         {
-            await _page.WaitForSelectorAsync(LoginPageSelectors.SignupErrorMessage);
-            return await _page.InnerTextAsync(LoginPageSelectors.SignupErrorMessage);
+            var errorMsg = Locator(LoginPageSelectors.SignupErrorMessage);
+            await errorMsg.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await errorMsg.InnerTextAsync();
         }
         
         public async Task<bool> IsSignupFormVisibleAsync()
         {
-            return await _page.IsVisibleAsync(LoginPageSelectors.SignupNameInput);
+            return await Locator(LoginPageSelectors.SignupNameInput).IsVisibleAsync();
         }
     }
 }

@@ -4,8 +4,6 @@ using NUnit.Framework.Interfaces;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Drivers;
 using AutomationExercise.Tests.Helpers;
-using Allure.Net.Commons;
-using Allure.NUnit;
 using System.IO;
 
 namespace AutomationExercise.Tests.Base
@@ -25,25 +23,105 @@ namespace AutomationExercise.Tests.Base
             Browser = driver.browser;
             Context = driver.context;
             Page = driver.page;
+
+            await Context.Tracing.StartAsync(new()
+            {
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true
+            });
         }
 
         [TearDown]
         public async Task TearDown()
         {
-            if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
-            {
-                var testName = TestContext.CurrentContext.Test.Name;
-                var screenshotPath = await ScreenshotHelper.TakeScreenshotAsync(Page, testName);
+            var testFailed = TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed;
+            var testName = TestContext.CurrentContext.Test.Name;
 
-                if (!string.IsNullOrEmpty(screenshotPath) && File.Exists(screenshotPath))
+            if (testFailed)
+            {
+                try
                 {
-                    AllureHelper.AddScreenshotAttachment("Failure Screenshot", screenshotPath);
+                    var screenshotPath = await ScreenshotHelper.TakeScreenshotAsync(Page, testName);
+                    if (!string.IsNullOrEmpty(screenshotPath) && File.Exists(screenshotPath))
+                    {
+                        AllureHelper.AddScreenshotAttachment("Failure Screenshot", screenshotPath);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Infrastructure.TestLog.Warn($"Failed to take failure screenshot: {ex.Message}");
+                }
+
+                try
+                {
+                    var tracesDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "TestResults", "traces");
+                    Directory.CreateDirectory(tracesDir);
+                    var tracePath = Path.Combine(tracesDir, $"{testName}.zip");
+                    await Context.Tracing.StopAsync(new()
+                    {
+                        Path = tracePath
+                    });
+
+                    if (File.Exists(tracePath))
+                    {
+                        AllureHelper.AddTraceAttachment("Failure Playwright Trace", tracePath);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Infrastructure.TestLog.Warn($"Failed to save Playwright trace: {ex.Message}");
+                }
+            }
+            else
+            {
+                try
+                {
+                    await Context.Tracing.StopAsync();
+                }
+                catch
+                {
+                    // Ignore trace stop failures on success
                 }
             }
 
-            await Context.CloseAsync();
-            await Browser.CloseAsync();
-            Playwright.Dispose();
+            // Harden teardown against leaks
+            try
+            {
+                if (Context != null)
+                {
+                    await Context.CloseAsync();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Infrastructure.TestLog.Warn($"Error closing browser context: {ex.Message}");
+            }
+            finally
+            {
+                try
+                {
+                    if (Browser != null)
+                    {
+                        await Browser.CloseAsync();
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Infrastructure.TestLog.Warn($"Error closing browser: {ex.Message}");
+                }
+                finally
+                {
+                    try
+                    {
+                        Playwright?.Dispose();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Infrastructure.TestLog.Warn($"Error disposing Playwright: {ex.Message}");
+                    }
+                }
+            }
         }
     }
 }

@@ -1,41 +1,37 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class CheckoutPage
+    public class CheckoutPage : BasePage
     {
-        private readonly IPage _page;
-
-        public CheckoutPage(IPage page)
+        public CheckoutPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         public async Task<string> GetDeliveryAddressTextAsync()
         {
-            await _page.CheckAndReloadIfOverloadedAsync();
-            await _page.WaitForSelectorAsync(CartPageSelectors.AddressDeliveryList);
-            return await _page.InnerTextAsync(CartPageSelectors.AddressDeliveryList);
+            var deliveryList = Locator(CartPageSelectors.AddressDeliveryList);
+            await deliveryList.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await deliveryList.InnerTextAsync();
         }
 
         public async Task<string> GetBillingAddressTextAsync()
         {
-            await _page.CheckAndReloadIfOverloadedAsync();
-            await _page.WaitForSelectorAsync(CartPageSelectors.AddressInvoiceList);
-            return await _page.InnerTextAsync(CartPageSelectors.AddressInvoiceList);
+            var invoiceList = Locator(CartPageSelectors.AddressInvoiceList);
+            await invoiceList.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await invoiceList.InnerTextAsync();
         }
 
         public async Task EnterCommentAsync(string comment)
         {
-            await _page.FillAsync(CartPageSelectors.CheckoutCommentInput, comment);
+            await Locator(CartPageSelectors.CheckoutCommentInput).FillAsync(comment);
         }
 
         public async Task ClickPlaceOrderAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(CartPageSelectors.PlaceOrderButton);
+            await Locator(CartPageSelectors.PlaceOrderButton).ClickAsync();
         }
     }
 }

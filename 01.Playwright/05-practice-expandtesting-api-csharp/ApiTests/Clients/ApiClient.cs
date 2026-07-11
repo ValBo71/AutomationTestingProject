@@ -76,24 +76,16 @@ namespace ApiTests.Clients
                 options.Params = queryParams;
             }
 
-            var url = endpoint;
-            if (queryParams != null)
-            {
-                var sb = new StringBuilder();
-                foreach (var param in queryParams)
-                {
-                    sb.Append(sb.Length == 0 ? "?" : "&");
-                    sb.Append($"{param.Key}={param.Value}");
-                }
-                url += sb.ToString();
-            }
-
-            AllureHelper.AttachRequest("GET", url);
             var response = await Request.GetAsync(endpoint, options);
+            
+            // Log the actual resolved URL from the Playwright response so query values are properly encoded
+            AllureHelper.AttachRequest("GET", response.Url);
+            
             var body = await response.TextAsync();
             AllureHelper.AttachResponse(response.Status, body: body);
             return response;
         }
+
 
         public async Task<IAPIResponse> PostFormAsync(string endpoint, Dictionary<string, object> formData, Dictionary<string, string>? headers = null)
         {

@@ -4,16 +4,16 @@ namespace AutomationExercise.Tests.Helpers
 {
     public static class RandomDataGenerator
     {
-        private static readonly Random _random = new Random();
-
         public static string GenerateEmail(string prefix = "qa_user")
         {
-            return $"{prefix}_{DateTime.Now.Ticks}_{_random.Next(1000, 9999)}@example.com";
+            var unique = Guid.NewGuid().ToString("N").Substring(0, 10);
+            return $"{prefix}_{unique}_{Random.Shared.Next(1000, 9999)}@example.com";
         }
 
         public static string GenerateName(string prefix = "User")
         {
-            return $"{prefix}_{_random.Next(1000, 9999)}";
+            var unique = Guid.NewGuid().ToString("N").Substring(0, 8);
+            return $"{prefix}_{unique}_{Random.Shared.Next(1000, 9999)}";
         }
     }
 }

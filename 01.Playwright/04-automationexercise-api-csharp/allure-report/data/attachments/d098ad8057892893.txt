@@ -1,6 +1,0 @@
-Method: POST
-URL: /api/verifyLogin
-Body / Parameters:
-email: nonexistentuser123@invalid.com
-password: wrongpass
-

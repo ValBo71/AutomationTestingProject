@@ -1,5 +1,0 @@
-Method: POST
-URL: /api/searchProduct
-Body / Parameters:
-search_product: tshirt
-

@@ -1,2 +1,0 @@
-Method: DELETE
-URL: /api/verifyLogin

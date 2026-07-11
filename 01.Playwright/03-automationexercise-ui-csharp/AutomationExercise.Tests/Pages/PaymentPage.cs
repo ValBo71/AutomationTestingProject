@@ -1,17 +1,13 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
-using AutomationExercise.Tests.Helpers;
 
 namespace AutomationExercise.Tests.Pages
 {
-    public class PaymentPage
+    public class PaymentPage : BasePage
     {
-        private readonly IPage _page;
-
-        public PaymentPage(IPage page)
+        public PaymentPage(IPage page) : base(page)
         {
-            _page = page;
         }
 
         // Selectors
@@ -29,30 +25,30 @@ namespace AutomationExercise.Tests.Pages
             string expirationMonth,
             string expirationYear)
         {
-            await _page.FillAsync(NameOnCardInput, nameOnCard);
-            await _page.FillAsync(CardNumberInput, cardNumber);
-            await _page.FillAsync(CvcInput, cvc);
-            await _page.FillAsync(ExpiryMonthInput, expirationMonth);
-            await _page.FillAsync(ExpiryYearInput, expirationYear);
+            await Locator(NameOnCardInput).FillAsync(nameOnCard);
+            await Locator(CardNumberInput).FillAsync(cardNumber);
+            await Locator(CvcInput).FillAsync(cvc);
+            await Locator(ExpiryMonthInput).FillAsync(expirationMonth);
+            await Locator(ExpiryYearInput).FillAsync(expirationYear);
         }
 
         public async Task ClickPayAndConfirmOrderAsync()
         {
-            await _page.ClickWithOverloadCheckAsync(PayButton);
+            await Locator(PayButton).ClickAsync();
         }
 
         public async Task<bool> IsOrderSuccessMessageVisibleAsync()
         {
-            await _page.CheckAndReloadIfOverloadedAsync();
-            await _page.WaitForSelectorAsync(CartPageSelectors.OrderSuccessMessage);
-            return await _page.IsVisibleAsync(CartPageSelectors.OrderSuccessMessage);
+            var successMsg = Locator(CartPageSelectors.OrderSuccessMessage);
+            await successMsg.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            return await successMsg.IsVisibleAsync();
         }
 
         public async Task<string> ClickDownloadInvoiceAsync(string directory)
         {
-            var download = await _page.RunAndWaitForDownloadAsync(async () =>
+            var download = await Page.RunAndWaitForDownloadAsync(async () =>
             {
-                await _page.ClickAsync(CartPageSelectors.DownloadInvoiceButton);
+                await Locator(CartPageSelectors.DownloadInvoiceButton).ClickAsync();
             });
 
             if (!System.IO.Directory.Exists(directory))
@@ -66,8 +62,7 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task ClickContinueAsync()
         {
-            await _page.CheckAndReloadIfOverloadedAsync();
-            await _page.ClickWithOverloadCheckAsync(CartPageSelectors.OrderContinueButton);
+            await Locator(CartPageSelectors.OrderContinueButton).ClickAsync();
         }
     }
 }
