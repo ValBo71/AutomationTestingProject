@@ -19,7 +19,7 @@ namespace AutomationExercise.Tests.Tests
     public class SubscriptionTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.minor)]
         [Description("Test Case 10: Verify Subscription in home page")]
         public async Task Subscription_OnHomePage_ShouldSubscribeSuccessfully()
@@ -40,7 +40,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.minor)]
         [Description("Test Case 11: Verify Subscription in Cart page")]
         public async Task Subscription_OnCartPage_ShouldSubscribeSuccessfully()

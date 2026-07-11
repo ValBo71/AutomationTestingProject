@@ -19,7 +19,7 @@ namespace AutomationExercise.Tests.Tests
     public class CartTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 12: Add Products in Cart")]
         public async Task AddProductsToCart_ShouldSucceed()
@@ -63,7 +63,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 13: Verify Product quantity in Cart")]
         public async Task VerifyProductQuantityInCart_ShouldSucceed()
@@ -94,7 +94,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 17: Remove Products From Cart")]
         public async Task RemoveProductFromCart_ShouldSucceed()
@@ -123,7 +123,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 20: Search Products and Verify Cart After Login")]
         public async Task SearchProducts_AndVerifyCart_AfterLogin()
@@ -162,6 +162,7 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
+                AccountPendingCleanup = true;
                 await homePage.ClickLogoutAsync();
             });
 
@@ -195,11 +196,12 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 22: Add to cart from Recommended items")]
         public async Task AddToCart_FromRecommendedItems_ShouldSucceed()

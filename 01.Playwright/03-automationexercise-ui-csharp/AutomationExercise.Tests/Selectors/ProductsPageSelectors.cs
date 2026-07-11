@@ -6,11 +6,14 @@ namespace AutomationExercise.Tests.Selectors
         public const string SearchButton = "#submit_search";
         public const string ProductsHeader = ".features_items h2.title";
         public const string ProductListItems = ".single-products";
-        public const string ViewProductButton = "a:has-text('View Product')";
-        public const string FirstProductViewButton = "a[href='/product_details/1']";
         public const string ModalViewCartButton = "p.text-center a:has-text('View Cart')";
         public const string ModalContinueShoppingButton = "button.close-modal";
-        
+        public const string ProductsTitle = "h2.title.text-center";
+        public const string CategoryWomenLink = "a[href='#Women']";
+        public const string CategoryWomenDressLink = "a[href='/category_products/1']";
+        public const string CategoryMenLink = "a[href='#Men']";
+        public const string CategoryMenTshirtsLink = "a[href='/category_products/3']";
+
         // Product Details
         public const string DetailProductName = "div.product-information h2";
         public const string DetailProductCategory = "div.product-information p:has-text('Category:')";

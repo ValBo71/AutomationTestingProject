@@ -10,14 +10,6 @@ namespace AutomationExercise.Tests.Pages
         {
         }
 
-        // Selectors
-        public const string NameOnCardInput = "input[data-qa='name-on-card']";
-        public const string CardNumberInput = "input[data-qa='card-number']";
-        public const string CvcInput = "input[data-qa='cvc']";
-        public const string ExpiryMonthInput = "input[data-qa='expiry-month']";
-        public const string ExpiryYearInput = "input[data-qa='expiry-year']";
-        public const string PayButton = "button[data-qa='pay-button']";
-
         public async Task EnterPaymentDetailsAsync(
             string nameOnCard,
             string cardNumber,
@@ -25,23 +17,21 @@ namespace AutomationExercise.Tests.Pages
             string expirationMonth,
             string expirationYear)
         {
-            await Locator(NameOnCardInput).FillAsync(nameOnCard);
-            await Locator(CardNumberInput).FillAsync(cardNumber);
-            await Locator(CvcInput).FillAsync(cvc);
-            await Locator(ExpiryMonthInput).FillAsync(expirationMonth);
-            await Locator(ExpiryYearInput).FillAsync(expirationYear);
+            await Locator(PaymentPageSelectors.NameOnCardInput).FillAsync(nameOnCard);
+            await Locator(PaymentPageSelectors.CardNumberInput).FillAsync(cardNumber);
+            await Locator(PaymentPageSelectors.CvcInput).FillAsync(cvc);
+            await Locator(PaymentPageSelectors.ExpiryMonthInput).FillAsync(expirationMonth);
+            await Locator(PaymentPageSelectors.ExpiryYearInput).FillAsync(expirationYear);
         }
 
         public async Task ClickPayAndConfirmOrderAsync()
         {
-            await Locator(PayButton).ClickAsync();
+            await Locator(PaymentPageSelectors.PayButton).ClickAsync();
         }
 
         public async Task<bool> IsOrderSuccessMessageVisibleAsync()
         {
-            var successMsg = Locator(CartPageSelectors.OrderSuccessMessage);
-            await successMsg.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await successMsg.IsVisibleAsync();
+            return await IsVisibleAfterWaitAsync(CartPageSelectors.OrderSuccessMessage);
         }
 
         public async Task<string> ClickDownloadInvoiceAsync(string directory)

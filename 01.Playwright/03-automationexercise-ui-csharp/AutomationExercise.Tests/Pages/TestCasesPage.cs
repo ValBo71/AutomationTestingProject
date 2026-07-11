@@ -14,9 +14,7 @@ namespace AutomationExercise.Tests.Pages
         public async Task<bool> IsTestCasesPageLoadedAsync()
         {
             await Page.WaitForURLAsync("**/test_cases");
-            var header = Locator(TestCasesHeader);
-            await header.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await header.IsVisibleAsync();
+            return await IsVisibleAfterWaitAsync(TestCasesHeader);
         }
     }
 }

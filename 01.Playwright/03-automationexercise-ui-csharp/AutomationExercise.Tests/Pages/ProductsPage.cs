@@ -41,21 +41,9 @@ namespace AutomationExercise.Tests.Pages
             await Locator($"a[href='/product_details/{productId}']").ClickAsync();
         }
 
-        public async Task AddFirstProductToCartAsync()
-        {
-            var locator = Locator("a.add-to-cart[data-product-id='1']").First;
-            await locator.ScrollIntoViewIfNeededAsync();
-            await locator.ClickAsync();
-            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).WaitForAsync(new() { State = WaitForSelectorState.Visible });
-        }
+        public async Task AddFirstProductToCartAsync() => await AddProductToCartByIdAsync(1);
 
-        public async Task AddSecondProductToCartAsync()
-        {
-            var locator = Locator("a.add-to-cart[data-product-id='2']").First;
-            await locator.ScrollIntoViewIfNeededAsync();
-            await locator.ClickAsync();
-            await Locator(ProductsPageSelectors.ModalContinueShoppingButton).WaitForAsync(new() { State = WaitForSelectorState.Visible });
-        }
+        public async Task AddSecondProductToCartAsync() => await AddProductToCartByIdAsync(2);
 
         public async Task AddProductToCartByIdAsync(int productId)
         {
@@ -85,27 +73,27 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task ClickCategoryWomenAsync()
         {
-            await Locator("a[href='#Women']").ClickAsync();
+            await Locator(ProductsPageSelectors.CategoryWomenLink).ClickAsync();
         }
 
         public async Task ClickCategoryWomenDressAsync()
         {
-            await Locator("a[href='/category_products/1']").ClickAsync();
+            await Locator(ProductsPageSelectors.CategoryWomenDressLink).ClickAsync();
         }
 
         public async Task ClickCategoryMenAsync()
         {
-            await Locator("a[href='#Men']").ClickAsync();
+            await Locator(ProductsPageSelectors.CategoryMenLink).ClickAsync();
         }
 
         public async Task ClickCategoryMenTshirtsAsync()
         {
-            await Locator("a[href='/category_products/3']").ClickAsync();
+            await Locator(ProductsPageSelectors.CategoryMenTshirtsLink).ClickAsync();
         }
 
         public async Task<string> GetProductsTitleTextAsync()
         {
-            var title = Locator("h2.title.text-center");
+            var title = Locator(ProductsPageSelectors.ProductsTitle);
             await title.WaitForAsync(new() { State = WaitForSelectorState.Visible });
             return await title.InnerTextAsync();
         }

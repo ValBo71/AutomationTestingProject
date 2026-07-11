@@ -79,8 +79,9 @@ namespace AutomationExercise.Tests.Pages
                 await Assertions.Expect(Locator(CommonSelectors.LoggedInUserText)).ToContainTextAsync(username);
                 return true;
             }
-            catch (PlaywrightException)
+            catch (PlaywrightException ex) when (!ex.Message.Contains("closed", System.StringComparison.OrdinalIgnoreCase))
             {
+                // Assertion timed out because the element genuinely never appeared - not a crash/closed page.
                 return false;
             }
         }
@@ -100,8 +101,9 @@ namespace AutomationExercise.Tests.Pages
                 await Assertions.Expect(Locator(HomePageSelectors.SubscriptionSuccessMessage)).ToBeVisibleAsync();
                 return true;
             }
-            catch (PlaywrightException)
+            catch (PlaywrightException ex) when (!ex.Message.Contains("closed", System.StringComparison.OrdinalIgnoreCase))
             {
+                // Assertion timed out because the element genuinely never appeared - not a crash/closed page.
                 return false;
             }
         }

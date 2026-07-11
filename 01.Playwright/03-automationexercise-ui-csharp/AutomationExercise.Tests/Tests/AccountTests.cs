@@ -19,7 +19,7 @@ namespace AutomationExercise.Tests.Tests
     public class AccountTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 1: Register User")]
         public async Task RegisterUser_ShouldSucceed()
@@ -68,6 +68,7 @@ namespace AutomationExercise.Tests.Tests
             {
                 Assert.IsTrue(await createdPage.IsAccountCreatedVisibleAsync(), "'ACCOUNT CREATED!' header not visible.");
                 await createdPage.ClickContinueAsync();
+                AccountPendingCleanup = true;
             });
 
             await AllureHelper.StepAsync("Verify 'Logged in as username' is visible", async () =>
@@ -80,11 +81,12 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickDeleteAccountAsync();
                 Assert.IsTrue(await deletedPage.IsAccountDeletedVisibleAsync(), "'ACCOUNT DELETED!' header not visible.");
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 5: Register User with existing email")]
         public async Task RegisterUser_WithExistingEmail_ShouldShowError()
@@ -93,9 +95,11 @@ namespace AutomationExercise.Tests.Tests
             var loginPage = new LoginPage(Page);
             var signupPage = new SignupPage(Page);
             var createdPage = new AccountCreatedPage(Page);
+            var deletedPage = new AccountDeletedPage(Page);
 
             var duplicateEmail = RandomDataGenerator.GenerateEmail();
             var username = "DupUser_" + System.Guid.NewGuid().ToString().Substring(0, 5);
+            var password = "Password123!";
 
             await AllureHelper.StepAsync("Register a user first with the email", async () =>
             {
@@ -103,7 +107,7 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickLoginSignupAsync();
                 await loginPage.SignUpInitAsync(username, duplicateEmail);
                 await signupPage.FillSignupDetailsAsync(
-                    password: "Password123!",
+                    password: password,
                     day: "1",
                     month: "January",
                     year: "1990",
@@ -118,7 +122,8 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                
+                AccountPendingCleanup = true;
+
                 // Logout to clear session
                 await homePage.ClickLogoutAsync();
             });
@@ -129,6 +134,14 @@ namespace AutomationExercise.Tests.Tests
                 await loginPage.SignUpInitAsync(username, duplicateEmail);
                 var errorText = await loginPage.GetSignupErrorTextAsync();
                 Assert.AreEqual("Email Address already exist!", errorText, "Incorrect error message for duplicate email signup.");
+            });
+
+            await AllureHelper.StepAsync("Clean up: log back in as the first user and delete the account", async () =>
+            {
+                await loginPage.LoginAsync(duplicateEmail, password);
+                await homePage.ClickDeleteAccountAsync();
+                await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
     }

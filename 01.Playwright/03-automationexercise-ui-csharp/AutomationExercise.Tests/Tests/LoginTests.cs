@@ -19,7 +19,7 @@ namespace AutomationExercise.Tests.Tests
     public class LoginTests : BaseTest
     {
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 2: Login User with correct email and password")]
         public async Task LoginUser_WithCorrectCredentials_ShouldSucceed()
@@ -55,7 +55,8 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                
+                AccountPendingCleanup = true;
+
                 // Logout to clear the session so we can test Login
                 await homePage.ClickLogoutAsync();
             });
@@ -74,11 +75,12 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 3: Login User with incorrect email and password")]
         public async Task LoginUser_WithIncorrectCredentials_ShouldShowError()
@@ -101,7 +103,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(3)]
+        [Retry(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 4: Logout User")]
         public async Task LogoutUser_ShouldSucceed()
@@ -137,6 +139,7 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
+                AccountPendingCleanup = true;
                 await homePage.ClickLogoutAsync();
             });
 
@@ -158,6 +161,7 @@ namespace AutomationExercise.Tests.Tests
                 await loginPage.LoginAsync(randomEmail, password);
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
+                AccountPendingCleanup = false;
             });
         }
     }

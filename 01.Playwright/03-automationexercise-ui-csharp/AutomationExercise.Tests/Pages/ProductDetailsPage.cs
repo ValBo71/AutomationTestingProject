@@ -75,9 +75,7 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task<bool> IsReviewSuccessAlertVisibleAsync()
         {
-            var successAlert = Locator(ProductsPageSelectors.ReviewSuccessAlert);
-            await successAlert.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            return await successAlert.IsVisibleAsync();
+            return await IsVisibleAfterWaitAsync(ProductsPageSelectors.ReviewSuccessAlert);
         }
     }
 }

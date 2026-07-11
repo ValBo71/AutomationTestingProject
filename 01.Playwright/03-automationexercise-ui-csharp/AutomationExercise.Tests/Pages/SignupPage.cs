@@ -1,5 +1,6 @@
 using Microsoft.Playwright;
 using System.Threading.Tasks;
+using AutomationExercise.Tests.Selectors;
 
 namespace AutomationExercise.Tests.Pages
 {
@@ -8,27 +9,6 @@ namespace AutomationExercise.Tests.Pages
         public SignupPage(IPage page) : base(page)
         {
         }
-
-        // Form Fields Selectors
-        public const string GenderMaleRadio = "#id_gender1";
-        public const string GenderFemaleRadio = "#id_gender2";
-        public const string PasswordInput = "#password";
-        public const string DaysSelect = "#days";
-        public const string MonthsSelect = "#months";
-        public const string YearsSelect = "#years";
-        public const string NewsletterCheckbox = "#newsletter";
-        public const string OptinCheckbox = "#optin";
-        public const string FirstNameInput = "#first_name";
-        public const string LastNameInput = "#last_name";
-        public const string CompanyInput = "#company";
-        public const string Address1Input = "#address1";
-        public const string Address2Input = "#address2";
-        public const string CountrySelect = "#country";
-        public const string StateInput = "#state";
-        public const string CityInput = "#city";
-        public const string ZipcodeInput = "#zipcode";
-        public const string MobileNumberInput = "#mobile_number";
-        public const string CreateAccountButton = "button[data-qa='create-account']";
 
         public async Task FillSignupDetailsAsync(
             string password,
@@ -46,40 +26,40 @@ namespace AutomationExercise.Tests.Pages
             string company = "",
             string address2 = "")
         {
-            await Locator(GenderMaleRadio).ClickAsync();
-            await Locator(PasswordInput).FillAsync(password);
-            await Locator(DaysSelect).SelectOptionAsync(day);
-            await Locator(MonthsSelect).SelectOptionAsync(month);
-            await Locator(YearsSelect).SelectOptionAsync(year);
-            
-            await Locator(NewsletterCheckbox).CheckAsync();
-            await Locator(OptinCheckbox).CheckAsync();
+            await Locator(SignupPageSelectors.GenderMaleRadio).ClickAsync();
+            await Locator(SignupPageSelectors.PasswordInput).FillAsync(password);
+            await Locator(SignupPageSelectors.DaysSelect).SelectOptionAsync(day);
+            await Locator(SignupPageSelectors.MonthsSelect).SelectOptionAsync(month);
+            await Locator(SignupPageSelectors.YearsSelect).SelectOptionAsync(year);
 
-            await Locator(FirstNameInput).FillAsync(firstName);
-            await Locator(LastNameInput).FillAsync(lastName);
-            
+            await Locator(SignupPageSelectors.NewsletterCheckbox).CheckAsync();
+            await Locator(SignupPageSelectors.OptinCheckbox).CheckAsync();
+
+            await Locator(SignupPageSelectors.FirstNameInput).FillAsync(firstName);
+            await Locator(SignupPageSelectors.LastNameInput).FillAsync(lastName);
+
             if (!string.IsNullOrEmpty(company))
             {
-                await Locator(CompanyInput).FillAsync(company);
+                await Locator(SignupPageSelectors.CompanyInput).FillAsync(company);
             }
-            
-            await Locator(Address1Input).FillAsync(address1);
-            
+
+            await Locator(SignupPageSelectors.Address1Input).FillAsync(address1);
+
             if (!string.IsNullOrEmpty(address2))
             {
-                await Locator(Address2Input).FillAsync(address2);
+                await Locator(SignupPageSelectors.Address2Input).FillAsync(address2);
             }
-            
-            await Locator(CountrySelect).SelectOptionAsync(country);
-            await Locator(StateInput).FillAsync(state);
-            await Locator(CityInput).FillAsync(city);
-            await Locator(ZipcodeInput).FillAsync(zipcode);
-            await Locator(MobileNumberInput).FillAsync(mobileNumber);
+
+            await Locator(SignupPageSelectors.CountrySelect).SelectOptionAsync(country);
+            await Locator(SignupPageSelectors.StateInput).FillAsync(state);
+            await Locator(SignupPageSelectors.CityInput).FillAsync(city);
+            await Locator(SignupPageSelectors.ZipcodeInput).FillAsync(zipcode);
+            await Locator(SignupPageSelectors.MobileNumberInput).FillAsync(mobileNumber);
         }
 
         public async Task ClickCreateAccountAsync()
         {
-            await Locator(CreateAccountButton).ClickAsync();
+            await Locator(SignupPageSelectors.CreateAccountButton).ClickAsync();
         }
     }
 }
