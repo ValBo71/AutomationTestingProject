@@ -4,171 +4,160 @@
 [![Playwright API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml)
 [![Expand Testing API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml)
 [![Playwright TS UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml)
+[![the-internet UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml)
 [![Performance Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml)
 
-A professional repository containing automated testing solutions. It demonstrates modern web, API, and performance testing frameworks along with continuous integration (CI) pipelines using industry-standard tools and design patterns.
+Test automation across five stacks — **C#, TypeScript, Java, Postman/Newman and
+JMeter/k6** — covering UI, API, contract, GUI-image and performance testing,
+with GitHub Actions pipelines on the suites that run unattended.
+
+Roughly **250 tests** in total. Every suite runs against a public demo system, so
+anyone can clone it and get the same result.
 
 ---
 
-## 📂 Project Overview
+## 📂 What is in here
 
-This repository acts as a showcase of senior-level test automation concepts, structured into multiple sub-projects that target different layers of web applications. It serves to highlight maintainability, clean code patterns, robust error handling, and automation architecture suitable for production deployment.
+```text
+01.Playwright/     UI, API and hybrid suites - C# and TypeScript
+02-Performance-Tests/  JMeter plans and k6 scripts
+03-Sikuli/         GUI automation by image recognition
+04.Postman/        Newman-runnable collections
+05.RestSharp-and-RestAssured/  C# and Java API frameworks
+```
 
-### Projects Table
+### Playwright suites
 
-| Project | Tech Stack | CI/CD | Purpose |
-| :--- | :--- | :--- | :--- |
-| **Automation Exercise UI** | C#, Playwright, NUnit, Allure | Yes | UI automation using Page Object Model (POM) pattern. |
-| **Automation Exercise API** | C#, Playwright API, NUnit | Yes | API automation tests for public REST endpoints. |
-| **Expand Testing Notes API** | C#, Playwright API, NUnit | Yes | CRUD and authentication-focused API test scenarios. |
-| **TypeScript Playwright UI** | TypeScript, Playwright | Yes | UI automation examples using Playwright TypeScript. |
-| **Performance Tests** | JMeter, k6 | Yes | Performance and load smoke testing suitable for CI pipelines. |
-| **Postman API Tests** | JS, Postman, Newman | No | API testing suites for iMX Approval Book, WEare, Petstore and Automation Exercise. |
-| **RestSharp API Tests** | C#, RestSharp, NUnit, Allure | No | C# API automation framework targeting Automation Exercise. |
-| **Rest Assured API Tests** | Java, RestAssured, JUnit 5, Allure | No | Java API automation framework targeting Swagger Petstore. |
+| # | Project | Stack | Tests | CI | Target |
+|:--|:--|:--|:--|:--|:--|
+| 01 | [api-testing](./01.Playwright/01-api-testing) | C#, NUnit | 1 | — | Swagger Petstore. A deliberately raw, inline starting point, kept as the "before" half of a before/after comparison with 04. |
+| 02 | [typescript-playwright](./01.Playwright/02-typescript-playwright) | TypeScript | 2 | ✅ | Small POM reference project — page classes, centralised selectors, external test data. |
+| 03 | [automationexercise-ui-csharp](./01.Playwright/03-automationexercise-ui-csharp) | C#, NUnit, Allure | 26 | ✅ | All 26 official [Automation Exercise](https://automationexercise.com/) test cases. POM, ad/tracker blocking, retry-on-transient-failure. |
+| 04 | [automationexercise-api-csharp](./01.Playwright/04-automationexercise-api-csharp) | C#, NUnit | 11 | ✅ | The same site's REST API, browserless via `IAPIRequestContext`. |
+| 05 | [practice-expandtesting-api-csharp](./01.Playwright/05-practice-expandtesting-api-csharp) | C#, NUnit, Allure | 18 | ✅ | Notes API — registration, auth and a full note CRUD lifecycle. DTO models, token headers, JSON helpers. |
+| 06 | [the-internet-ui-typescript](./01.Playwright/06-the-internet-ui-typescript) | TypeScript | 62 | ✅ | All **44 challenges** on the-internet — iframes, shadow roots, native dialogs, HTTP auth, broken images. |
+| 07 | [uitestingplayground-ui-typescript](./01.Playwright/07-uitestingplayground-ui-typescript) | TypeScript | 43 | — | All **29 challenges** on UI Test Automation Playground — randomised ids, overlays, elements that lie about their state. |
+| 08 | [restful-booker-platform-api-typescript](./01.Playwright/08-restful-booker-platform-api-typescript) | TypeScript, Zod | 56 | — | Six-service booking platform. API tests, Zod contract validation, and hybrid tests that share one session between HTTP and the browser. |
 
----
+### Performance
 
-## 📁 Repository Structure
+| Project | Tool | CI | Target |
+|:--|:--|:--|:--|
+| [01-Automation-Exercise](./02-Performance-Tests/01-JMeter/01-Automation-Exercise) | JMeter | ✅ | Parameterised load plan (`-Jusers`, `-Jrampup`, `-Jduration`) |
+| [02-BlazeDemo](./02-Performance-Tests/01-JMeter/02-BlazeDemo) | JMeter | ✅ | 20-user booking flow |
+| [01-Automation-Exercise](./02-Performance-Tests/02-K6/01-Automation-Exercise) | k6 | ✅ | HTTP smoke load with SLA thresholds |
+| [02-QuickPizza](./02-Performance-Tests/02-K6/02-QuickPizza) | k6 | ✅ | Grafana's QuickPizza reference app |
 
-### 1. C# UI Automation (Automation Exercise)
-* **Path:** [01.Playwright/03-automationexercise-ui-csharp](./01.Playwright/03-automationexercise-ui-csharp)
-* **Description:** UI automation suite for [Automation Exercise](https://automationexercise.com/), covering all 26 official test cases. Utilizes the Page Object Model (POM) pattern, custom ad-blocking rules, and overload-reload mitigations to keep test runs clean and reliable on public staging websites.
+### Other frameworks
 
-### 2. C# API Automation (Automation Exercise)
-* **Path:** [01.Playwright/04-automationexercise-api-csharp](./01.Playwright/04-automationexercise-api-csharp)
-* **Description:** Backend API validation using Playwright `IAPIRequestContext` to perform lightweight, browserless HTTP assertions against REST endpoints.
-
-### 3. C# API Automation (Expand Testing Notes API)
-* **Path:** [01.Playwright/05-practice-expandtesting-api-csharp](./01.Playwright/05-practice-expandtesting-api-csharp)
-* **Description:** API test suite covering authentication, user registration, and a complete note CRUD lifecycle (21 test scenarios) against the Notes API. Features DTO models, custom token authorization headers, and JSON serialization helpers.
-
-### 4. TypeScript UI Automation (Playwright TS)
-* **Path:** [01.Playwright/02-typescript-playwright](./01.Playwright/02-typescript-playwright)
-* **Description:** UI automation project using Playwright in TypeScript, demonstrating selectors centralization, test data parametrization, and Page Object Model patterns.
-
-### 5. Performance & Load Testing (JMeter & k6)
-* **Path:** [02-Performance-Tests](./02-Performance-Tests)
-* **Description:** API load validation scripts implemented in both **Apache JMeter** (.jmx plans) and **Grafana k6** (JavaScript scripts) verifying HTTP endpoints under simulated concurrent user traffic.
-
-### 6. C# API Testing (Swagger Petstore)
-* **Path:** [01.Playwright/01-api-testing](./01.Playwright/01-api-testing)
-* **Description:** Simple, raw Playwright API verification tests in C# validating the Swagger Petstore API endpoints. Note: This project serves as an early, raw example of inline endpoint tests kept for comparison; [Automation Exercise API](./01.Playwright/04-automationexercise-api-csharp) is the reference implementation demonstrating modular clients and advanced patterns.
-
-### 7. Postman API Testing (Newman)
-* **Path:** [04.Postman](./04.Postman)
-* **Description:** API validation collections covering multiple automation suites:
-  * [01-approval-book-imx](./04.Postman/01-approval-book-imx) — Regression suite verifying XML data loading via CSV files.
-  * [02-weare-social-network](./04.Postman/02-weare-social-network) — Cleaned regression suite containing 91 scripts.
-  * [03-automationexercise-com](./04.Postman/03-automationexercise-com) — Chained E2E user registration and validation suite.
-  * [04-petstore](./04.Postman/04-petstore) — Dynamic Pre-request Scripts generating non-repeating user and pet data.
-
-### 8. C# API Automation (RestSharp)
-* **Path:** [05.RestSharp-and-RestAssured/01-api-testing-with-restsharp](./05.RestSharp-and-RestAssured/01-api-testing-with-restsharp)
-* **Description:** Complete C# API automation framework built with RestSharp, .NET 8, NUnit, and Allure. Features client-based architecture, dynamic form parameter handling, dynamic user generators, and a robust teardown data cleanup hook.
-
-### 9. Java API Automation (RestAssured - Swagger Petstore)
-* **Path:** [05.RestSharp-and-RestAssured/02-petstore-rest-assured](./05.RestSharp-and-RestAssured/02-petstore-rest-assured)
-* **Description:** Advanced API test automation framework built with Java 17, RestAssured, JUnit 5, and Allure. Implements decoupled API client wrappers, JSON configuration files, thread-safe runtime variable memory, dynamic Jackson DTO requests/responses, and structured Unit & E2E integration suites.
+| Project | Stack | Tests | Target |
+|:--|:--|:--|:--|
+| [Postman collections](./04.Postman) | Postman, Newman, JS | 4 suites | iMX Approval Book (CSV-driven XML regression), WEare social network (91 scripts), Automation Exercise (chained E2E signup), Petstore (pre-request data generation) |
+| [api-testing-with-restsharp](./05.RestSharp-and-RestAssured/01-api-testing-with-restsharp) | C#, RestSharp, .NET 8, Allure | 14 | Client-based architecture, dynamic form parameters, teardown data cleanup |
+| [petstore-rest-assured](./05.RestSharp-and-RestAssured/02-petstore-rest-assured) | Java 17, RestAssured, JUnit 5, Allure | 19 | Decoupled client wrappers, JSON config, thread-safe runtime state, Jackson DTOs |
+| [Sikuli GUI automation](./03-Sikuli) | SikuliX, Jython | 1 flow | Image-recognition automation of a full Jira Sandbox signup and bug-reporting flow, including temporary e-mail retrieval |
 
 ---
 
-## 🧠 Senior QA Automation Concepts Demonstrated
+## 🐞 Defects found in the systems under test
 
-* **Page Object Model (POM):** Clean separation of UI selectors/actions from test verification logic.
-* **API Testing Isolation:** Browserless API test execution using Playwright's native HTTP client (`IAPIRequestContext`), minimizing pipeline resource usage.
-* **Dynamic Test Data:** Parameterized tests and run-time data generation (using random email generators and mock utilities) preventing shared-state test pollution.
-* **CI/CD Optimization:** Automated workflow runs configured for headless execution, automated browser installations, dependency caching, and clean execution steps.
-* **Node 24 Forcing:** Use of `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` across all pipelines to ensure compatibility with modern GitHub runners.
-* **Test Failure Diagnostics:** Archiving failed test traces, logs, and screenshots within CI artifacts to ensure fast debugging.
-* **Performance Smoke Tests:** Lightweight load tests embedded directly inside CI/CD to detect performance regressions early.
-* **Ad & Tracker Blocking:** Context-level request routing in Playwright to intercept and abort third-party analytics and advertisements, shortening test runs.
+Test suites are usually judged by whether they pass. These found real problems in
+the applications they point at, and each one is held open as a failing test
+rather than deleted or weakened — so the day it is fixed, the suite says so.
 
----
+**restful-booker-platform** (8 documented defects, see
+[its README](./01.Playwright/08-restful-booker-platform-api-typescript)):
 
-## 📋 Test Strategy
+* **The message service has no authentication at all.** `/api/message/{id}`
+  returns a guest's name, e-mail address, phone number and full enquiry text with
+  no token. Other services on the same platform do require one.
+* **A room created through the API is never offered to the public.** The page
+  requests the full room list, receives the new room, and renders the old three.
+  Caching was ruled out with a network trace and five cache-busted reloads.
+* **Logout does not end a session.** The endpoint reports success; the token
+  keeps working, verified three times against fresh tokens.
+* Plus a `500` on an unknown token, a `500` instead of `404`, a creation endpoint
+  that returns no id, a branding update that reports success and writes nothing,
+  and a reversed date range reported as a booking conflict.
 
-* **UI Regression & Smoke Testing:** Verifies end-to-end critical user flows (cart checkout, signup, login, catalog navigation). Focuses on visual consistency and page state transitions.
-* **API Validation:** Validates API contracts, status codes, correct serialization of JSON parameters (e.g. lowercase boolean formatting), conflict states (409 Conflict), and unauthorized access protection.
-* **Performance Validation in CI:** Runs low-load smoke performance scripts in the CI runner. This validates that the performance test scripts themselves remain functional, compile successfully, and that the APIs meet basic SLA thresholds under light load.
-* **Resiliency against Public Environments:** Public demo websites can suffer from network latency and database lockups. The C# UI framework implements custom retry loops, wait conditions, and automatic page-reload logic upon transient network failures.
-
----
-
-## 🚀 How to Run the Tests
-
-### UI and API Tests (C# .NET)
-1. Navigate to the desired project folder:
-   * **UI Tests:** `cd 01.Playwright/03-automationexercise-ui-csharp`
-   * **API Tests:** `cd 01.Playwright/04-automationexercise-api-csharp`
-   * **Notes API:** `cd 01.Playwright/05-practice-expandtesting-api-csharp`
-2. Build the project:
-   ```bash
-   dotnet build
-   ```
-3. Run tests locally:
-   ```bash
-   dotnet test
-   ```
-
-### TypeScript Tests
-1. Navigate to: `cd 01.Playwright/02-typescript-playwright/TS-Playwright-Project`
-2. Install dependencies:
-   ```bash
-   npm install
-   npx playwright install
-   ```
-3. Run tests:
-   ```bash
-   npx playwright test
-   ```
-
-### Performance Tests
-* **k6:**
-  ```bash
-  cd 02-Performance-Tests/02-K6
-  k6 run --vus 1 --iterations 1 k6_performance_test.js
-  ```
-* **JMeter:** Open `02-Performance-Tests/01-JMeter/01-Automation-Exercise/AutomationExercise_Performance_Test.jmx` via the JMeter GUI or run in CLI mode:
-  ```bash
-  jmeter -n -t AutomationExercise_Performance_Test.jmx -Jusers=2 -Jrampup=2 -Jduration=10 -l results.jtl
-  ```
-
-### Postman Tests (Newman CLI)
-1. Navigate to: `cd 04.Postman/04-petstore` (or `cd 04.Postman/03-automationexercise-com`)
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Run tests:
-   ```bash
-   npm run test
-   ```
-
-### Java RestAssured Tests
-1. Navigate to: `cd 05.RestSharp-and-RestAssured/02-petstore-rest-assured`
-2. Run tests:
-   ```bash
-   mvn clean test
-   ```
+**the-internet**: two server-side defects confirmed and marked as expected
+failures — `/forgot_password` returns HTTP 500, and the TinyMCE editor is
+read-only.
 
 ---
 
-## 📊 Artifacts and Reports
+## 🧠 Practices used across the suites
 
-Every pipeline run produces rich diagnostic evidence available for download:
-* **TRX Files:** Standard XML-formatted unit test execution results (easily parsed by CI systems).
-* **Allure Reports:** Interactive HTML reports containing detailed step-by-step logs, durations, and system environment info.
-* **Traces & Screenshots:** Playwright trace zip files showing timeline, network logs, and screenshots of every single step leading to test failure.
-* **JMeter & k6 Summaries:** Raw execution statistics, response times percentiles, and SLA threshold verification results.
+* **Page Object Model** with selectors kept in separate files from actions, so a
+  markup change touches one file.
+* **Browserless API testing** through Playwright's HTTP client, which keeps API
+  pipelines off the browser install entirely.
+* **Contract testing** with Zod schemas, mostly `strict`, so a *new* field in a
+  response is a reported change rather than a silent one.
+* **Session sharing between HTTP and the browser** — logging in once over the API
+  and injecting the token, so the login form is tested once instead of before
+  every admin test.
+* **No hard-coded sleeps.** Waiting is expressed with auto-retrying assertions,
+  `expect.poll` or `waitForFunction`.
+* **Cleanup armed before the write, not after**, so an assertion that throws
+  cannot leak data into a shared public environment.
+* **No assertions on totals** in suites that share an environment with other
+  users — assertions are scoped to a known id or to a direction of change.
+* **Failure diagnostics in CI**: traces, screenshots, videos and TRX/Allure
+  reports uploaded as artifacts on every run.
 
 ---
 
-## ⚙️ GitHub Repository Configuration (Manual Steps)
+## 🚀 Running the suites
 
-To maximize the discoverability and presentation of this portfolio on GitHub, configure the following settings in your repository UI:
+### C# (.NET)
 
-* **Description:**
-  > QA Automation portfolio with Playwright, C#, NUnit, TypeScript, API testing, performance testing, Allure reporting and GitHub Actions CI/CD.
-* **Topics:**
-  `playwright`, `csharp`, `nunit`, `qa-automation`, `sdet`, `api-testing`, `ui-testing`, `github-actions`, `allure-report`, `jmeter`, `k6`, `typescript`, `performance-testing`
+```bash
+cd 01.Playwright/03-automationexercise-ui-csharp   # or 04-…, 05-…
+dotnet build
+dotnet test
+```
+
+### TypeScript (Playwright)
+
+```bash
+cd 01.Playwright/06-the-internet-ui-typescript     # or 02-…, 07-…, 08-…
+npm install
+npx playwright install chromium
+npm test
+```
+
+### Java (RestAssured)
+
+```bash
+cd 05.RestSharp-and-RestAssured/02-petstore-rest-assured
+mvn clean test
+```
+
+### Postman (Newman)
+
+```bash
+cd 04.Postman/04-petstore
+npm install
+npm run test
+```
+
+### Performance
+
+```bash
+# k6
+cd 02-Performance-Tests/02-K6/01-Automation-Exercise
+k6 run --vus 1 --iterations 1 k6_performance_test.js
+
+# JMeter
+jmeter -n -t AutomationExercise_Performance_Test.jmx \
+       -Jusers=2 -Jrampup=2 -Jduration=10 -l results.jtl
+```
+
+---
+
+## 📊 Artifacts
+
+Every pipeline run publishes downloadable evidence: Playwright traces (timeline,
+network log and a screenshot of every step), HTML and Allure reports, TRX result
+files, and k6/JMeter response-time percentiles against SLA thresholds.
