@@ -1,0 +1,9 @@
+node_modules/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Files produced by the file-upload / file-download specs at runtime
+downloads/
+tmp/
