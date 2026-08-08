@@ -1,0 +1,24 @@
+{
+  "name": "the-internet-ui-typescript",
+  "version": "1.0.0",
+  "description": "Playwright + TypeScript UI automation covering all 44 challenges on the-internet.herokuapp.com",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "automation",
+    "the-internet"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.59.0",
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  }
+}
