@@ -12,9 +12,6 @@ test's feet.
 **43 tests, 5 spec files, all green.** Verified over four consecutive full runs
 (26.1s, 28.1s, 29.8s, 21.6s).
 
-> The sources for this suite are kept outside the public repository; this file
-> documents the work and the findings.
-
 ---
 
 ## ⚠️ The site's certificate is broken, and it changes what can be tested
