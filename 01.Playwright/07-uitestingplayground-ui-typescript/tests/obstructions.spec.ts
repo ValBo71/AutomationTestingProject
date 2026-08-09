@@ -82,7 +82,18 @@ test.describe('Visibility', () => {
   });
 
   test('All eight buttons start visible', async () => {
+    /**
+     * The Hide button is counted here deliberately, and it is easy to miss.
+     *
+     * The challenge describes eight buttons: seven targets plus the control
+     * that hides them. An earlier version of this test looped over the seven
+     * targets only, so the title claimed eight while the assertion covered
+     * seven - the kind of quiet gap that makes a suite report more coverage
+     * than it has. Verified against the live page, which renders #hideButton
+     * alongside the seven.
+     */
     for (const name of [
+      'hideButton',
       'removedButton',
       'zeroWidthButton',
       'overlappedButton',

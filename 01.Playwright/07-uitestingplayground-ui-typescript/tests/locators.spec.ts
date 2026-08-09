@@ -53,6 +53,16 @@ test.describe('Locator strategy challenges', () => {
 
     const raw = await locatorPage.getNbspRawTextAsync();
 
+    /**
+     * Expected.nbspButtonRaw is built with String.fromCharCode(0x00a0) rather
+     * than written as a literal, and that detail is the whole test.
+     *
+     * The first version of this file compared a pasted U+00A0 against the one
+     * on the page. It looked correct, read correctly, and asserted nothing -
+     * the character was being compared to itself. Constructing the expectation
+     * means no formatter, editor or careless paste can silently turn it back
+     * into an ordinary space and leave a test that passes without checking.
+     */
     // The raw caption holds a non-breaking space...
     expect(raw).toBe(Expected.nbspButtonRaw);
     // ...so a locator written with an ordinary space would never match it,
