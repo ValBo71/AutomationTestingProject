@@ -5,6 +5,7 @@
 [![Expand Testing API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml)
 [![Playwright TS UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml)
 [![the-internet UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml)
+[![UI Test Automation Playground](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-uitestingplayground-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-uitestingplayground-tests.yml)
 [![Performance Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml)
 
 Test automation across five stacks — **C#, TypeScript, Java, Postman/Newman and
@@ -36,7 +37,7 @@ anyone can clone it and get the same result.
 | 04 | [automationexercise-api-csharp](./01.Playwright/04-automationexercise-api-csharp) | C#, NUnit | 11 | ✅ | The same site's REST API, browserless via `IAPIRequestContext`. |
 | 05 | [practice-expandtesting-api-csharp](./01.Playwright/05-practice-expandtesting-api-csharp) | C#, NUnit, Allure | 18 | ✅ | Notes API — registration, auth and a full note CRUD lifecycle. DTO models, token headers, JSON helpers. |
 | 06 | [the-internet-ui-typescript](./01.Playwright/06-the-internet-ui-typescript) | TypeScript | 62 | ✅ | All **44 challenges** on the-internet — iframes, shadow roots, native dialogs, HTTP auth, broken images. |
-| 07 | [uitestingplayground-ui-typescript](./01.Playwright/07-uitestingplayground-ui-typescript) | TypeScript | 43 | — | All **29 challenges** on UI Test Automation Playground — randomised ids, overlays, elements that lie about their state. |
+| 07 | [uitestingplayground-ui-typescript](./01.Playwright/07-uitestingplayground-ui-typescript) | TypeScript | 43 | ✅ | All **29 challenges** on UI Test Automation Playground — randomised ids, overlays, elements that lie about their state. |
 | 08 | [restful-booker-platform-api-typescript](./01.Playwright/08-restful-booker-platform-api-typescript) | TypeScript, Zod | 56 | — | Six-service booking platform. API tests, Zod contract validation, and hybrid tests that share one session between HTTP and the browser. |
 
 ### Performance
