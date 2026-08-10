@@ -14,9 +14,6 @@ Where `06-the-internet-ui-typescript` covers breadth and
 about a **system**: six services, a shared session, and a browser that has to
 agree with the API about what exists.
 
-> The sources for this suite are kept outside the public repository; this file
-> documents the work, the coverage and the defects it found.
-
 ---
 
 ## 🚀 Running
