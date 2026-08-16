@@ -1,0 +1,135 @@
+name: Playwright Restful Booker Platform API Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # 05:00 UTC daily, after the uitestingplayground suite's 04:30 slot and the
+    # 04:00 group before it. Kept in its own window on purpose: this suite is the
+    # only one that writes to its target, and a shared runner window would make a
+    # failure caused by someone else's leftover data harder to tell apart from a
+    # real regression.
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+# A push that lands while the previous run is still going cancels it. The suite
+# writes to a shared sandbox, so two concurrent runs would be creating and
+# deleting rooms underneath each other - the 409s and missing-row failures that
+# produces are noise, not findings. Scheduled and dispatched runs are grouped by
+# ref too, so a nightly run cannot overlap a push either.
+concurrency:
+  group: restful-booker-platform-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Two jobs rather than one `npx playwright test`, because the config's two
+  # projects have genuinely different needs: the api project carries no
+  # browserName and never launches Chromium, so making it wait on a browser
+  # download it does not use would roughly double its wall-clock time.
+  #
+  # They run in parallel and report separately, which also means a red tick is
+  # already halfway diagnosed: an api failure is the service's contract, a hybrid
+  # failure is usually the page that renders it.
+  api-tests:
+    name: API Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: "01.Playwright/08-restful-booker-platform-api-typescript"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: "01.Playwright/08-restful-booker-platform-api-typescript/package-lock.json"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # Cheap and fast, so it runs first: a type error fails the job in seconds.
+      # This job is also the only place typecheck runs - the hybrid job compiles
+      # the same sources, so running it twice would only spend a runner minute to
+      # learn the same thing.
+      - name: Type Check
+        run: npm run typecheck
+
+      # No `playwright install` step at all. The api project launches no browser,
+      # which is the whole reason it is split out - see playwright.config.ts.
+      - name: Run API Tests
+        run: npm run test:api
+
+      - name: Upload API Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-restful-booker-api
+          path: "01.Playwright/08-restful-booker-platform-api-typescript/playwright-report/"
+          if-no-files-found: ignore
+
+  hybrid-tests:
+    name: Hybrid API/UI Tests
+    runs-on: ubuntu-latest
+
+    # The hybrid suite drives a browser against a free-tier host and retries
+    # twice in CI, so it is the slower of the two by some margin. A healthy run
+    # is a few minutes; this stops a hung one from holding a runner for the
+    # six-hour default.
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: "01.Playwright/08-restful-booker-platform-api-typescript"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: "01.Playwright/08-restful-booker-platform-api-typescript/package-lock.json"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # Only Desktop Chrome is configured for this project, so the full browser
+      # set would download Firefox and WebKit for nothing.
+      - name: Install Playwright Chromium with OS Dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Hybrid Tests
+        run: npm run test:ui
+
+      - name: Upload Hybrid Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-restful-booker-hybrid
+          path: "01.Playwright/08-restful-booker-platform-api-typescript/playwright-report/"
+          if-no-files-found: ignore
+
+      # Traces are uploaded for the hybrid job only. `trace: 'on-first-retry'`
+      # and `screenshot: 'only-on-failure'` mean this directory is empty on a
+      # green run, and the api job produces no screenshots or video worth keeping
+      # either way.
+      - name: Upload Hybrid Traces & Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-restful-booker-hybrid
+          path: "01.Playwright/08-restful-booker-platform-api-typescript/test-results/"
+          if-no-files-found: ignore
