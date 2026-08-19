@@ -7,6 +7,7 @@
 [![the-internet UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml)
 [![UI Test Automation Playground](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-uitestingplayground-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-uitestingplayground-tests.yml)
 [![restful-booker-platform API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-restful-booker-platform-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-restful-booker-platform-tests.yml)
+[![RestAssured Petstore API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/rest-assured-petstore-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/rest-assured-petstore-tests.yml)
 [![Performance Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml)
 
 Test automation across five stacks — **C#, TypeScript, Java, Postman/Newman and
@@ -63,7 +64,7 @@ style reference.
 |:--|:--|:--|:--|
 | [Postman collections](./04.Postman) | Postman, Newman, JS | 4 suites | iMX Approval Book (CSV-driven XML regression), WEare social network (91 scripts), Automation Exercise (chained E2E signup), Petstore (pre-request data generation) |
 | [api-testing-with-restsharp](./05.RestSharp-and-RestAssured/01-api-testing-with-restsharp) | C#, RestSharp, .NET 8, Allure | 14 | Client-based architecture, dynamic form parameters, teardown data cleanup |
-| [petstore-rest-assured](./05.RestSharp-and-RestAssured/02-petstore-rest-assured) | Java 17, RestAssured, JUnit 5, Allure | 19 | Decoupled client wrappers, JSON config, thread-safe runtime state, Jackson DTOs |
+| [petstore-rest-assured](./05.RestSharp-and-RestAssured/02-petstore-rest-assured) | Java 17, RestAssured, JUnit 5, Allure | 19 | ✅ CI. Decoupled client wrappers, JSON config, thread-safe runtime state, Jackson DTOs. Surefire JUnit XML summarised in the run summary and uploaded as an artifact. |
 | [Sikuli GUI automation](./03-Sikuli) | SikuliX, Jython | 1 flow | Image-recognition automation of a full Jira Sandbox signup and bug-reporting flow, including temporary e-mail retrieval |
 
 ---

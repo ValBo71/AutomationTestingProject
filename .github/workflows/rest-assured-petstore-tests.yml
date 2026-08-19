@@ -1,0 +1,110 @@
+name: RestAssured Petstore API Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Runs at 05:00 UTC (08:00 Bulgarian Summer Time / 07:00 Winter Time) every day.
+    # Each suite has its own half-hour slot so no two share a runner
+    # window - when a run goes red it is then obvious which suite, and
+    # which target, is responsible.
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  test:
+    name: Run RestAssured Petstore Tests
+    runs-on: ubuntu-latest
+
+    # The public Petstore sandbox is occasionally slow to answer, and every one
+    # of these tests is a live HTTP call. A healthy run is about a minute; this
+    # cap stops a hung request from holding a runner for the six-hour default.
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: "05.RestSharp-and-RestAssured/02-petstore-rest-assured"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      # Java 17 matches maven.compiler.source/target in pom.xml. The cache key
+      # is derived from pom.xml, so a dependency change invalidates it and an
+      # unchanged build reuses the local repository.
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run JUnit 5 Tests
+        run: mvn -B test
+
+      # Surefire writes JUnit XML to target/surefire-reports on every run - the
+      # format GitHub's test reporting and most CI dashboards read directly.
+      # Uploaded on failure too, since a red run is when the report matters.
+      - name: Upload JUnit XML Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-results-petstore-rest-assured
+          path: "05.RestSharp-and-RestAssured/02-petstore-rest-assured/target/surefire-reports/*.xml"
+          if-no-files-found: warn
+
+      # Summarises the same JUnit XML in the run summary, so a failing test is
+      # named in the Actions UI without downloading the artifact first. Done
+      # with the XML Surefire already writes rather than a third-party action,
+      # to keep CI free of dependencies it does not need.
+      - name: Publish Test Summary
+        if: always()
+        run: |
+          shopt -s nullglob
+          reports=(target/surefire-reports/TEST-*.xml)
+          if [ ${#reports[@]} -eq 0 ]; then
+            echo "No Surefire reports found - the build failed before tests ran." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          python3 - "${reports[@]}" >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import sys, xml.etree.ElementTree as ET
+          rows, tot = [], dict(tests=0, failures=0, errors=0, skipped=0, time=0.0)
+          bad = []
+          for path in sys.argv[1:]:
+              s = ET.parse(path).getroot()
+              g = lambda k: int(s.get(k, 0))
+              tot['tests'] += g('tests'); tot['failures'] += g('failures')
+              tot['errors'] += g('errors'); tot['skipped'] += g('skipped')
+              tot['time'] += float(s.get('time', 0) or 0)
+              rows.append((s.get('name', path), g('tests'), g('failures'),
+                           g('errors'), g('skipped'), float(s.get('time', 0) or 0)))
+              for case in s.iter('testcase'):
+                  for kind in ('failure', 'error'):
+                      if case.find(kind) is not None:
+                          bad.append('%s.%s' % (case.get('classname', ''), case.get('name', '')))
+          ok = tot['failures'] == 0 and tot['errors'] == 0
+          print('## %s RestAssured Petstore - %d tests in %.1fs\n' % ('✅' if ok else '❌', tot['tests'], tot['time']))
+          print('| Suite | Tests | Failures | Errors | Skipped | Time |')
+          print('|:--|--:|--:|--:|--:|--:|')
+          for name, t, f, e, sk, tm in sorted(rows):
+              print('| %s | %d | %d | %d | %d | %.1fs |' % (name, t, f, e, sk, tm))
+          print('| **Total** | **%d** | **%d** | **%d** | **%d** | **%.1fs** |'
+                % (tot['tests'], tot['failures'], tot['errors'], tot['skipped'], tot['time']))
+          if bad:
+              print('\n### Failed\n')
+              for name in bad:
+                  print('* `%s`' % name)
+          PY
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-petstore-rest-assured
+          path: "05.RestSharp-and-RestAssured/02-petstore-rest-assured/target/allure-results/"
+          if-no-files-found: ignore
