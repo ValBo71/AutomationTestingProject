@@ -16,6 +16,7 @@ import os
 import subprocess
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -86,12 +87,36 @@ def latest_artifacts():
     return found
 
 
+class _DropAuthOnRedirect(urllib.request.HTTPRedirectHandler):
+    """Strip Authorization when a redirect crosses to another host.
+
+    The artifact zip endpoint answers 302 with a pre-signed URL on
+    blob.core.windows.net. The signature is the credential there, and the
+    default handler replays our GitHub Authorization header to that host,
+    which rejects the request with 401. Sending the token to a third-party
+    host would also be wrong even where it happened to be tolerated.
+    """
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new is not None:
+            old_host = urllib.parse.urlsplit(req.full_url).netloc
+            if urllib.parse.urlsplit(newurl).netloc != old_host:
+                # Request.headers is keyed with capitalised names.
+                for name in list(new.headers):
+                    if name.lower() == 'authorization':
+                        del new.headers[name]
+                new.unredirected_hdrs.pop('Authorization', None)
+        return new
+
+
 def download(artifact, dest_zip):
     req = urllib.request.Request(
         artifact['archive_download_url'],
         headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
                  'User-Agent': 'collect-reports'})
-    with urllib.request.urlopen(req, timeout=300) as r:
+    opener = urllib.request.build_opener(_DropAuthOnRedirect)
+    with opener.open(req, timeout=300) as r:
         with open(dest_zip, 'wb') as f:
             while True:
                 chunk = r.read(1 << 20)
@@ -262,6 +287,16 @@ def main():
 
     ok = sum(1 for s in published if s['status'] == 'ok')
     print('%d of %d suites published' % (ok, len(SUITES)))
+
+    # The first version of this script exited 0 after every download failed
+    # with a 401, so the job went green and deployed a site containing nothing
+    # but the index page. Publishing an empty site is worse than a red run,
+    # because it looks like the suites have no reports rather than like a
+    # broken publish. A run that collects nothing is a failure.
+    if ok == 0:
+        print('::error::no suite reports were collected - refusing to publish '
+              'an index with no reports behind it')
+        sys.exit(1)
 
 
 if __name__ == '__main__':
