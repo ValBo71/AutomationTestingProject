@@ -1,0 +1,90 @@
+name: Publish Test Reports
+
+on:
+  # Runs after any suite finishes, so the site follows the most recent run of
+  # each suite instead of a fixed schedule. workflow_run only fires for
+  # workflows on the default branch, which is what we want to publish.
+  workflow_run:
+    workflows:
+      - "Playwright API Tests"
+      - "Playwright .NET Tests"
+      - "Playwright Expand Testing Notes API Tests"
+      - "Playwright Restful Booker Platform API Tests"
+      - "Playwright the-internet UI Tests"
+      - "Playwright TypeScript UI Tests"
+      - "Playwright UI Test Automation Playground"
+      - "RestAssured Petstore API Tests"
+    types: [completed]
+  # 05:30 UTC, after the last suite in the nightly rotation (05:00) has had
+  # time to finish, so a scheduled publish picks up that night's results.
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+# A Pages site has a single deployment slot. Suites finish at different times
+# and would otherwise race; queueing rather than cancelling means a publish
+# triggered by the last suite to finish is not thrown away.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read      # required to list and download other workflows' artifacts
+  pages: write
+  id-token: write
+
+jobs:
+  publish:
+    name: Collect Reports and Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      # Allure results are raw JSON; they need the CLI to become a site. Java
+      # is the CLI's only runtime dependency.
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline@2.29.0
+
+      # Pulls the newest successful artifact for each suite, unpacks Playwright
+      # reports as-is and renders Allure results into HTML. Skips a suite that
+      # has never produced an artifact rather than failing the publish.
+      - name: Collect Reports
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python3 .github/scripts/collect_reports.py site
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
