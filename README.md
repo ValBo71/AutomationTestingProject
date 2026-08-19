@@ -1,11 +1,12 @@
 # Automation Testing Portfolio
 
-[![Playwright UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml)
+[![C# UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-dotnet-tests.yml)
 [![Playwright API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-api-tests.yml)
 [![Expand Testing API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-expandtesting-api-tests.yml)
 [![Playwright TS UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-ts-tests.yml)
 [![the-internet UI Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-the-internet-tests.yml)
 [![UI Test Automation Playground](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-uitestingplayground-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-uitestingplayground-tests.yml)
+[![restful-booker-platform API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-restful-booker-platform-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-restful-booker-platform-tests.yml)
 [![Performance Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml)
 
 Test automation across five stacks — **C#, TypeScript, Java, Postman/Newman and
@@ -14,6 +15,13 @@ with GitHub Actions pipelines on the suites that run unattended.
 
 Roughly **250 tests** in total. Every suite runs against a public demo system, so
 anyone can clone it and get the same result.
+
+**Start here:** [`08-restful-booker-platform-api-typescript`](./01.Playwright/08-restful-booker-platform-api-typescript)
+is the suite that best represents how I work now — a six-service system, Zod
+contract schemas, one session shared between HTTP and the browser, an undo stack
+that cleans up after every test, and eight platform defects held open as failing
+tests. Projects 01 and 03 are earlier work, kept for comparison rather than as a
+style reference.
 
 ---
 
@@ -33,12 +41,12 @@ anyone can clone it and get the same result.
 |:--|:--|:--|:--|:--|:--|
 | 01 | [api-testing](./01.Playwright/01-api-testing) | C#, NUnit | 1 | — | Swagger Petstore. A deliberately raw, inline starting point, kept as the "before" half of a before/after comparison with 04. |
 | 02 | [typescript-playwright](./01.Playwright/02-typescript-playwright) | TypeScript | 2 | ✅ | Small POM reference project — page classes, centralised selectors, external test data. |
-| 03 | [automationexercise-ui-csharp](./01.Playwright/03-automationexercise-ui-csharp) | C#, NUnit, Allure | 26 | ✅ | All 26 official [Automation Exercise](https://automationexercise.com/) test cases. POM, ad/tracker blocking, retry-on-transient-failure. |
+| 03 | [automationexercise-ui-csharp](./01.Playwright/03-automationexercise-ui-csharp) | C#, NUnit, Allure | 26 | ✅ | All 26 official [Automation Exercise](https://automationexercise.com/) test cases. POM, ad/tracker blocking, retry-on-transient-failure. Earlier work — the conventions in 06-08 supersede its style. |
 | 04 | [automationexercise-api-csharp](./01.Playwright/04-automationexercise-api-csharp) | C#, NUnit | 11 | ✅ | The same site's REST API, browserless via `IAPIRequestContext`. |
 | 05 | [practice-expandtesting-api-csharp](./01.Playwright/05-practice-expandtesting-api-csharp) | C#, NUnit, Allure | 18 | ✅ | Notes API — registration, auth and a full note CRUD lifecycle. DTO models, token headers, JSON helpers. |
 | 06 | [the-internet-ui-typescript](./01.Playwright/06-the-internet-ui-typescript) | TypeScript | 62 | ✅ | All **44 challenges** on the-internet — iframes, shadow roots, native dialogs, HTTP auth, broken images. |
 | 07 | [uitestingplayground-ui-typescript](./01.Playwright/07-uitestingplayground-ui-typescript) | TypeScript | 43 | ✅ | All **29 challenges** on UI Test Automation Playground — randomised ids, overlays, elements that lie about their state. |
-| 08 | [restful-booker-platform-api-typescript](./01.Playwright/08-restful-booker-platform-api-typescript) | TypeScript, Zod | 56 | — | Six-service booking platform. API tests, Zod contract validation, and hybrid tests that share one session between HTTP and the browser. |
+| 08 | [restful-booker-platform-api-typescript](./01.Playwright/08-restful-booker-platform-api-typescript) | TypeScript, Zod | 56 | ✅ | Six-service booking platform. API tests, Zod contract validation, and hybrid tests that share one session between HTTP and the browser. |
 
 ### Performance
 
