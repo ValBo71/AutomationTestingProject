@@ -6,12 +6,11 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    # 05:00 UTC daily, after the uitestingplayground suite's 04:30 slot and the
-    # 04:00 group before it. Kept in its own window on purpose: this suite is the
-    # only one that writes to its target, and a shared runner window would make a
-    # failure caused by someone else's leftover data harder to tell apart from a
-    # real regression.
-    - cron: '0 5 * * *'
+    # Runs at 04:30 UTC (07:30 Bulgarian Summer Time / 06:30 Winter Time) every day.
+    # Each suite has its own half-hour slot so no two share a runner
+    # window - when a run goes red it is then obvious which suite, and
+    # which target, is responsible.
+    - cron: '30 4 * * *'
   workflow_dispatch:
 
 env:
