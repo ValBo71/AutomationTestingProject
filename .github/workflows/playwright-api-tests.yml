@@ -47,7 +47,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-trx
+          name: test-results-trx-automationexercise-api
           path: "01.Playwright/04-automationexercise-api-csharp/AutomationExercise.ApiTests/TestResults/test-results.trx"
           if-no-files-found: warn
 
@@ -55,6 +55,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results
+          name: allure-results-automationexercise-api
           path: "01.Playwright/04-automationexercise-api-csharp/AutomationExercise.ApiTests/bin/Release/net9.0/allure-results/"
           if-no-files-found: ignore

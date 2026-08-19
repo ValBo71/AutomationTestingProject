@@ -9,6 +9,7 @@
 [![restful-booker-platform API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-restful-booker-platform-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/playwright-restful-booker-platform-tests.yml)
 [![RestAssured Petstore API Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/rest-assured-petstore-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/rest-assured-petstore-tests.yml)
 [![Performance Tests](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/performance-tests.yml)
+[![Publish Test Reports](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/publish-reports.yml/badge.svg)](https://github.com/ValBo71/AutomationTestingProject/actions/workflows/publish-reports.yml)
 
 Test automation across five stacks — **C#, TypeScript, Java, Postman/Newman and
 JMeter/k6** — covering UI, API, contract, GUI-image and performance testing,
@@ -23,6 +24,12 @@ contract schemas, one session shared between HTTP and the browser, an undo stack
 that cleans up after every test, and eight platform defects held open as failing
 tests. Projects 01 and 03 are earlier work, kept for comparison rather than as a
 style reference.
+
+**Live reports:** every suite publishes its HTML report to
+[valbo71.github.io/AutomationTestingProject](https://valbo71.github.io/AutomationTestingProject/)
+- Playwright reports served as-is, Allure results rendered on each publish.
+The site is rebuilt after any suite finishes, so it shows the most recent run
+of each rather than a nightly snapshot.
 
 ---
 
