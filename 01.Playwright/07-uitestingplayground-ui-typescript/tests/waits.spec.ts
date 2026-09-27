@@ -10,8 +10,10 @@ test.describe('Server and client delays', () => {
   });
 
   test('AJAX Data: the label appears after the server responds', async () => {
-    // The page stalls for ~15s on purpose, so this one spec gets a longer budget.
-    test.setTimeout(60_000);
+    // The page stalls for ~15s on purpose, so this spec gets more than the
+    // global 60s: navigation (up to 30s) plus the label wait (up to 30s) can
+    // use all of it on a slow connection before the assertion even runs.
+    test.setTimeout(90_000);
     await waitPage.openAjaxData();
 
     await waitPage.trigger();
@@ -23,7 +25,7 @@ test.describe('Server and client delays', () => {
   });
 
   test('Client Side Delay: the label appears after the client-side work finishes', async () => {
-    test.setTimeout(60_000);
+    test.setTimeout(90_000);
     await waitPage.openClientSideDelay();
 
     await waitPage.trigger();
@@ -106,6 +108,10 @@ test.describe('Elements that become interactable later', () => {
     await waitPage.movingTarget().click();
 
     await expect(waitPage.operationStatus()).toContainText(Expected.animationSuccess);
+    // A click during the animation is reported as "Moving Target clicked. It's
+    // class name is '... spin'", which also contains "Target clicked" - so the
+    // line above alone would pass for exactly the failure this test is about.
+    await expect(waitPage.operationStatus()).not.toContainText(Expected.animationStillMoving);
   });
 
   test('Progress Bar: the bar is stopped close to the requested value', async () => {

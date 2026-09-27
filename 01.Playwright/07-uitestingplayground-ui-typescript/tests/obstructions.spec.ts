@@ -54,7 +54,10 @@ test.describe('Blocked and hidden targets', () => {
 
     // Playwright scrolls the element into view automatically before clicking.
     await obstructionPage.hidingButton().click();
-    await expect(obstructionPage.hidingButton()).toBeVisible();
+    // toBeVisible() would hold before any scrolling too - the button is only
+    // clipped by its container, not hidden. Being in the viewport is what the
+    // scroll actually changes.
+    await expect(obstructionPage.hidingButton()).toBeInViewport();
   });
 
   test('Scroll to Click: all four targets are reachable', async () => {

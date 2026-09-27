@@ -94,10 +94,14 @@ test.describe('Select', () => {
   });
 
   test('Selecting by visible label works as well as by value', async () => {
-    await appPage.citySelect().selectOption({ value: TestData.select.city.value });
+    // The option text is written with &nbsp; ("San&nbsp;Francisco"); Playwright
+    // matches it against a plain-space label all the same, which is the point
+    // of this challenge.
+    await appPage.citySelect().selectOption({ label: TestData.select.city.label });
 
     await expect(appPage.citySelect()).toHaveValue(TestData.select.city.value);
-    await expect(appPage.cityStatus()).not.toHaveText('');
+    await expect(appPage.cityStatus()).toContainText(TestData.select.city.label);
+    await expect(appPage.cityStatus()).toContainText(`value: ${TestData.select.city.value}`);
   });
 });
 
@@ -198,19 +202,23 @@ test.describe('Geo Location', () => {
       geolocation: TestData.geolocation,
       ignoreHTTPSErrors: true,
     });
-    const page = await context.newPage();
-    const appPage = new AppPage(page);
+    try {
+      const page = await context.newPage();
+      const appPage = new AppPage(page);
 
-    // Loaded over https on purpose: the Geolocation API is unavailable in an
-    // insecure context, and the suite's default baseURL is http because the
-    // site's certificate is invalid. Verified - over http the page reports
-    // "unavailable" no matter what permissions are granted.
-    await page.goto(`${SecureBaseUrl}${Routes.geoLocation}`);
-    await appPage.requestLocation();
+      // Loaded over https on purpose: the Geolocation API is unavailable in an
+      // insecure context, and the suite's default baseURL is http because the
+      // site's certificate is invalid. Verified - over http the page reports
+      // "unavailable" no matter what permissions are granted.
+      await page.goto(`${SecureBaseUrl}${Routes.geoLocation}`);
+      await appPage.requestLocation();
 
-    await expect(appPage.locationOutput()).toContainText('42.69');
-    await expect(appPage.locationOutput()).toContainText('23.32');
-
-    await context.close();
+      await expect(appPage.locationOutput()).toContainText('42.69');
+      await expect(appPage.locationOutput()).toContainText('23.32');
+    } finally {
+      // A context made by hand is not closed by Playwright, so a failed
+      // assertion would otherwise leave it open for the rest of the worker.
+      await context.close();
+    }
   });
 });

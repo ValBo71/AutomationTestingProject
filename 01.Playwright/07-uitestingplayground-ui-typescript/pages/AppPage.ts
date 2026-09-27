@@ -150,6 +150,10 @@ export class AppPage extends BasePage {
     if (cpuColumnIndex === -1) {
       throw new Error(`No "CPU" column found. Headers were: ${headers.join(', ')}`);
     }
+    const nameColumnIndex = headers.findIndex((h) => h.trim() === 'Name');
+    if (nameColumnIndex === -1) {
+      throw new Error(`No "Name" column found. Headers were: ${headers.join(', ')}`);
+    }
 
     const rows = this.page.locator(AppSelectors.tableRow);
     const rowCount = await rows.count();
@@ -159,7 +163,6 @@ export class AppPage extends BasePage {
       if ((await cells.count()) === 0) continue;
 
       const values = await cells.allInnerTexts();
-      const nameColumnIndex = headers.findIndex((h) => h.trim() === 'Name');
       if (values[nameColumnIndex]?.trim() === processName) {
         return values[cpuColumnIndex].trim();
       }

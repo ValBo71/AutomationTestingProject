@@ -59,6 +59,8 @@ export const Expected = {
   clickSuccessClass: 'btn-success',
   autoWaitSuccess: 'Target clicked',
   animationSuccess: 'Target clicked',
+  /** Present in the status only when the click landed mid-animation. */
+  animationStillMoving: 'spin',
   disabledInputSuccess: 'Enabled',
   hiddenLayersGreenLabel: 'Button',
   sampleAppLoggedIn: (user: string) => `Welcome, ${user}!`,
@@ -94,7 +96,7 @@ export const TestData = {
   },
   select: {
     language: { value: 'py', label: 'Python' },
-    city: { value: 'sf' },
+    city: { value: 'sf', label: 'San Francisco' },
   },
   upload: {
     fileName: 'playground-upload.txt',
