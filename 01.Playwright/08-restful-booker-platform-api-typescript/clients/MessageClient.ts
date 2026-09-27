@@ -1,5 +1,5 @@
 import { APIResponse } from '@playwright/test';
-import { ApiClient } from '../core/apiClient';
+import { ApiClient, ensureOk } from '../core/apiClient';
 import { Api } from '../data/endpoints';
 import { MessagePayload } from '../data/testData';
 
@@ -46,21 +46,25 @@ export class MessageClient extends ApiClient {
     return this.delete(Api.message.byId(id));
   }
 
-  /** Name-based undo, registered before a message is posted. See RoomClient. */
-  async removeBySubjectAsync(subject: string): Promise<void> {
+  /**
+   * Name-based undo, registered before a message is posted. See RoomClient.
+   * Returns the delete response (or null when there was nothing to delete) so
+   * the janitor can report a cleanup the service refused.
+   */
+  async removeBySubjectAsync(subject: string): Promise<APIResponse | null> {
     const messages = await this.listMessagesAsync();
     const match = messages.find((message) => message.subject === subject);
-    if (match) await this.remove(match.id);
+    return match ? this.remove(match.id) : null;
   }
 
   async listMessagesAsync(): Promise<MessageSummary[]> {
-    const response = await this.list();
+    const response = await ensureOk(await this.list(), 'Listing messages');
     const body = (await response.json()) as { messages: MessageSummary[] };
     return body.messages ?? [];
   }
 
   async unreadCountAsync(): Promise<number> {
-    const response = await this.unreadCount();
+    const response = await ensureOk(await this.unreadCount(), 'Reading the unread count');
     const body = (await response.json()) as { count: number };
     return body.count;
   }

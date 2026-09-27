@@ -5,8 +5,8 @@ API and API/UI automation against
 Winteringham's **restful-booker-platform** — a working hotel booking site built
 as a set of separate services behind one gateway.
 
-**56 tests, 8 spec files, all green.** 44 pure API tests and 12 hybrid tests that
-cross the HTTP/browser boundary in both directions. Eight of the 56 are known
+**55 tests, 8 spec files, all green.** 43 pure API tests and 12 hybrid tests that
+cross the HTTP/browser boundary in both directions. Seven of the 55 are known
 defects, held open deliberately (see below).
 
 Where `06-the-internet-ui-typescript` covers breadth and
@@ -22,8 +22,8 @@ agree with the API about what exists.
 npm install
 npx playwright install chromium
 
-npm test              # everything - 56 tests
-npm run test:api      # 44 API tests, no browser is launched at all
+npm test              # everything - 55 tests
+npm run test:api      # 43 API tests, no browser is launched at all
 npm run test:ui       # 12 hybrid tests
 npm run test:headed   # watch the hybrid tests in a real browser
 npm run report        # open the HTML report
@@ -53,7 +53,8 @@ Six services, reached through one gateway at `/api/*`:
 They do not share conventions. Room creation answers `200 {"success": true}`;
 booking creation answers `201` with the new resource. Room and booking wrap
 validation errors in `{"errors": [...]}`; the message service returns a bare
-array. A missing token is `401` on a read and `403` on a delete. **Documenting
+array. A missing token is `401` on reads and on writes such as creating a room
+or changing branding, but `403` on a delete. **Documenting
 those inconsistencies is a large part of what this suite is for** — a client
 written against one service's conventions silently mishandles another's.
 
@@ -147,11 +148,18 @@ ways, and the unread badge.
 
 ---
 
-## 🐞 The eight defects
+## 🐞 The seven defects
 
-Each is marked `test.fail()` rather than deleted or weakened. The assertions
-describe what the platform *should* do, so the day any of these is fixed the test
-turns red and says so, instead of quietly agreeing with a bug.
+Each is kept as an expected failure rather than deleted or weakened. The
+assertions describe what the platform *should* do, so the day any of these is
+fixed the test turns red and says so, instead of quietly agreeing with a bug.
+
+They do not use a bare `test.fail()`, which would count *any* failure as the
+known defect - a worse regression, a `500`, a broken login in the setup. Each
+test first observes the platform and then calls `markKnownDefect()`
+(`fixtures/api.ts`): it is expected to fail only while the platform shows exactly
+the documented behaviour, or once the defect is fixed (reported as an unexpected
+pass). Anything else fails as an ordinary test.
 
 ### 1. Logout does not log anything out — `auth.spec.ts`
 `POST /api/auth/logout` answers `{"success": true}` and the token keeps working.
@@ -183,27 +191,37 @@ receives contains the new room. The page fetches the full list and does not
 render it. Watched across five reloads over a minute with a cache-busting query
 string — three cards every time.
 
-### 5. A branding update reports success and writes nothing — `site.spec.ts`
-`PUT /api/branding` answers `200 {"success": true}` and discards the write.
-A silent no-op behind a success status is worse than an error: nothing
-downstream has any reason to retry or warn.
-
-### 6. An unknown room id returns 500 instead of 404 — `room.spec.ts`
+### 5. An unknown room id returns 500 instead of 404 — `room.spec.ts`
 The body leaks the internal path (`"/room/9999"`), which incidentally confirms
 the gateway prefix is stripped before the service sees it.
 
-### 7. Room creation returns no id — `room.spec.ts`
+### 6. Room creation returns no id — `room.spec.ts`
 `200 {"success": true}`, no `Location` header, no resource. The only way to learn
 the id of what you just made is to re-read the whole collection and match on
 name — which is exactly what `RoomClient.createRoomAsync` has to do. The booking
 service, in the same platform, does it correctly.
 
-### 8. A reversed date range is reported as a conflict — `booking.spec.ts`
+### 7. A reversed date range is reported as a conflict — `booking.spec.ts`
 A checkout before the checkin gets `409 "Failed to create booking"` — the same
 status and the same message as a genuine double-booking. A client cannot tell
 the two apart, yet "those dates are taken" and "you have the dates backwards"
 need different messages on screen.
 
+
+### Retired: a branding update that "wrote nothing"
+Listed until 2026-09-27 as *"`PUT /api/branding` answers 200 and discards the
+write"*. Re-measured after the sandbox was reseeded, it no longer holds: the write
+does land, but only **20–90 seconds** after the `200` - a marker became visible
+after 21 and 33 seconds, a restore after 61. The earlier one-minute observation
+is consistent with that delay rather than with a lost write.
+
+The test was removed rather than rewritten around the delay. Proving it means
+changing the public hotel name for everyone using the instance for a minute or
+two on every run, which is exactly the kind of pollution the rules below exist to
+avoid. The same re-measurement also turned up two things the old test had been
+hiding: the reseeded `logoUrl` is a relative path the validator itself rejects,
+and names now accept letters and `&` only - so every save the test attempted was
+a `400`, which a bare `test.fail()` had been counting as "defect still present".
 ---
 
 ## 🧹 Working against a shared instance
@@ -221,7 +239,9 @@ return one, so an undo written after the fact has nothing to hold onto.
 
 **3. No test asserts on a total.** Row counts, message counts and unread counts
 all belong to the whole instance, never to one test. Assertions are scoped to a
-known id, or to a direction of travel (`toBeLessThan`), never to an exact total.
+known id, or to an invariant that holds whatever else is in the instance - "the
+count equals the unread rows", "the badge shows the count the page received" -
+never to an exact total or to a before/after difference other writers can move.
 
 ---
 
@@ -237,7 +257,9 @@ the whole conclusion was suspect. Cloudflare reports `cf-cache-status: DYNAMIC`
 on the route, so CDN caching was ruled out too. The claim only went into the
 suite once a marker written to `name` had been polled every five seconds for a
 full minute — twelve reads, no change. The published finding is the one that
-survived that; the first draft would have been wrong.
+survived that; the first draft would have been wrong. And it did not last:
+re-measured after a reseed, the write lands 20–90 seconds later, so the entry has
+been retired (see "Retired" above). A minute was not long enough to wait.
 
 **Five leaked rooms.** The `test.fail` room-creation test registered its cleanup
 *after* the first assertion — in a test expected to fail on that very assertion,
@@ -260,7 +282,7 @@ now.
 
 Eight consecutive full runs, ~18 seconds each.
 
-Seven were clean at 56/56. One run had a single failure on a booking test that
+Seven were clean at 56/56 (the count before the branding test was retired). One run had a single failure on a booking test that
 could not be reproduced in six targeted repeats, and which came back as a `500`
 from the host. Concurrency was investigated and ruled out as the cause: 22 rooms
 created four-at-a-time and then sequentially returned `200` every time.

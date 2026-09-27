@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/api';
+import { test, expect, markKnownDefect } from '../../fixtures/api';
 import { AdminPage } from '../../pages/AdminPage';
 import { FrontPage } from '../../pages/FrontPage';
 import { buildRoom, uniqueRoomName } from '../../data/testData';
@@ -33,11 +33,21 @@ test.describe('Room state crosses the API/UI boundary', () => {
     await expect(admin.roomNameCell(payload.roomName)).toHaveText(payload.roomName);
   });
 
-  test('The public page shows the seeded rooms', async ({ page }) => {
+  test('The public page lists rooms from the room service', async ({ page, rooms }) => {
     const front = new FrontPage(page);
     await front.open();
 
-    await expect(front.roomCards()).toHaveCount(3);
+    /**
+     * No exact total - rule 3 in the README. The room count belongs to the whole
+     * public instance, so "three cards" only held while nobody else had a room
+     * listed, and would break the day defect #4 is fixed and extra rooms start
+     * rendering. What this test can own: the page renders rooms, and never more
+     * than the room service knows about.
+     */
+    await expect(front.roomCards().first()).toBeVisible();
+    const cards = await front.roomCards().count();
+    const known = (await rooms.listRoomsAsync()).length;
+    expect(cards, 'the public page should not invent rooms').toBeLessThanOrEqual(known);
   });
 
   /**
@@ -55,8 +65,12 @@ test.describe('Room state crosses the API/UI boundary', () => {
    * Commercially this is the most expensive defect here - a room the hotel has
    * published cannot be booked by anyone, and nothing in the admin UI hints at
    * it, because the admin table shows the room quite happily.
+   *
+   * Expected to fail only when the page rendered and simply left the room out
+   * (or, once fixed, shows it). A room that could not be created, or a page that
+   * never rendered, is a different problem and fails for real.
    */
-  test.fail('DEFECT: a room created over HTTP is never offered to the public', async ({
+  test('DEFECT: a room created over HTTP is never offered to the public', async ({
     page,
     rooms,
     janitor,
@@ -69,9 +83,15 @@ test.describe('Room state crosses the API/UI boundary', () => {
 
     const front = new FrontPage(page);
     await front.open();
+    await expect(front.roomCards().first()).toBeVisible();
 
     // Matched on price, because the public cards are titled by type - a room
     // named "104" renders as "Suite", so the name is not on screen at all.
+    const shown = await front.cardForPrice(payload.roomPrice).count();
+    markKnownDefect(
+      { documented: shown === 0, fixed: shown === 1 },
+      'Known defect #4: a room created over HTTP is not rendered on the public page'
+    );
     await expect(front.cardForPrice(payload.roomPrice)).toHaveCount(1);
   });
 

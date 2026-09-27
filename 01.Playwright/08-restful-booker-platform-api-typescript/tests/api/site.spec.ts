@@ -44,43 +44,6 @@ test.describe('Branding', () => {
   });
 });
 
-test.describe('Branding - known defects', () => {
-  /**
-   * The update endpoint answers 200 {"success": true} and writes nothing.
-   *
-   * Established carefully, because the first reading of it was wrong. A single
-   * write-then-read looked like a stale cache, and Cloudflare reports
-   * cf-cache-status: DYNAMIC on this route, so caching was ruled out. The
-   * settled evidence is a marker written to `name`, followed by a GET every
-   * five seconds for a full minute: twelve reads, no change, on a response that
-   * had already claimed success.
-   *
-   * A silent no-op behind a success status is the worst of both worlds. An
-   * error at least tells the caller to retry or to warn someone; this tells
-   * every client that the save worked.
-   *
-   * No cleanup is registered here, and that is not an oversight - the defect
-   * being documented is precisely that nothing is ever written.
-   */
-  test.fail('DEFECT: an accepted branding update reports success but changes nothing', async ({
-    site,
-  }) => {
-    const original = (await (await site.getBranding()).json()) as Branding;
-    const marker = `Probe ${Date.now()}`;
-
-    const response = await site.updateBranding({ ...original, name: marker });
-    expect(response.status()).toBe(200);
-    expect(await response.json()).toMatchObject({ success: true });
-
-    await expect
-      .poll(
-        async () => ((await (await site.getBranding()).json()) as Branding).name,
-        { timeout: 15_000, message: 'the update reported success, so it should become visible' }
-      )
-      .toBe(marker);
-  });
-});
-
 test.describe('Report', () => {
   test('The report is protected and matches its contract', async ({ site, request }) => {
     expect((await request.get('/api/report')).status()).toBe(401);

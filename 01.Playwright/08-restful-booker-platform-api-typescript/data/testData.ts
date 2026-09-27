@@ -18,30 +18,38 @@ export const AdminCredentials = {
  *
  * The counter alone is not enough: Playwright runs each worker in its own
  * process, so every worker would start from 1 and hand out the same values.
- * The seed mixes in the process id, which separates workers within a run, and
- * the clock, which separates one run from the next - including a colleague's
- * run against the same public instance. Six digits is a compromise: long
- * enough that a collision needs two workers to start in the same millisecond,
- * short enough to leave room in the fields that carry it.
+ * The suffix is therefore three separate parts, never truncated:
+ *
+ *  - a run tag from the clock (base 36), which separates one run from the next
+ *    - including a colleague's run against the same public instance;
+ *  - the worker index Playwright assigns (TEST_WORKER_INDEX, unique per worker
+ *    within a run, restarts included), which separates workers;
+ *  - the counter, which separates calls within a worker.
+ *
+ * The letters between the parts matter. Without them worker 1 / call 12 and
+ * worker 11 / call 2 both read "112", and an earlier version that sliced a fixed
+ * number of digits off a mixed seed lost the worker part altogether - two
+ * workers could get the same room name, and cleanup by name would then delete
+ * the other worker's room.
  */
 let sequence = 0;
-const runSeed = `${process.pid}${Date.now()}`.slice(-6);
+const runTag = Date.now().toString(36).slice(-5);
+const workerTag = process.env.TEST_WORKER_INDEX ?? String(process.pid);
 
 function nextSuffix(): string {
   sequence += 1;
-  return `${runSeed}${sequence}`;
+  return `${runTag}w${workerTag}n${sequence}`;
 }
 
 /**
- * A room name unique across workers and runs, kept deliberately short.
+ * A room name unique across workers and runs.
  *
- * Short because the admin table builds element ids out of the value it renders
- * - a room called 101 becomes `#roomName101` - so the name ends up inside a
- * selector, and a long random string there makes failures painful to read.
- * The last five digits keep the seed's most-varying part.
+ * Letters and digits only, because the admin table builds element ids out of
+ * the value it renders - a room called 101 becomes `#roomName101` - so the name
+ * ends up inside a selector.
  */
 export function uniqueRoomName(): string {
-  return nextSuffix().slice(-5);
+  return nextSuffix();
 }
 
 /**

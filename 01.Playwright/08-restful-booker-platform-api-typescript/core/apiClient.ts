@@ -81,6 +81,21 @@ export interface RequestOptions {
 }
 
 /**
+ * Throws, with the status and body, when a typed helper's request did not succeed.
+ *
+ * Only the `…Async` helpers use this - the raw methods still hand back whatever
+ * the service said. The helpers are what specs build on ("the list of bookings",
+ * "the inbox"), and a helper that turns a 401 or a 500 into an empty list makes
+ * every "the deleted item is gone" poll pass on its first read, proving nothing.
+ */
+export async function ensureOk(response: APIResponse, what: string): Promise<APIResponse> {
+  if (!response.ok()) {
+    throw new Error(`${what} failed with ${response.status()}: ${await response.text()}`);
+  }
+  return response;
+}
+
+/**
  * Reads the body as JSON without throwing when the service answers with an
  * empty payload. Several endpoints here reply 202 with no content at all, and
  * `response.json()` on an empty body is a parse error rather than a test

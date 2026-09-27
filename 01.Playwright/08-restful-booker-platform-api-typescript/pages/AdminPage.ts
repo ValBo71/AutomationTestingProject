@@ -86,10 +86,30 @@ export class AdminPage {
     return this.messagesNavLink().locator('.badge');
   }
 
+  /**
+   * The badge is not rendered at all while nothing is unread, so a missing
+   * badge reads as 0 rather than waiting for an element that will never come.
+   */
   async unreadBadgeCountAsync(): Promise<number> {
+    if ((await this.unreadBadge().count()) === 0) return 0;
     const text = (await this.unreadBadge().innerText()).trim();
     const parsed = Number(text);
     return Number.isNaN(parsed) ? 0 : parsed;
+  }
+
+  /**
+   * Reloads the page and returns the unread count the page itself received
+   * from /api/message/count on the way in - the number the badge is supposed to
+   * render, captured from the same request rather than from a second call that
+   * other users could change in between.
+   */
+  async reloadAndCaptureUnreadCountAsync(): Promise<number> {
+    const [response] = await Promise.all([
+      this.page.waitForResponse((r) => r.url().includes('/api/message/count') && r.request().method() === 'GET'),
+      this.page.reload(),
+    ]);
+    const body = (await response.json()) as { count: number };
+    return body.count;
   }
 
   messageRows() {

@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/api';
+import { test, expect, markKnownDefect } from '../../fixtures/api';
 import { buildRoom, Expected } from '../../data/testData';
 import { assertMatchesSchema, RoomListSchema, RoomSchema } from '../../schemas/schemas';
 
@@ -119,10 +119,15 @@ test.describe('Rooms - known defects', () => {
    * rather than a 404. The response even leaks the internal path ("/room/9999"),
    * confirming the gateway prefix is stripped before the service sees it.
    */
-  test.fail('DEFECT: an unknown room id returns 500 instead of 404', async ({ rooms }) => {
+  test('DEFECT: an unknown room id returns 500 instead of 404', async ({ rooms }) => {
     const response = await rooms.getById(999_999);
+    const status = response.status();
 
-    expect(response.status()).toBe(404);
+    markKnownDefect(
+      { documented: status === 500, fixed: status === 404 },
+      'Known defect #5: an unknown room id answers 500 instead of 404'
+    );
+    expect(status).toBe(404);
   });
 
   /**
@@ -131,8 +136,12 @@ test.describe('Rooms - known defects', () => {
    * stands the caller has to re-read the whole collection and match on a name
    * to find out what it just made, which is what RoomClient.createRoomAsync
    * does. The booking service, in the same platform, does it correctly.
+   *
+   * Expected to fail only while creation still succeeds the documented way (200)
+   * or once it is fixed (201). A 4xx or 5xx means rooms cannot be created at all
+   * - a real failure, not this defect.
    */
-  test.fail('DEFECT: room creation answers 200 with no id instead of 201 with the room', async ({
+  test('DEFECT: room creation answers 200 with no id instead of 201 with the room', async ({
     rooms,
     janitor,
   }) => {
@@ -153,8 +162,13 @@ test.describe('Rooms - known defects', () => {
     );
 
     const response = await rooms.create(payload);
+    const status = response.status();
 
-    expect(response.status()).toBe(201);
+    markKnownDefect(
+      { documented: status === 200, fixed: status === 201 },
+      'Known defect #6: room creation answers 200 with no id instead of 201 with the room'
+    );
+    expect(status).toBe(201);
     const body = (await response.json()) as { roomid?: number };
     expect(body.roomid).toBeGreaterThan(0);
   });

@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/api';
+import { test, expect, markKnownDefect } from '../../fixtures/api';
 import { buildMessage, Expected } from '../../data/testData';
 import {
   assertMatchesSchema,
@@ -104,8 +104,12 @@ test.describe('Messages', () => {
     const marked = await messages.markRead(id);
     expect(marked.status()).toBe(202);
 
-    const afterRead = await messages.listMessagesAsync();
-    expect(afterRead.find((message) => message.id === id)?.read).toBe(true);
+    // 202 is "accepted", not "done" - the flag is polled, never read once.
+    await expect
+      .poll(async () => (await messages.listMessagesAsync()).find((message) => message.id === id)?.read, {
+        message: 'the message should become read after the 202',
+      })
+      .toBe(true);
   });
 
   test('The count endpoint reports unread messages, not all of them', async ({
@@ -117,7 +121,12 @@ test.describe('Messages', () => {
       messages.removeBySubjectAsync(payload.subject)
     );
     const id = await messages.createMessageAsync(payload);
-    await messages.markRead(id);
+    expect((await messages.markRead(id)).status()).toBe(202);
+    await expect
+      .poll(async () => (await messages.listMessagesAsync()).find((message) => message.id === id)?.read, {
+        message: 'this message must be read before the count can prove anything',
+      })
+      .toBe(true);
 
     /**
      * The endpoint is named "count" but reports an unread badge, and the way to
@@ -129,13 +138,18 @@ test.describe('Messages', () => {
      * messages sit unread, that is a coin flip, and it duly failed. Polled
      * because the two endpoints are read separately and other people keep
      * writing in between.
+     *
+     * The message marked read above is what makes the invariant meaningful: with
+     * at least one read message in the inbox, "count equals the unread rows" can
+     * only hold if the endpoint leaves read messages out - a count of everything
+     * would be larger. Without it, all-unread would make both numbers the total.
      */
     await expect
       .poll(async () => {
         const inbox = await messages.listMessagesAsync();
         const unreadInInbox = inbox.filter((message) => !message.read).length;
         const reported = await messages.unreadCountAsync();
-        return reported === unreadInInbox;
+        return inbox.some((message) => message.id === id && message.read) && reported === unreadInInbox;
       })
       .toBe(true);
 
@@ -172,22 +186,47 @@ test.describe('Messages - known defects', () => {
    * The room and booking services in the same platform do require one, so this
    * is a missing guard on one service rather than a platform-wide design.
    *
-   * Written as three separate assertions on purpose: whichever one is fixed
-   * first, the test starts reporting progress rather than staying red as a
-   * single lump.
+   * Three endpoints, checked independently with soft assertions, so a partial
+   * fix shows up in the report as the endpoints that are still open - rather
+   * than the first failure hiding the other two.
+   *
+   * The detail endpoint is probed with a message this test created itself,
+   * found through the authenticated inbox. An earlier version took the id from
+   * the anonymous list - so the day the list was guarded, the detail check,
+   * the one about personal data, would have been skipped without a word.
    */
-  test.fail('DEFECT: the inbox and its personal data are readable anonymously', async ({
-    request,
+  test('DEFECT: the inbox and its personal data are readable anonymously', async ({
+    messages,
     anonymousMessages,
+    janitor,
   }) => {
-    expect((await anonymousMessages.list()).status()).toBe(401);
-    expect((await anonymousMessages.unreadCount()).status()).toBe(401);
+    const payload = buildMessage();
+    janitor.register(`message "${payload.subject}"`, () =>
+      messages.removeBySubjectAsync(payload.subject)
+    );
+    const id = await messages.createMessageAsync(payload);
 
-    const anyMessage = (await anonymousMessages.listMessagesAsync())[0];
-    if (anyMessage) {
-      const detail = await request.get(`/api/message/${anyMessage.id}`);
-      expect(detail.status(), 'a guest e-mail and phone number must not be public').toBe(401);
-    }
+    const statuses = {
+      list: (await anonymousMessages.list()).status(),
+      count: (await anonymousMessages.unreadCount()).status(),
+      detail: (await anonymousMessages.getById(id)).status(),
+    };
+    const values = Object.values(statuses);
+    const guarded = (status: number) => status === 401 || status === 403;
+
+    markKnownDefect(
+      {
+        documented: values.every((status) => status === 200 || guarded(status)) && values.some((status) => status === 200),
+        fixed: values.every(guarded),
+      },
+      'Known defect #3: the message service answers anonymous reads'
+    );
+    expect.soft(guarded(statuses.list), `inbox list answered ${statuses.list} without a token`).toBe(true);
+    expect.soft(guarded(statuses.count), `unread count answered ${statuses.count} without a token`).toBe(true);
+    expect.soft(
+      guarded(statuses.detail),
+      `message detail (guest e-mail and phone) answered ${statuses.detail} without a token`
+    ).toBe(true);
   });
 });
 
