@@ -94,8 +94,13 @@ test.describe('Shadow DOM', () => {
 
     await contextPage.copyGuid();
 
-    const clipboard = await page.evaluate(() => navigator.clipboard.readText());
-    expect(clipboard).toBe(generated);
+    // The button writes with navigator.clipboard.writeText(), which resolves
+    // after the click returns, so the read is polled rather than done once.
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()), {
+        message: 'the copied GUID should reach the clipboard',
+      })
+      .toBe(generated);
   });
 });
 
@@ -106,14 +111,16 @@ test.describe('File Upload', () => {
     // Built at runtime so no binary fixture is committed.
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'utp-upload-'));
     const filePath = path.join(dir, TestData.upload.fileName);
-    fs.writeFileSync(filePath, TestData.upload.fileContent, 'utf-8');
+    try {
+      fs.writeFileSync(filePath, TestData.upload.fileContent, 'utf-8');
 
-    await contextPage.openFileUpload();
-    await contextPage.uploadFile(filePath);
+      await contextPage.openFileUpload();
+      await contextPage.uploadFile(filePath);
 
-    // The uploader lists the attached file once it is accepted.
-    await expect(contextPage.uploadFrameBody()).toContainText(TestData.upload.fileName);
-
-    fs.rmSync(dir, { recursive: true, force: true });
+      // The uploader lists the attached file once it is accepted.
+      await expect(contextPage.uploadFrameBody()).toContainText(TestData.upload.fileName);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
