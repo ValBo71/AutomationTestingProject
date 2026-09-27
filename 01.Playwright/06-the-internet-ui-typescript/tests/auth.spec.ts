@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Browser, BrowserContext, BrowserContextOptions } from '@playwright/test';
 import { AuthPage } from '../pages/AuthPage';
 import { Credentials, Expected, Routes } from '../data/testData';
 
@@ -93,56 +93,71 @@ test.describe('Forgot Password', () => {
   });
 });
 
+/**
+ * A context made by hand is not closed by Playwright the way the built-in
+ * `page` fixture is, so a failed assertion would leave it open for the rest of
+ * the worker. Running the body inside try/finally closes it either way.
+ */
+async function withContext(
+  browser: Browser,
+  options: BrowserContextOptions,
+  body: (context: BrowserContext) => Promise<void>
+): Promise<void> {
+  const context = await browser.newContext(options);
+  try {
+    await body(context);
+  } finally {
+    await context.close();
+  }
+}
+
 test.describe('HTTP authentication', () => {
   // Basic and Digest auth cannot be typed into the page - the credentials have
   // to be supplied at the browser-context level before the request is made.
   test('Basic Auth succeeds with credentials supplied by the context', async ({ browser }) => {
-    const context = await browser.newContext({ httpCredentials: Credentials.basicAuth });
-    const page = await context.newPage();
+    await withContext(browser, { httpCredentials: Credentials.basicAuth }, async (context) => {
+      const page = await context.newPage();
 
-    const response = await page.goto(Routes.basicAuth);
+      const response = await page.goto(Routes.basicAuth);
 
-    expect(response?.status()).toBe(200);
-    await expect(page.locator('#content p')).toHaveText(Expected.basicAuthSuccess);
-
-    await context.close();
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('#content p')).toHaveText(Expected.basicAuthSuccess);
+    });
   });
 
   test('Basic Auth is refused with a 401 when no credentials are sent', async ({ browser }) => {
-    const context = await browser.newContext();
-    const page = await context.newPage();
+    await withContext(browser, {}, async (context) => {
+      const page = await context.newPage();
 
-    const response = await page.goto(Routes.basicAuth);
+      const response = await page.goto(Routes.basicAuth);
 
-    expect(response?.status()).toBe(401);
-
-    await context.close();
+      expect(response?.status()).toBe(401);
+    });
   });
 
   test('Digest Auth succeeds with credentials supplied by the context', async ({ browser }) => {
-    const context = await browser.newContext({ httpCredentials: Credentials.basicAuth });
-    const page = await context.newPage();
+    await withContext(browser, { httpCredentials: Credentials.basicAuth }, async (context) => {
+      const page = await context.newPage();
 
-    const response = await page.goto(Routes.digestAuth);
+      const response = await page.goto(Routes.digestAuth);
 
-    expect(response?.status()).toBe(200);
-    await expect(page.locator('#content p')).toHaveText(Expected.digestAuthSuccess);
-
-    await context.close();
+      expect(response?.status()).toBe(200);
+      await expect(page.locator('#content p')).toHaveText(Expected.digestAuthSuccess);
+    });
   });
 
   test('Secure File Download is protected by Basic Auth', async ({ browser }) => {
-    const anonymousContext = await browser.newContext();
-    const anonymousPage = await anonymousContext.newPage();
-    const unauthorised = await anonymousPage.goto(Routes.secureFileDownload);
-    expect(unauthorised?.status()).toBe(401);
-    await anonymousContext.close();
+    await withContext(browser, {}, async (context) => {
+      const anonymousPage = await context.newPage();
+      const unauthorised = await anonymousPage.goto(Routes.secureFileDownload);
+      expect(unauthorised?.status()).toBe(401);
+    });
 
-    const authorisedContext = await browser.newContext({ httpCredentials: Credentials.basicAuth });
-    const authorisedPage = await authorisedContext.newPage();
-    const authorised = await authorisedPage.goto(Routes.secureFileDownload);
-    expect(authorised?.status()).toBe(200);
-    await expect(authorisedPage.locator('h3')).toHaveText('Secure File Downloader');
-    await authorisedContext.close();
+    await withContext(browser, { httpCredentials: Credentials.basicAuth }, async (context) => {
+      const authorisedPage = await context.newPage();
+      const authorised = await authorisedPage.goto(Routes.secureFileDownload);
+      expect(authorised?.status()).toBe(200);
+      await expect(authorisedPage.locator('h3')).toHaveText('Secure File Downloader');
+    });
   });
 });

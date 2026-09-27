@@ -43,8 +43,9 @@ export class FramePage extends BasePage {
 
   /**
    * The layout is a frameset: frame-top holds left/middle/right, and
-   * frame-bottom sits beside it. Reaching the inner three means chaining
-   * two frame lookups rather than one.
+   * frame-bottom sits beside it. page.frame({ name }) searches the whole frame
+   * tree, so the inner three are found with the same single lookup as
+   * frame-bottom - no chaining through frame-top is needed.
    */
   async getNestedFrameTextAsync(frameName: string): Promise<string> {
     const frame = this.page.frame({ name: frameName });

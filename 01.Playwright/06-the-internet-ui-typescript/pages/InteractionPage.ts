@@ -24,28 +24,14 @@ export class InteractionPage extends BasePage {
   }
 
   /**
-   * The page uses the HTML5 drag-and-drop API, which Playwright's dragTo()
-   * does not reliably trigger here. Dispatching the events manually is the
-   * documented workaround and is what makes this challenge non-trivial.
+   * The page uses the HTML5 drag-and-drop API. A real pointer drag through
+   * dragTo() drives it - verified against the live page - so no events are
+   * dispatched by hand. An earlier version faked the drag with synthetic
+   * DragEvents, which proved only that the page's JavaScript handler works,
+   * not that a user dragging the column gets the same result.
    */
   async dragColumnAOntoB() {
-    await this.page.evaluate(
-      ([sourceSelector, targetSelector]) => {
-        const source = document.querySelector(sourceSelector);
-        const target = document.querySelector(targetSelector);
-        if (!source || !target) {
-          throw new Error('Drag and drop columns were not found on the page.');
-        }
-
-        const dataTransfer = new DataTransfer();
-        source.dispatchEvent(new DragEvent('dragstart', { bubbles: true, dataTransfer }));
-        target.dispatchEvent(new DragEvent('dragenter', { bubbles: true, dataTransfer }));
-        target.dispatchEvent(new DragEvent('dragover', { bubbles: true, dataTransfer }));
-        target.dispatchEvent(new DragEvent('drop', { bubbles: true, dataTransfer }));
-        source.dispatchEvent(new DragEvent('dragend', { bubbles: true, dataTransfer }));
-      },
-      [InteractionSelectors.columnA, InteractionSelectors.columnB]
-    );
+    await this.columnA().dragTo(this.columnB());
   }
 
   async getColumnHeaderAsync(columnSelector: string): Promise<string> {
@@ -98,6 +84,17 @@ export class InteractionPage extends BasePage {
 
   downloadsMenuItem() {
     return this.page.locator(InteractionSelectors.downloadsMenuItem);
+  }
+
+  pdfMenuItem() {
+    return this.page.locator(InteractionSelectors.pdfDownload);
+  }
+
+  /** Downloads opens its own submenu on hover, one level below Enabled. */
+  async openPdfItem() {
+    await this.openDownloadsSubmenu();
+    await this.downloadsMenuItem().hover();
+    await this.pdfMenuItem().waitFor({ state: 'visible' });
   }
 
   /** "Enabled" opens a submenu on hover, and only then is "Downloads" reachable. */

@@ -92,8 +92,16 @@ export class DynamicPage extends BasePage {
     await this.goto(Routes.shiftingContent);
   }
 
+  async openShiftingContentWithShift() {
+    await this.goto(Routes.shiftingContentWithShift);
+  }
+
   shiftingMenuItems() {
     return this.page.locator(DynamicSelectors.shiftingMenu);
+  }
+
+  shiftingMenuLink(text: string) {
+    return this.shiftingMenuItems().getByRole('link', { name: text });
   }
 
   // ----- /slow -----

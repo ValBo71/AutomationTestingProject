@@ -104,14 +104,24 @@ test.describe('Content that changes between loads', () => {
     expect(links).toContain('Home');
   });
 
-  test('Shifting Content: the menu is still usable after the layout shifts', async () => {
-    await dynamicPage.openShiftingContent();
+  test('Shifting Content: the menu is still usable after the layout shifts', async ({ page }) => {
+    // With pixel_shift the page moves "Gallery" 100px on alternate loads.
+    // Loading until its position changes proves the shift really happened,
+    // so the click below is made on a shifted layout rather than a static one.
+    await dynamicPage.openShiftingContentWithShift();
+    const gallery = dynamicPage.shiftingMenuLink('Gallery');
+    const firstX = (await gallery.boundingBox())!.x;
 
-    const items = dynamicPage.shiftingMenuItems();
-    await expect(items.first()).toBeVisible();
+    let shiftedX = firstX;
+    for (let load = 0; load < 5 && shiftedX === firstX; load++) {
+      await page.reload();
+      shiftedX = (await gallery.boundingBox())!.x;
+    }
+    expect(Math.abs(shiftedX - firstX), 'the menu item should move between loads').toBe(100);
 
-    // The item count shifts between loads; the locator must not depend on it.
-    expect(await items.count()).toBeGreaterThan(0);
+    // The locator is by role and name, not position, so it still hits the item.
+    await gallery.click();
+    await expect(page).toHaveURL(/\/gallery\/$/);
   });
 
   test('Infinite Scroll: scrolling appends more content blocks', async ({ page }) => {

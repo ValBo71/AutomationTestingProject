@@ -32,7 +32,9 @@ test.describe('Difficult DOM structures', () => {
   test('Challenging DOM: the table has 10 rows and 7 columns and a canvas is present', async () => {
     await domPage.openChallengingDom();
 
+    await expect(domPage.challengeTableHeaders()).toHaveCount(7);
     await expect(domPage.challengeTableRows()).toHaveCount(10);
+    await expect(domPage.challengeTableRows().first().locator('td')).toHaveCount(7);
     expect(await domPage.getCellTextAsync(0, 0)).not.toBe('');
     await expect(domPage.canvas()).toBeVisible();
   });
@@ -71,11 +73,22 @@ test.describe('Difficult DOM structures', () => {
   test('Shadow DOM: slotted text inside the shadow root is readable', async () => {
     await domPage.openShadowDom();
 
-    // Playwright pierces open shadow roots, so no manual traversal is needed -
-    // this is where Selenium would require getShadowRoot() gymnastics.
+    // The two texts are light-DOM children of <my-paragraph>, so finding them
+    // alone would pass on a page with no shadow root at all.
     for (const expectedText of Expected.shadowDomTexts) {
       await expect(domPage.shadowHost().filter({ hasText: expectedText }).first()).toBeVisible();
     }
+
+    // What makes it a shadow-DOM page: each host has a shadow root, and its
+    // text is rendered through that root's <slot> rather than on its own.
+    await expect(domPage.shadowHost()).toHaveCount(Expected.shadowDomTexts.length);
+    expect(await domPage.getShadowSlotStatesAsync()).toEqual(
+      Expected.shadowDomTexts.map(() => ({ hasShadowRoot: true, renderedThroughSlot: true }))
+    );
+
+    // Playwright pierces open shadow roots, so the slot inside is reachable
+    // with a plain locator - where Selenium would need getShadowRoot().
+    await expect(domPage.shadowHost().first().locator('slot[name="my-text"]')).toHaveCount(1);
   });
 
   test('Broken Images: exactly two of the three images fail to load', async () => {

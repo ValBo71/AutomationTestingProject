@@ -52,33 +52,51 @@ test.describe('Files', () => {
 
     // Build the file at runtime so the repo carries no binary fixture.
     const uploadDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pw-upload-'));
-    const filePath = path.join(uploadDir, TestData.uploadFileName);
-    fs.writeFileSync(filePath, TestData.uploadFileContent, 'utf-8');
+    try {
+      const filePath = path.join(uploadDir, TestData.uploadFileName);
+      fs.writeFileSync(filePath, TestData.uploadFileContent, 'utf-8');
 
-    await navigationPage.openFileUpload();
-    await navigationPage.uploadFile(filePath);
+      await navigationPage.openFileUpload();
+      await navigationPage.uploadFile(filePath);
 
-    await expect(navigationPage.heading()).toHaveText(Expected.uploadSuccessHeading);
-    await expect(navigationPage.uploadedFiles()).toHaveText(TestData.uploadFileName);
-
-    fs.rmSync(uploadDir, { recursive: true, force: true });
+      await expect(navigationPage.heading()).toHaveText(Expected.uploadSuccessHeading);
+      await expect(navigationPage.uploadedFiles()).toHaveText(TestData.uploadFileName);
+    } finally {
+      fs.rmSync(uploadDir, { recursive: true, force: true });
+    }
   });
 
-  test('File Download: a file is downloaded and arrives with content', async ({ page }) => {
+  test('File Download: a file is downloaded and arrives with its content', async ({ page }) => {
     const navigationPage = new NavigationPage(page);
+
+    /**
+     * The download list is whatever other visitors have uploaded to this
+     * public instance, so any file already there has unknown content - and may
+     * be gone by the next run. The test therefore uploads a file of its own
+     * with a unique name and known content, then downloads exactly that one.
+     */
+    const fileName = `pw-download-${Date.now().toString(36)}-${test.info().workerIndex}.txt`;
+    const content = `Downloaded by the Playwright suite: ${fileName}`;
+    const uploadDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pw-download-'));
+    try {
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, content, 'utf-8');
+      await navigationPage.openFileUpload();
+      await navigationPage.uploadFile(filePath);
+      await expect(navigationPage.uploadedFiles()).toHaveText(fileName);
+    } finally {
+      fs.rmSync(uploadDir, { recursive: true, force: true });
+    }
+
     await navigationPage.openFileDownload();
+    const link = navigationPage.downloadLinks().filter({ hasText: fileName });
+    await expect(link).toHaveCount(1);
 
-    const links = navigationPage.downloadLinks();
-    expect(await links.count()).toBeGreaterThan(0);
+    const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
 
-    const [download] = await Promise.all([
-      page.waitForEvent('download'),
-      links.first().click(),
-    ]);
-
+    expect(download.suggestedFilename()).toBe(fileName);
     const savedPath = await download.path();
-    expect(savedPath).toBeTruthy();
-    expect(download.suggestedFilename().length).toBeGreaterThan(0);
+    expect(fs.readFileSync(savedPath, 'utf-8')).toBe(content);
   });
 });
 
@@ -90,16 +108,19 @@ test.describe('Browser permissions', () => {
       permissions: ['geolocation'],
       geolocation: { latitude: 42.6977, longitude: 23.3219 }, // Sofia
     });
-    const page = await context.newPage();
-    const navigationPage = new NavigationPage(page);
+    try {
+      const page = await context.newPage();
+      const navigationPage = new NavigationPage(page);
 
-    await navigationPage.openGeolocation();
-    await navigationPage.requestLocation();
+      await navigationPage.openGeolocation();
+      await navigationPage.requestLocation();
 
-    await expect(navigationPage.latitude()).toContainText('42.69');
-    await expect(navigationPage.longitude()).toContainText('23.32');
-
-    await context.close();
+      await expect(navigationPage.latitude()).toContainText('42.69');
+      await expect(navigationPage.longitude()).toContainText('23.32');
+    } finally {
+      // A hand-made context is not closed by Playwright, even when the test fails.
+      await context.close();
+    }
   });
 });
 

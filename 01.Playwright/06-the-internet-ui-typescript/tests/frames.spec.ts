@@ -53,8 +53,9 @@ test.describe('Frames', () => {
   test('Nested Frames: all four inner frames are reachable', async () => {
     await framePage.openNestedFrames();
 
-    // frame-left/middle/right live inside frame-top, so reaching them means
-    // resolving a frame within a frame rather than a single lookup.
+    // frame-left/middle/right live inside frame-top, yet a single lookup by
+    // name reaches them: page.frame() searches every frame in the page, nested
+    // ones included, so no chaining through frame-top is needed.
     expect(await framePage.getNestedFrameTextAsync('frame-left')).toBe(
       Expected.nestedFrameTexts.left
     );

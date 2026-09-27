@@ -53,23 +53,36 @@ test.describe('Mouse interactions', () => {
     await expect(firstCaption).toContainText('name: user1');
   });
 
-  test('JQuery UI Menus: a submenu opens on hover and its items become clickable', async () => {
+  test('JQuery UI Menus: nested submenus open on hover and their items can be clicked', async ({
+    page,
+  }) => {
     await interactionPage.openJqueryUiMenu();
 
     await expect(interactionPage.downloadsMenuItem()).toBeHidden();
+    await expect(interactionPage.pdfMenuItem()).toBeHidden();
 
-    await interactionPage.openDownloadsSubmenu();
+    await interactionPage.openPdfItem();
 
-    await expect(interactionPage.downloadsMenuItem()).toBeVisible();
+    // Clicking is the proof the item is usable, not just shown: PDF downloads
+    // the file the menu points at.
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      interactionPage.pdfMenuItem().click(),
+    ]);
+    expect(download.suggestedFilename()).toBe(Expected.jqueryUiPdfFileName);
   });
 
-  test('Floating Menu: the menu stays visible after scrolling down', async () => {
+  test('Floating Menu: the menu stays visible after scrolling down', async ({ page }) => {
     await interactionPage.openFloatingMenu();
 
     const menu = interactionPage.floatingMenu();
     await expect(menu).toBeVisible();
 
     await interactionPage.scrollToBottom();
+
+    // Without this the test would pass on a page that never scrolled, where
+    // any menu at the top is trivially in the viewport.
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
 
     // The whole point of a floating menu: it must survive the scroll.
     await expect(menu).toBeInViewport();

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { FormPage } from '../pages/FormPage';
-import { Expected, TestData } from '../data/testData';
+import { Expected, Routes, TestData } from '../data/testData';
 
 test.describe('Forms and simple inputs', () => {
   let formPage: FormPage;
@@ -85,13 +85,14 @@ test.describe('Forms and simple inputs', () => {
   });
 });
 
-test.describe('Authentication forms', () => {
-  test('A/B Test: the page renders one of the two known variations', async ({ page }) => {
+test.describe('A/B testing', () => {
+  test('A/B Test: the page renders one of the known headings', async ({ page }) => {
     const formPage = new FormPage(page);
-    await formPage.goto('/abtest');
+    await formPage.goto(Routes.abTest);
 
     // Which variation is served is decided by a cookie, so the test asserts
-    // membership of the known set rather than one fixed heading.
+    // membership of the known set - control, variation, or the "No A/B Test"
+    // fallback - rather than one fixed heading.
     const heading = await formPage.heading().innerText();
     expect(Expected.abTestHeadings).toContain(heading.trim());
   });

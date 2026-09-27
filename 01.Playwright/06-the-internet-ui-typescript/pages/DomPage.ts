@@ -27,6 +27,10 @@ export class DomPage extends BasePage {
     return this.page.locator(DomSelectors.challengeButtons);
   }
 
+  challengeTableHeaders() {
+    return this.page.locator(DomSelectors.challengeTableHeaders);
+  }
+
   challengeTableRows() {
     return this.page.locator(DomSelectors.challengeTableRows);
   }
@@ -91,6 +95,31 @@ export class DomPage extends BasePage {
    */
   shadowHost() {
     return this.page.locator(DomSelectors.shadowHost);
+  }
+
+  /**
+   * For each host: whether it has a shadow root, and whether its light-DOM
+   * content is assigned to a <slot> inside that root - i.e. actually rendered
+   * through the shadow tree rather than merely sitting in the page.
+   */
+  async getShadowSlotStatesAsync(): Promise<
+    Array<{ hasShadowRoot: boolean; renderedThroughSlot: boolean }>
+  > {
+    return this.shadowHost().evaluateAll((hosts) =>
+      hosts.map((host) => {
+        const root = host.shadowRoot;
+        const children = Array.from(host.children);
+        return {
+          hasShadowRoot: root !== null,
+          renderedThroughSlot:
+            root !== null &&
+            children.length > 0 &&
+            children.every(
+              (child) => child.assignedSlot !== null && child.assignedSlot.getRootNode() === root
+            ),
+        };
+      })
+    );
   }
 
   // ----- /broken_images -----
