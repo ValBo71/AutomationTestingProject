@@ -78,7 +78,7 @@ test.describe('Messages cross the API/UI boundary', () => {
     await expect(admin.messageRows().first()).toBeVisible();
   });
 
-  test('The navigation badge counts unread messages and drops when one is read', async ({
+  test('The navigation badge shows the unread count and stops counting a read message', async ({
     page,
     messages,
     adminToken,
@@ -94,23 +94,35 @@ test.describe('Messages cross the API/UI boundary', () => {
     await admin.loginWithTokenAsync(adminToken);
     await admin.open();
 
+    // Our message is unread, so there is at least one thing for the badge to show.
     await expect(admin.unreadBadge()).toBeVisible();
-    const withUnread = await admin.unreadBadgeCountAsync();
-    expect(withUnread).toBeGreaterThan(0);
+    expect(await admin.unreadBadgeCountAsync()).toBeGreaterThan(0);
 
-    await messages.markRead(id);
-    await page.reload();
+    expect((await messages.markRead(id)).status()).toBe(202);
+    await expect
+      .poll(async () => (await messages.listMessagesAsync()).find((message) => message.id === id)?.read, {
+        message: 'the message should be read before the badge is checked',
+      })
+      .toBe(true);
 
     /**
-     * Compared as "lower than before" rather than "exactly one lower". The
-     * instance is public and this suite's own workers run in parallel, so the
-     * badge is never a number this test owns outright - only its direction of
-     * travel is safe to assert.
+     * Neither "lower than before" nor "exactly one lower" - both depend on what
+     * other people and this suite's own workers do to the shared inbox in
+     * between. An earlier "lower than before" passed when a parallel test
+     * deleted its own unread message, and failed when the count reached zero and
+     * the badge disappeared, although both were correct behaviour.
+     *
+     * What this test does own: our message is now read (checked above), and the
+     * badge shows exactly the unread count the page received on the same load.
+     * That proves the badge renders the unread count - which no longer includes
+     * this message - whatever anyone else is doing. Polled, because the count
+     * arrives asynchronously after the page loads.
      */
+    const reported = await admin.reloadAndCaptureUnreadCountAsync();
     await expect
       .poll(() => admin.unreadBadgeCountAsync(), {
-        message: 'marking a message read should lower the unread badge',
+        message: 'the badge should show the unread count the page received',
       })
-      .toBeLessThan(withUnread);
+      .toBe(reported);
   });
 });

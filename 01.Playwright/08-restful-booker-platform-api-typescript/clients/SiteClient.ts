@@ -1,5 +1,5 @@
 import { APIResponse } from '@playwright/test';
-import { ApiClient } from '../core/apiClient';
+import { ApiClient, ensureOk } from '../core/apiClient';
 import { Api } from '../data/endpoints';
 
 export interface Branding {
@@ -49,7 +49,7 @@ export class SiteClient extends ApiClient {
   }
 
   async reportEntriesAsync(): Promise<ReportEntry[]> {
-    const response = await this.getReport();
+    const response = await ensureOk(await this.getReport(), 'Reading the report');
     const body = (await response.json()) as { report: ReportEntry[] };
     return body.report ?? [];
   }

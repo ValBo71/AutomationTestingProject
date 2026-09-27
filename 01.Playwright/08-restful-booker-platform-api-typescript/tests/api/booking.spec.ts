@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/api';
+import { test, expect, markKnownDefect } from '../../fixtures/api';
 import { Room } from '../../clients/RoomClient';
 import { buildBooking, buildRoom, Expected, futureStay } from '../../data/testData';
 import { assertMatchesSchema, BookingListSchema, BookingSchema } from '../../schemas/schemas';
@@ -169,8 +169,11 @@ test.describe('Bookings - known defects', () => {
    * The practical cost is that a client cannot tell the two apart: "those dates
    * are taken, pick others" and "you have the dates backwards" need different
    * messages in the UI, and this response supports neither.
+   *
+   * Marked expected-to-fail only for the documented 409 (or the fixed 400). A
+   * 201 would be a worse bug - the booking accepted - and must fail for real.
    */
-  test.fail('DEFECT: a reversed date range is reported as a conflict, not a bad request', async ({
+  test('DEFECT: a reversed date range is reported as a conflict, not a bad request', async ({
     rooms,
     bookings,
     janitor,
@@ -187,8 +190,19 @@ test.describe('Bookings - known defects', () => {
         bookingdates: { checkin: stay.checkout, checkout: stay.checkin },
       })
     );
+    const status = response.status();
 
-    expect(response.status()).toBe(400);
+    if (status === 201) {
+      // Accepted despite the reversed dates: make sure it does not stay behind.
+      const created = (await response.json()) as { bookingid: number };
+      janitor.register(`booking ${created.bookingid}`, () => bookings.remove(created.bookingid));
+    }
+
+    markKnownDefect(
+      { documented: status === 409, fixed: status === 400 },
+      'Known defect #7: a reversed date range answers 409 instead of 400'
+    );
+    expect(status).toBe(400);
   });
 });
 

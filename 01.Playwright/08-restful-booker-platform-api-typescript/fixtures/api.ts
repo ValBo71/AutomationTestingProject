@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, APIResponse } from '@playwright/test';
 import { AuthClient } from '../clients/AuthClient';
 import { BookingClient } from '../clients/BookingClient';
 import { MessageClient } from '../clients/MessageClient';
@@ -17,6 +17,12 @@ import { SiteClient } from '../clients/SiteClient';
  * off, and a failure to clean up is reported without failing the test that
  * already passed - the test's own verdict should not be rewritten by the
  * janitor.
+ *
+ * "Reported" covers both ways a cleanup can fail: an undo that throws, and an
+ * undo whose request the service refused. The clients never throw on a 4xx or
+ * 5xx, so an undo returns its APIResponse and the janitor inspects it - without
+ * that, a delete answered with 401 or 500 would leak silently. A 404 is not a
+ * failure: the item is already gone, usually because the test deleted it itself.
  */
 export class Janitor {
   private readonly undo: Array<{ label: string; run: () => Promise<unknown> }> = [];
@@ -28,13 +34,27 @@ export class Janitor {
   async runAsync(): Promise<void> {
     for (const item of this.undo.reverse()) {
       try {
-        await item.run();
+        const result = await item.run();
+        if (isApiResponse(result) && !result.ok() && result.status() !== 404) {
+          console.warn(
+            `[janitor] could not clean up ${item.label}: the service answered ${result.status()} ${await result.text()}`
+          );
+        }
       } catch (error) {
         console.warn(`[janitor] could not clean up ${item.label}: ${String(error)}`);
       }
     }
     this.undo.length = 0;
   }
+}
+
+function isApiResponse(value: unknown): value is APIResponse {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as APIResponse).ok === 'function' &&
+    typeof (value as APIResponse).status === 'function'
+  );
 }
 
 interface ApiFixtures {
@@ -112,14 +132,42 @@ export const test = base.extend<ApiFixtures>({
   },
 
   /**
-   * Declared last on purpose. Fixtures tear down in reverse order of setup, so
-   * the janitor is unwound before the clients it needs are disposed of.
+   * Depends on `request` on purpose, although it never uses it directly.
+   *
+   * The undo closures call clients that send their requests through `request`,
+   * so the janitor has to drain before that context is disposed. Playwright
+   * tears a fixture down before the fixtures it depends on - not in reverse
+   * order of declaration, and not in reverse order of how a test happens to list
+   * them - so this dependency is what guarantees the order. Without it, a test
+   * that asked for `({ janitor, rooms })` would run its cleanup on a closed
+   * context.
    */
-  janitor: async ({}, use) => {
+  janitor: async ({ request }, use) => {
     const janitor = new Janitor();
     await use(janitor);
     await janitor.runAsync();
   },
 });
+
+/**
+ * Marks the running test as an expected failure - but only for the outcome it
+ * documents.
+ *
+ * A plain `test.fail()` turns *any* failure into a pass: the documented defect,
+ * but also a worse regression, a 500, or a broken setup step, all reported as
+ * "known defect, still there". So a defect test first observes the platform,
+ * then calls this:
+ *
+ *  - `documented`: the platform shows exactly the defect described. The test is
+ *    expected to fail and does.
+ *  - `fixed`: the platform now does the right thing. The test is still marked
+ *    expected-to-fail, its assertions pass, and Playwright reports it as an
+ *    unexpected pass - the signal to retire the defect entry.
+ *  - neither: something else happened. The test runs as a normal test and fails
+ *    for real, which is what a new problem deserves.
+ */
+export function markKnownDefect(outcome: { documented: boolean; fixed: boolean }, description: string): void {
+  test.fail(outcome.documented || outcome.fixed, description);
+}
 
 export { expect };

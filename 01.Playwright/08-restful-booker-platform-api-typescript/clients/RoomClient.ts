@@ -1,5 +1,5 @@
 import { APIResponse } from '@playwright/test';
-import { ApiClient } from '../core/apiClient';
+import { ApiClient, ensureOk } from '../core/apiClient';
 import { Api } from '../data/endpoints';
 import { RoomPayload } from '../data/testData';
 
@@ -43,15 +43,18 @@ export class RoomClient extends ApiClient {
    * fact has nothing to hold on to, and an assertion that throws in between
    * would leak the room onto the shared instance. Registering a name-based
    * undo up front removes that window entirely.
+   *
+   * Returns the delete response (or null when there was nothing to delete) so
+   * the janitor can report a cleanup the service refused.
    */
-  async removeByNameAsync(roomName: string): Promise<void> {
+  async removeByNameAsync(roomName: string): Promise<APIResponse | null> {
     const rooms = await this.listRoomsAsync();
     const match = rooms.find((room) => room.roomName === roomName);
-    if (match) await this.remove(match.roomid);
+    return match ? this.remove(match.roomid) : null;
   }
 
   async listRoomsAsync(): Promise<Room[]> {
-    const response = await this.list();
+    const response = await ensureOk(await this.list(), 'Listing rooms');
     const body = (await response.json()) as { rooms: Room[] };
     return body.rooms;
   }

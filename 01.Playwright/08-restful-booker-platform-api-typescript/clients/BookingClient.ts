@@ -1,5 +1,5 @@
 import { APIResponse } from '@playwright/test';
-import { ApiClient } from '../core/apiClient';
+import { ApiClient, ensureOk } from '../core/apiClient';
 import { Api } from '../data/endpoints';
 import { BookingPayload } from '../data/testData';
 
@@ -49,7 +49,7 @@ export class BookingClient extends ApiClient {
   }
 
   async listBookingsAsync(roomId: number): Promise<Booking[]> {
-    const response = await this.listForRoom(roomId);
+    const response = await ensureOk(await this.listForRoom(roomId), `Listing bookings for room ${roomId}`);
     const body = (await response.json()) as { bookings: Booking[] };
     return body.bookings ?? [];
   }
