@@ -10,11 +10,14 @@ namespace ApiTests.Clients
     public class ApiClient
     {
         protected readonly IAPIRequestContext Request;
+        private readonly string _tokenHeaderName;
         private string? _token;
 
-        public ApiClient(IAPIRequestContext request)
+        /// <param name="tokenHeaderName">From Authentication:HeaderName in appsettings.json.</param>
+        public ApiClient(IAPIRequestContext request, string tokenHeaderName = "x-auth-token")
         {
             Request = request;
+            _tokenHeaderName = tokenHeaderName;
         }
 
         public void SetToken(string token)
@@ -42,7 +45,7 @@ namespace ApiTests.Clients
 
             if (!string.IsNullOrEmpty(_token))
             {
-                headers["x-auth-token"] = _token;
+                headers[_tokenHeaderName] = _token;
             }
 
             if (headers.Count > 0)

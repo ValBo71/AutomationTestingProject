@@ -10,6 +10,12 @@ using ApiTests.Constants;
 
 namespace ApiTests.Tests
 {
+    /// <summary>
+    /// Every account these tests create is registered through <see cref="BaseApiTest.RegisterTestUserAsync"/>
+    /// (or tracked with <see cref="BaseApiTest.TrackForCleanup"/>) and deleted by the base TearDown, so
+    /// no test carries its own cleanup block. The delete endpoint itself is tested once, on purpose, in
+    /// <see cref="DeleteAccount_WithValidToken_ShouldRemoveAccount"/>.
+    /// </summary>
     [TestFixture]
     [AllureSuite("API Tests")]
     [AllureSubSuite("Users")]
@@ -25,29 +31,15 @@ namespace ApiTests.Tests
         {
             var name = RandomDataGenerator.GenerateRandomString("User", 6);
             var email = RandomDataGenerator.GenerateUniqueEmail();
-            var password = "Password123";
 
-            var registerResponse = await UsersClient.RegisterAsync(name, email, password);
-            PendingCleanupEmail = email;
-            PendingCleanupPassword = password;
+            var registerResponse = await UsersClient.RegisterAsync(name, email, DefaultPassword);
+            TrackForCleanup(email, DefaultPassword);
 
             Assert.That(registerResponse.Status, Is.EqualTo(201));
 
             var body = await ResponseHelper.DeserializeAsync<GenericResponse>(registerResponse);
             Assert.That(body.Success, Is.True);
             Assert.That(body.Message, Is.EqualTo(ExpectedMessages.UserCreatedSuccess));
-
-            // Cleanup
-            var loginResponse = await UsersClient.LoginAsync(email, password);
-            if (loginResponse.Status == 200)
-            {
-                var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
-                BaseClient.SetToken(loginData.Data.Token);
-                await UsersClient.DeleteAccountAsync();
-                BaseClient.ClearToken();
-                PendingCleanupEmail = null;
-                PendingCleanupPassword = null;
-            }
         }
 
         [Test]
@@ -56,33 +48,16 @@ namespace ApiTests.Tests
         [AllureSeverity(SeverityLevel.normal)]
         public async Task RegisterUser_WithDuplicateEmail_ShouldReturnConflict()
         {
-            var name = RandomDataGenerator.GenerateRandomString("User", 6);
-            var email = RandomDataGenerator.GenerateUniqueEmail();
-            var password = "Password123";
+            // The first registration is asserted inside the helper - otherwise a refused first attempt
+            // would turn the second one into an ordinary registration and the test would prove nothing.
+            var user = await RegisterTestUserAsync();
 
-            await UsersClient.RegisterAsync(name, email, password);
-            PendingCleanupEmail = email;
-            PendingCleanupPassword = password;
+            var secondRegisterResponse = await UsersClient.RegisterAsync(user.Name, user.Email, user.Password);
 
-            var secondRegisterResponse = await UsersClient.RegisterAsync(name, email, password);
-
-            Assert.That(secondRegisterResponse.Status, Is.EqualTo(409).Or.EqualTo(400));
-
+            Assert.That(secondRegisterResponse.Status, Is.EqualTo(409));
             var body = await ResponseHelper.DeserializeAsync<GenericResponse>(secondRegisterResponse);
             Assert.That(body.Success, Is.False);
-            Assert.That(body.Message.ToLower(), Does.Contain("already exists").Or.Contain("taken").Or.Contain("invalid"));
-
-            // Cleanup
-            var loginResponse = await UsersClient.LoginAsync(email, password);
-            if (loginResponse.Status == 200)
-            {
-                var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
-                BaseClient.SetToken(loginData.Data.Token);
-                await UsersClient.DeleteAccountAsync();
-                BaseClient.ClearToken();
-                PendingCleanupEmail = null;
-                PendingCleanupPassword = null;
-            }
+            Assert.That(body.Message, Is.EqualTo(ExpectedMessages.DuplicateEmail));
         }
 
         [Test]
@@ -92,9 +67,11 @@ namespace ApiTests.Tests
         public async Task RegisterUser_WithoutName_ShouldReturnBadRequest()
         {
             var email = RandomDataGenerator.GenerateUniqueEmail();
-            var password = "Password123";
 
-            var response = await UsersClient.RegisterAsync("", email, password);
+            var response = await UsersClient.RegisterAsync("", email, DefaultPassword);
+            // Tracked although the registration should be refused: if the API ever accepts a blank
+            // name - the very regression this test is here to catch - the account is still removed.
+            TrackForCleanup(email, DefaultPassword);
 
             Assert.That(response.Status, Is.EqualTo(400));
             var body = await ResponseHelper.DeserializeAsync<GenericResponse>(response);
@@ -107,15 +84,9 @@ namespace ApiTests.Tests
         [AllureSeverity(SeverityLevel.critical)]
         public async Task LoginUser_WithValidCredentials_ShouldReturnToken()
         {
-            var name = RandomDataGenerator.GenerateRandomString("User", 6);
-            var email = RandomDataGenerator.GenerateUniqueEmail();
-            var password = "Password123";
+            var user = await RegisterTestUserAsync();
 
-            await UsersClient.RegisterAsync(name, email, password);
-            PendingCleanupEmail = email;
-            PendingCleanupPassword = password;
-
-            var loginResponse = await UsersClient.LoginAsync(email, password);
+            var loginResponse = await UsersClient.LoginAsync(user.Email, user.Password);
 
             Assert.That(loginResponse.Status, Is.EqualTo(200));
 
@@ -123,31 +94,25 @@ namespace ApiTests.Tests
             Assert.That(loginData.Success, Is.True);
             Assert.That(loginData.Message, Is.EqualTo(ExpectedMessages.LoginSuccess));
             Assert.That(loginData.Data.Token, Is.Not.Null.And.Not.Empty);
-            Assert.That(loginData.Data.Email, Is.EqualTo(email));
-
-            // Cleanup
-            BaseClient.SetToken(loginData.Data.Token);
-            await UsersClient.DeleteAccountAsync();
-            BaseClient.ClearToken();
-            PendingCleanupEmail = null;
-            PendingCleanupPassword = null;
+            Assert.That(loginData.Data.Email, Is.EqualTo(user.Email));
         }
 
         [Test]
         [AllureName("Login user - Invalid Credentials Negative Scenario")]
-        [AllureDescription("Verify that logging in with incorrect credentials returns 400 or 401.")]
+        [AllureDescription("Verify that logging in with credentials no account has returns 401 Unauthorized.")]
         [AllureSeverity(SeverityLevel.normal)]
-        public async Task LoginUser_WithInvalidCredentials_ShouldReturnBadRequest()
+        public async Task LoginUser_WithInvalidCredentials_ShouldReturnUnauthorized()
         {
-            var email = "nonexistent_user_expand@example.com";
-            var password = "WrongPassword";
+            // Generated rather than a fixed address: on a public sandbox anyone could register a
+            // hard-coded "nonexistent" email, and this test would start failing for no code change.
+            var email = RandomDataGenerator.GenerateUniqueEmail();
 
-            var loginResponse = await UsersClient.LoginAsync(email, password);
+            var loginResponse = await UsersClient.LoginAsync(email, "WrongPassword");
 
-            Assert.That(loginResponse.Status, Is.EqualTo(400).Or.EqualTo(401));
-
+            Assert.That(loginResponse.Status, Is.EqualTo(401));
             var body = await ResponseHelper.DeserializeAsync<GenericResponse>(loginResponse);
             Assert.That(body.Success, Is.False);
+            Assert.That(body.Message, Is.EqualTo(ExpectedMessages.IncorrectCredentials));
         }
 
         [Test]
@@ -156,31 +121,16 @@ namespace ApiTests.Tests
         [AllureSeverity(SeverityLevel.critical)]
         public async Task GetProfile_WithValidToken_ShouldReturnProfile()
         {
-            var name = RandomDataGenerator.GenerateRandomString("User", 6);
-            var email = RandomDataGenerator.GenerateUniqueEmail();
-            var password = "Password123";
-
-            await UsersClient.RegisterAsync(name, email, password);
-            PendingCleanupEmail = email;
-            PendingCleanupPassword = password;
-            var loginResponse = await UsersClient.LoginAsync(email, password);
-            var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
-
-            BaseClient.SetToken(loginData.Data.Token);
+            var user = await RegisterTestUserAsync();
+            await LoginAsync(user.Email, user.Password);
 
             var profileResponse = await UsersClient.GetProfileAsync();
             Assert.That(profileResponse.Status, Is.EqualTo(200));
 
             var profile = await ResponseHelper.DeserializeAsync<ProfileResponse>(profileResponse);
             Assert.That(profile.Success, Is.True);
-            Assert.That(profile.Data.Name, Is.EqualTo(name));
-            Assert.That(profile.Data.Email, Is.EqualTo(email));
-
-            // Cleanup
-            await UsersClient.DeleteAccountAsync();
-            BaseClient.ClearToken();
-            PendingCleanupEmail = null;
-            PendingCleanupPassword = null;
+            Assert.That(profile.Data.Name, Is.EqualTo(user.Name));
+            Assert.That(profile.Data.Email, Is.EqualTo(user.Email));
         }
 
         [Test]
@@ -200,17 +150,8 @@ namespace ApiTests.Tests
         [AllureSeverity(SeverityLevel.normal)]
         public async Task UpdateProfile_WithValidData_ShouldUpdateProfile()
         {
-            var name = RandomDataGenerator.GenerateRandomString("User", 6);
-            var email = RandomDataGenerator.GenerateUniqueEmail();
-            var password = "Password123";
-
-            await UsersClient.RegisterAsync(name, email, password);
-            PendingCleanupEmail = email;
-            PendingCleanupPassword = password;
-            var loginResponse = await UsersClient.LoginAsync(email, password);
-            var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
-
-            BaseClient.SetToken(loginData.Data.Token);
+            var user = await RegisterTestUserAsync();
+            await LoginAsync(user.Email, user.Password);
 
             var newName = "Updated Name";
             var phone = "1234567890";
@@ -225,53 +166,34 @@ namespace ApiTests.Tests
             Assert.That(updatedProfile.Data.Name, Is.EqualTo(newName));
             Assert.That(updatedProfile.Data.Phone, Is.EqualTo(phone));
             Assert.That(updatedProfile.Data.Company, Is.EqualTo(company));
-
-            // Cleanup
-            await UsersClient.DeleteAccountAsync();
-            BaseClient.ClearToken();
-            PendingCleanupEmail = null;
-            PendingCleanupPassword = null;
         }
 
         [Test]
         [AllureName("Change Password - Positive Scenario")]
-        [AllureDescription("Verify that an authenticated user can change their password successfully.")]
+        [AllureDescription("Verify that a changed password replaces the old one: the new password logs in, the old one no longer does.")]
         [AllureSeverity(SeverityLevel.critical)]
         public async Task ChangePassword_WithValidCredentials_ShouldChangePassword()
         {
-            var name = RandomDataGenerator.GenerateRandomString("User", 6);
-            var email = RandomDataGenerator.GenerateUniqueEmail();
-            var currentPassword = "Password123";
+            var user = await RegisterTestUserAsync();
             var newPassword = "NewPassword123!";
+            await LoginAsync(user.Email, user.Password);
 
-            await UsersClient.RegisterAsync(name, email, currentPassword);
-            PendingCleanupEmail = email;
-            PendingCleanupPassword = currentPassword;
-            var loginResponse = await UsersClient.LoginAsync(email, currentPassword);
-            var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
-
-            BaseClient.SetToken(loginData.Data.Token);
-
-            var changePassResponse = await UsersClient.ChangePasswordAsync(currentPassword, newPassword);
+            var changePassResponse = await UsersClient.ChangePasswordAsync(user.Password, newPassword);
             Assert.That(changePassResponse.Status, Is.EqualTo(200));
-            PendingCleanupPassword = newPassword;
+            UpdateCleanupPassword(newPassword);
 
             var changePassResult = await ResponseHelper.DeserializeAsync<GenericResponse>(changePassResponse);
             Assert.That(changePassResult.Success, Is.True);
+            Assert.That(changePassResult.Message, Is.EqualTo(ExpectedMessages.PasswordUpdatedSuccess));
 
-            // Log in again with the new password to verify the password is changed successfully
             BaseClient.ClearToken();
-            var secondLoginResponse = await UsersClient.LoginAsync(email, newPassword);
-            Assert.That(secondLoginResponse.Status, Is.EqualTo(200));
 
-            var secondLoginData = await ResponseHelper.DeserializeAsync<LoginResponse>(secondLoginResponse);
-            BaseClient.SetToken(secondLoginData.Data.Token);
+            var newPasswordLogin = await UsersClient.LoginAsync(user.Email, newPassword);
+            Assert.That(newPasswordLogin.Status, Is.EqualTo(200), "the new password should log in");
 
-            // Cleanup
-            await UsersClient.DeleteAccountAsync();
-            BaseClient.ClearToken();
-            PendingCleanupEmail = null;
-            PendingCleanupPassword = null;
+            // The half that proves the password was *changed* rather than a second one added.
+            var oldPasswordLogin = await UsersClient.LoginAsync(user.Email, user.Password);
+            Assert.That(oldPasswordLogin.Status, Is.EqualTo(401), "the old password should be refused");
         }
 
         [Test]
@@ -280,29 +202,54 @@ namespace ApiTests.Tests
         [AllureSeverity(SeverityLevel.normal)]
         public async Task ChangePassword_WithInvalidCurrentPassword_ShouldReturnBadRequest()
         {
-            var name = RandomDataGenerator.GenerateRandomString("User", 6);
-            var email = RandomDataGenerator.GenerateUniqueEmail();
-            var password = "Password123";
-
-            await UsersClient.RegisterAsync(name, email, password);
-            PendingCleanupEmail = email;
-            PendingCleanupPassword = password;
-            var loginResponse = await UsersClient.LoginAsync(email, password);
-            var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
-
-            BaseClient.SetToken(loginData.Data.Token);
+            var user = await RegisterTestUserAsync();
+            await LoginAsync(user.Email, user.Password);
 
             var changePassResponse = await UsersClient.ChangePasswordAsync("WrongPassword", "NewPassword123");
             Assert.That(changePassResponse.Status, Is.EqualTo(400));
 
             var changePassResult = await ResponseHelper.DeserializeAsync<GenericResponse>(changePassResponse);
             Assert.That(changePassResult.Success, Is.False);
+        }
 
-            // Cleanup
-            await UsersClient.DeleteAccountAsync();
+        [Test]
+        [AllureName("Logout - Positive Scenario")]
+        [AllureDescription("Verify that logging out invalidates the token: the same token is refused afterwards.")]
+        [AllureSeverity(SeverityLevel.critical)]
+        public async Task Logout_WithValidToken_ShouldInvalidateToken()
+        {
+            var user = await RegisterTestUserAsync();
+            await LoginAsync(user.Email, user.Password);
+            Assert.That((await UsersClient.GetProfileAsync()).Status, Is.EqualTo(200), "the token works before logout");
+
+            var logoutResponse = await UsersClient.LogoutAsync();
+            Assert.That(logoutResponse.Status, Is.EqualTo(200));
+            var body = await ResponseHelper.DeserializeAsync<GenericResponse>(logoutResponse);
+            Assert.That(body.Message, Is.EqualTo(ExpectedMessages.LogoutSuccess));
+
+            // The client still sends the old token, so this is the actual proof of logout.
+            Assert.That((await UsersClient.GetProfileAsync()).Status, Is.EqualTo(401), "the token is refused after logout");
+        }
+
+        [Test]
+        [AllureName("Delete Account - Positive Scenario")]
+        [AllureDescription("Verify that a deleted account can no longer log in.")]
+        [AllureSeverity(SeverityLevel.critical)]
+        public async Task DeleteAccount_WithValidToken_ShouldRemoveAccount()
+        {
+            var user = await RegisterTestUserAsync();
+            await LoginAsync(user.Email, user.Password);
+
+            var deleteResponse = await UsersClient.DeleteAccountAsync();
+            Assert.That(deleteResponse.Status, Is.EqualTo(200));
+            var body = await ResponseHelper.DeserializeAsync<GenericResponse>(deleteResponse);
+            Assert.That(body.Message, Is.EqualTo(ExpectedMessages.AccountDeletedSuccess));
+
             BaseClient.ClearToken();
-            PendingCleanupEmail = null;
-            PendingCleanupPassword = null;
+            var loginAfterDelete = await UsersClient.LoginAsync(user.Email, user.Password);
+            Assert.That(loginAfterDelete.Status, Is.EqualTo(401), "a deleted account should not log in");
+
+            ForgetCleanup();
         }
     }
 }
