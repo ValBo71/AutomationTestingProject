@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Allure.Net.Commons;
 using Allure.NUnit.Attributes;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
 using ApiTests.Base;
@@ -17,28 +18,21 @@ namespace ApiTests.Tests
     [AllureOwner("QA Automation")]
     public class NotesApiTests : BaseApiTest
     {
-        private string _userEmail = string.Empty;
-        private string _userPassword = string.Empty;
-
+        /// <summary>
+        /// Every note test runs as a brand-new user, so the notes it sees are only the ones it made.
+        ///
+        /// There is deliberately no TearDown here. The account is handed to the base class the moment
+        /// it is registered, and the base TearDown logs in afresh to delete it - which also covers the
+        /// test that clears its token on purpose, and a SetUp that fails half-way: NUnit still runs the
+        /// base TearDown, because the base SetUp completed. An earlier TearDown here deleted with
+        /// whatever token the test left behind, so the unauthorised-request test leaked its account on
+        /// every run.
+        /// </summary>
         [SetUp]
         public async Task TestSetUp()
         {
-            _userEmail = RandomDataGenerator.GenerateUniqueEmail();
-            _userPassword = "Password123";
-            var name = RandomDataGenerator.GenerateRandomString("User", 6);
-
-            await UsersClient.RegisterAsync(name, _userEmail, _userPassword);
-            var loginResponse = await UsersClient.LoginAsync(_userEmail, _userPassword);
-            var loginData = await ResponseHelper.DeserializeAsync<LoginResponse>(loginResponse);
-            
-            BaseClient.SetToken(loginData.Data.Token);
-        }
-
-        [TearDown]
-        public async Task TestTearDown()
-        {
-            await UsersClient.DeleteAccountAsync();
-            BaseClient.ClearToken();
+            var user = await RegisterTestUserAsync();
+            await LoginAsync(user.Email, user.Password);
         }
 
         [Test]
@@ -82,11 +76,24 @@ namespace ApiTests.Tests
             Assert.That(updatedNote.Data.Completed, Is.True);
             Assert.That(updatedNote.Data.Category, Is.EqualTo("Personal"));
 
+            // Read back: the PUT response only echoes the request, a GET proves it was stored.
+            var afterPut = await ResponseHelper.DeserializeAsync<NoteResponse>(await NotesClient.GetNoteByIdAsync(noteId));
+            Assert.That(afterPut.Data.Title, Is.EqualTo(newTitle));
+            Assert.That(afterPut.Data.Description, Is.EqualTo(newDesc));
+            Assert.That(afterPut.Data.Completed, Is.True);
+            Assert.That(afterPut.Data.Category, Is.EqualTo("Personal"));
+
             // 4. Update status (PATCH)
             var patchResponse = await NotesClient.UpdateNoteCompletedStatusAsync(noteId, false);
             Assert.That(patchResponse.Status, Is.EqualTo(200));
             var patchedNote = await ResponseHelper.DeserializeAsync<NoteResponse>(patchResponse);
             Assert.That(patchedNote.Data.Completed, Is.False);
+
+            // Read back again: only the status changes, the fields from the PUT stay as they were.
+            var afterPatch = await ResponseHelper.DeserializeAsync<NoteResponse>(await NotesClient.GetNoteByIdAsync(noteId));
+            Assert.That(afterPatch.Data.Completed, Is.False);
+            Assert.That(afterPatch.Data.Title, Is.EqualTo(newTitle));
+            Assert.That(afterPatch.Data.Category, Is.EqualTo("Personal"));
 
             // 5. Delete
             var deleteResponse = await NotesClient.DeleteNoteAsync(noteId);
@@ -137,14 +144,18 @@ namespace ApiTests.Tests
         [AllureSeverity(SeverityLevel.normal)]
         public async Task GetAllNotes_ShouldReturnList()
         {
-            await NotesClient.CreateNoteAsync("Note A", "Desc A", "Personal");
-            await NotesClient.CreateNoteAsync("Note B", "Desc B", "Work");
+            Assert.That((await NotesClient.CreateNoteAsync("Note A", "Desc A", "Personal")).Status, Is.EqualTo(200));
+            Assert.That((await NotesClient.CreateNoteAsync("Note B", "Desc B", "Work")).Status, Is.EqualTo(200));
 
             var getResponse = await NotesClient.GetAllNotesAsync();
             Assert.That(getResponse.Status, Is.EqualTo(200));
             var notesList = await ResponseHelper.DeserializeAsync<NotesListResponse>(getResponse);
             Assert.That(notesList.Success, Is.True);
-            Assert.That(notesList.Data.Count, Is.GreaterThanOrEqualTo(2));
+
+            // The user was created for this test, so the list is exactly these two - "at least two"
+            // would also pass if the endpoint returned someone else's notes.
+            Assert.That(notesList.Data.Select(n => (n.Title, n.Description, n.Category)),
+                Is.EquivalentTo(new[] { ("Note A", "Desc A", "Personal"), ("Note B", "Desc B", "Work") }));
         }
 
         [Test]

@@ -6,9 +6,16 @@ namespace ApiTests.Helpers
     {
         private static readonly Random Rand = new();
 
+        /// <summary>
+        /// The timestamp keeps the addresses readable and sortable; the random suffix is what makes
+        /// them unique. On its own a millisecond timestamp collides as soon as two runs - two CI jobs,
+        /// or a colleague against the same public sandbox - register in the same millisecond.
+        /// Twelve hex characters of a GUID, not all 32: the full GUID pushes the local part past the
+        /// 64-character limit and the API refuses the address as invalid.
+        /// </summary>
         public static string GenerateUniqueEmail()
         {
-            return $"testuser+expand_{DateTime.UtcNow:yyyyMMddHHmmssfff}@example.com";
+            return $"testuser+expand_{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Guid.NewGuid().ToString("N")[..12]}@example.com";
         }
 
         public static string GenerateRandomString(string prefix, int length = 8)

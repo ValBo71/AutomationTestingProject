@@ -71,32 +71,40 @@ ApiTests
 
 ---
 
-## 🧪 Automated Test Scenarios (Total: 21)
+## 🧪 Automated Test Scenarios (Total: 23)
 
-This framework executes 21 distinct automated checks covering positive, negative, parameterized, and integration flows:
+This framework executes 23 distinct automated checks covering positive, negative, parameterized, and integration flows:
 
 ### 👤 Users Module
 1. `RegisterUser_WithValidData_ShouldCreateAccount` - Positive user registration.
-2. `RegisterUser_WithDuplicateEmail_ShouldReturnConflict` - Duplicate registration error validation (409 Conflict).
+2. `RegisterUser_WithDuplicateEmail_ShouldReturnConflict` - A second registration with the same email is refused with 409 Conflict (the first one is asserted to succeed).
 3. `RegisterUser_WithoutName_ShouldReturnBadRequest` - Missing required fields registration error (400 Bad Request).
 4. `LoginUser_WithValidCredentials_ShouldReturnToken` - Successful login and token retrieval.
-5. `LoginUser_WithInvalidCredentials_ShouldReturnBadRequest` - Login with invalid password/email.
+5. `LoginUser_WithInvalidCredentials_ShouldReturnUnauthorized` - Login with an email no account has (401, "Incorrect email address or password").
 6. `GetProfile_WithValidToken_ShouldReturnProfile` - Retrieve profile info for authenticated user.
 7. `GetProfile_WithoutToken_ShouldReturnUnauthorized` - Profile access without token (401 Unauthorized).
 8. `UpdateProfile_WithValidData_ShouldUpdateProfile` - Update user names, phone, and company details.
-9. `ChangePassword_WithValidCredentials_ShouldChangePassword` - Updates password, logs out, and validates successful log-in with the new password.
+9. `ChangePassword_WithValidCredentials_ShouldChangePassword` - Changes the password, then proves the new one logs in and the old one is refused.
 10. `ChangePassword_WithInvalidCurrentPassword_ShouldReturnBadRequest` - Password update with incorrect current credentials.
+11. `Logout_WithValidToken_ShouldInvalidateToken` - Logs out, then proves the same token is refused (401).
+12. `DeleteAccount_WithValidToken_ShouldRemoveAccount` - Deletes the account, then proves it can no longer log in.
 
 ### 📝 Notes Module
-11. `NoteCRUDLifecycle_ShouldSucceed` - Full CRUD lifecycle integration test (Create -> Get by ID -> Update Details PUT -> Complete Status PATCH -> Delete Note -> Verify 404).
-12-14. `CreateNote_WithValidCategories_ShouldCreateNote` - Parameterized checks for note creation under `Home`, `Work`, and `Personal` categories.
-15. `CreateNote_WithInvalidCategory_ShouldReturnBadRequest` - Invalid category format validation (400 Bad Request).
-16. `CreateNote_WithMissingTitle_ShouldReturnBadRequest` - Empty note title validation.
-17. `CreateNote_WithoutToken_ShouldReturnUnauthorized` - Create note attempt without token (401 Unauthorized).
-18. `GetAllNotes_ShouldReturnList` - Retrieve list of notes for the current user.
-19. `GetNoteById_WithNonExistentId_ShouldReturnNotFound` - Note fetch with invalid/non-existent ID (400/404).
-20. `GetNoteById_WithInvalidIdFormat_ShouldReturnBadRequest` - Note fetch with malformed ID string.
-21. `DeleteNote_WithNonExistentId_ShouldReturnNotFound` - Note deletion with non-existent ID.
+13. `NoteCRUDLifecycle_ShouldSucceed` - Full CRUD lifecycle integration test (Create -> Get by ID -> Update Details PUT -> read back -> Complete Status PATCH -> read back -> Delete Note -> Verify 404).
+14-16. `CreateNote_WithValidCategories_ShouldCreateNote` - Parameterized checks for note creation under `Home`, `Work`, and `Personal` categories.
+17. `CreateNote_WithInvalidCategory_ShouldReturnBadRequest` - Invalid category format validation (400 Bad Request).
+18. `CreateNote_WithMissingTitle_ShouldReturnBadRequest` - Empty note title validation.
+19. `CreateNote_WithoutToken_ShouldReturnUnauthorized` - Create note attempt without token (401 Unauthorized).
+20. `GetAllNotes_ShouldReturnList` - A new user's list holds exactly the two notes it created, with their content.
+21. `GetNoteById_WithNonExistentId_ShouldReturnNotFound` - Note fetch with invalid/non-existent ID (400/404).
+22. `GetNoteById_WithInvalidIdFormat_ShouldReturnBadRequest` - Note fetch with malformed ID string.
+23. `DeleteNote_WithNonExistentId_ShouldReturnNotFound` - Note deletion with non-existent ID.
+
+### 🧹 Test accounts on the public sandbox
+Every test that creates an account hands it to `BaseApiTest` the moment it is registered, and the base
+`TearDown` logs in afresh and deletes it - whether the test passed, failed, cleared its token or changed
+its password. If that deletion fails, the test is marked with a warning naming the account, so a leak is
+visible in the results rather than silent.
 
 ---
 
