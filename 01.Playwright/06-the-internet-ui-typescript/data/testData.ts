@@ -50,6 +50,8 @@ export const Routes = {
   secureFileDownload: '/download_secure',
   shadowDom: '/shadowdom',
   shiftingContent: '/shifting_content/menu',
+  /** Asks the page to move the last menu item by 100px on alternate loads. */
+  shiftingContentWithShift: '/shifting_content/menu?pixel_shift=100',
   slowResources: '/slow',
   sortableDataTables: '/tables',
   statusCodes: '/status_codes',
@@ -89,6 +91,7 @@ export const Expected = {
   jsConfirmCancelResult: 'You clicked: Cancel',
   shadowDomTexts: ["Let's have some different text!", 'In a list!'],
   entryAdModalTitle: 'This is a modal window',
+  jqueryUiPdfFileName: 'menu.pdf',
   notificationMessages: [
     'Action successful',
     'Action unsuccesful, please try again',

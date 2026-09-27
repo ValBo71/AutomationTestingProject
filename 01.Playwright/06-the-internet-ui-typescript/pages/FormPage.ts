@@ -90,9 +90,11 @@ export class FormPage extends BasePage {
   }
 
   /**
-   * Drives the range input with arrow keys rather than fill(). fill() would set
-   * the value without firing the onchange handler the page listens to, so the
-   * displayed value would never update - the exact trap this challenge sets.
+   * Drives the range input with arrow keys, the way a keyboard user would.
+   * fill() would work too - Playwright sets a range input's value and fires
+   * input and change, and the page's display follows (checked against the
+   * live page) - but it would skip the 0.5 step the slider moves in, which is
+   * the behaviour this challenge is about.
    *
    * focus() rather than click(): clicking a range input jumps the thumb to
    * wherever the pointer landed, so the arrow presses would start counting

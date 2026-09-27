@@ -74,7 +74,7 @@ hold only intent and assertions.
 | 21 | Form Authentication | `auth` | Valid / bad user / bad password / logout |
 | 22 | Frames | `frames` | Cross the iframe boundary |
 | 23 | Geolocation | `navigation` | Permission granted + coordinates pinned for determinism |
-| 24 | Horizontal Slider | `forms` | `fill()` skips the change event; clicking jumps the thumb |
+| 24 | Horizontal Slider | `forms` | Driven by arrow keys in 0.5 steps; clicking jumps the thumb |
 | 25 | Hovers | `interactions` | Captions exist but are hidden until hover |
 | 26 | Infinite Scroll | `dynamic` | Scroll until content grows, not scroll-once |
 | 27 | Inputs | `forms` | Arrow-key increments |
