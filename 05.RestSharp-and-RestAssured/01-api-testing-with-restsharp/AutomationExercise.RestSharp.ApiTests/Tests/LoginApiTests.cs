@@ -34,14 +34,12 @@ namespace AutomationExercise.RestSharp.ApiTests.Tests
         {
             if (_emailToCleanup == null) return;
 
-            var response = await AccountClient.DeleteAccountAsync(_emailToCleanup, _passwordToCleanup);
-            var body = ResponseHelper.Deserialize<ApiMessageResponse>(response);
-            // 404: the registration never went through, so there is nothing to delete.
-            if (body.ResponseCode != 200 && body.ResponseCode != 404)
-            {
-                Assert.Warn($"Test account {_emailToCleanup} may be left on the site: deleteAccount answered {body.ResponseCode} {body.Message}");
-            }
+            var problem = await AccountCleanup.DeleteAsync(AccountClient, _emailToCleanup, _passwordToCleanup);
             _emailToCleanup = null;
+            if (problem != null)
+            {
+                Assert.Warn($"Test account may be left on the site: {problem}");
+            }
         }
 
         [Test]

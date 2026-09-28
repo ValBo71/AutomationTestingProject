@@ -102,16 +102,23 @@ export function setup() {
 
 // Runs once after all VUs finish - also when thresholds fail - so the login account never outlives the run.
 export function teardown(data) {
-  const res = http.del(`${BASE_URL}/api/deleteAccount`, { email: data.user.email, password: data.user.password }, { headers });
-  check(res, {
-    'Teardown: login account deleted': (r) => {
-      try {
-        return JSON.parse(r.body).responseCode === 200;
-      } catch (e) {
-        return false;
-      }
-    },
-  });
+  http.del(`${BASE_URL}/api/deleteAccount`, { email: data.user.email, password: data.user.password }, { headers });
+
+  // deleteAccount answers 404 both for a missing account and for a wrong password, so its reply proves
+  // nothing; looking the account up afterwards does.
+  const after = http.get(`${BASE_URL}/api/getUserDetailByEmail?email=${encodeURIComponent(data.user.email)}`, { headers });
+  let gone = false;
+  try {
+    gone = JSON.parse(after.body).responseCode === 404;
+  } catch (e) {
+    gone = false;
+  }
+  check(after, { 'Teardown: login account deleted': () => gone });
+  if (!gone) {
+    // The password is included on purpose: it is generated for this run only, and without it the
+    // leftover account could not be deleted by hand.
+    console.warn(`Login account may be left on the site: ${data.user.email} (password ${data.user.password})`);
+  }
 }
 
 // 1. MAIN LOAD SCENARIO

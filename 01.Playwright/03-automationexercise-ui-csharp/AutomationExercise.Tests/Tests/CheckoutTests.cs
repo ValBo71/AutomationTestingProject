@@ -77,7 +77,6 @@ namespace AutomationExercise.Tests.Tests
                 await signupPage.ClickCreateAccountAsync();
                 Assert.IsTrue(await createdPage.IsAccountCreatedVisibleAsync(), "Account was not created successfully.");
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
             });
 
             await AllureHelper.StepAsync("Verify logged in status and go back to cart", async () =>
@@ -119,7 +118,6 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickDeleteAccountAsync();
                 Assert.IsTrue(await deletedPage.IsAccountDeletedVisibleAsync(), "Account deletion failed.");
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
 
@@ -163,7 +161,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
                 Assert.IsTrue(await homePage.IsLoggedInUserVisibleAsync(username), "Login state is incorrect.");
             });
 
@@ -195,7 +192,6 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
 
@@ -240,7 +236,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
 
                 // Logout to clear the session so we can test Login before Checkout
                 await homePage.ClickLogoutAsync();
@@ -281,7 +276,6 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
 
@@ -327,7 +321,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
                 Assert.IsTrue(await homePage.IsLoggedInUserVisibleAsync(username), "Incorrect login state.");
             });
 
@@ -354,7 +347,6 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
 
@@ -401,7 +393,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
                 await homePage.ClickCartAsync();
                 await cartPage.ClickProceedToCheckoutAsync();
             });
@@ -441,7 +432,6 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
     }

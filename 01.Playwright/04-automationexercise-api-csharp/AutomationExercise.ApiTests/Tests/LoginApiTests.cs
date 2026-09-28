@@ -46,18 +46,30 @@ namespace AutomationExercise.ApiTests.Tests
 
             await using var context = await NewClassContextAsync();
             var client = new AccountApiClient(context);
-            var response = await client.CreateAccountAsync(_loginUser);
-            var message = JsonHelper.Deserialize<ApiMessageResponse>(await response.TextAsync());
 
-            if (message?.ResponseCode != 201)
+            // A OneTimeSetUp that fails does not get its own OneTimeTearDown, so any failure here - an
+            // unexpected answer, or an exception such as a timeout after the server already created the
+            // account - deletes the account before failing, and says whether that worked.
+            string failure;
+            try
             {
-                // A OneTimeSetUp that fails does not get its own OneTimeTearDown, so the account - which
-                // may exist despite the unexpected answer - is deleted here before failing.
-                await AccountCleanup.DeleteAsync(client, _loginUser.Email, _loginUser.Password);
-                Assert.Fail($"Registering the login test account {_loginUser.Email} answered responseCode {message?.ResponseCode}.");
+                var response = await client.CreateAccountAsync(_loginUser);
+                var message = JsonHelper.Deserialize<ApiMessageResponse>(await response.TextAsync());
+                if (message?.ResponseCode == 201)
+                {
+                    _loginUserRegistered = true;
+                    return;
+                }
+                failure = $"answered responseCode {message?.ResponseCode}";
+            }
+            catch (System.Exception ex)
+            {
+                failure = $"threw {ex.GetType().Name}: {ex.Message}";
             }
 
-            _loginUserRegistered = true;
+            var cleanup = await AccountCleanup.DeleteAsync(client, _loginUser.Email, _loginUser.Password)
+                          ?? "the account is not on the site";
+            Assert.Fail($"Registering the login test account {_loginUser.Email} {failure}. Cleanup: {cleanup}.");
         }
 
         [OneTimeTearDown]

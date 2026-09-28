@@ -162,7 +162,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
                 await homePage.ClickLogoutAsync();
             });
 
@@ -196,7 +195,6 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
 

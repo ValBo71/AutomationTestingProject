@@ -26,10 +26,14 @@ namespace AutomationExercise.RestSharp.ApiTests.Tests
         [TearDown]
         public async Task CleanupUser()
         {
-            if (_emailToCleanup != null)
+            if (_emailToCleanup == null) return;
+
+            // Checked, because the site answers HTTP 200 even when the deletion did not happen.
+            var problem = await AccountCleanup.DeleteAsync(AccountClient, _emailToCleanup, _password);
+            _emailToCleanup = null;
+            if (problem != null)
             {
-                await AccountClient.DeleteAccountAsync(_emailToCleanup, _password);
-                _emailToCleanup = null;
+                Assert.Warn($"Test account may be left on the site: {problem}");
             }
         }
 

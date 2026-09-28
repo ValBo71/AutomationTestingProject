@@ -20,8 +20,9 @@ namespace AutomationExercise.Tests.TestData
     {
         /// <summary>
         /// Generated once per test run, so no password is kept in the repository - not even for the
-        /// throwaway accounts these tests register and delete. One value for the whole run keeps sign-up
-        /// and the later login in each test in step without passing it around.
+        /// throwaway accounts these tests register. One value for the whole run keeps sign-up and the
+        /// later login in each test in step without passing it around, and it is what BaseTest.TearDown
+        /// uses to delete, through the API, any account a failed test left behind.
         /// </summary>
         public static readonly string RunPassword = "Pw_" + System.Guid.NewGuid().ToString("N").Substring(0, 12) + "!";
 

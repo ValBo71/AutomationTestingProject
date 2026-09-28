@@ -68,7 +68,6 @@ namespace AutomationExercise.Tests.Tests
             {
                 Assert.IsTrue(await createdPage.IsAccountCreatedVisibleAsync(), "'ACCOUNT CREATED!' header not visible.");
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
             });
 
             await AllureHelper.StepAsync("Verify 'Logged in as username' is visible", async () =>
@@ -81,7 +80,6 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickDeleteAccountAsync();
                 Assert.IsTrue(await deletedPage.IsAccountDeletedVisibleAsync(), "'ACCOUNT DELETED!' header not visible.");
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
 
@@ -122,7 +120,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
 
                 // Logout to clear session
                 await homePage.ClickLogoutAsync();
@@ -141,7 +138,6 @@ namespace AutomationExercise.Tests.Tests
                 await loginPage.LoginAsync(duplicateEmail, password);
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
     }
