@@ -1,16 +1,13 @@
 namespace AutomationExercise.ApiTests.Config
 {
+    /// <summary>
+    /// No account credentials live here on purpose: every test that needs an account registers a
+    /// throwaway one with generated data and deletes it afterwards (see TestUsers).
+    /// </summary>
     public class TestSettings
     {
         public string BaseUrl { get; set; } = string.Empty;
-        public DefaultUserCredentials DefaultUser { get; set; } = new();
         public ApiSettings Api { get; set; } = new();
-    }
-
-    public class DefaultUserCredentials
-    {
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
     }
 
     public class ApiSettings

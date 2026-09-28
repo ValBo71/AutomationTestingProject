@@ -6,9 +6,13 @@ namespace AutomationExercise.ApiTests.Helpers
     {
         private static readonly Random Rand = new();
 
+        /// <summary>
+        /// The timestamp keeps addresses readable; the random suffix is what makes them unique when two
+        /// runs (CI jobs, or someone else on the same public site) register in the same millisecond.
+        /// </summary>
         public static string GenerateUniqueEmail()
         {
-            return $"testuser+api_{DateTime.UtcNow:yyyyMMddHHmmssfff}@example.com";
+            return $"testuser+api_{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Guid.NewGuid().ToString("N")[..8]}@example.com";
         }
 
         public static string GenerateRandomString(string prefix, int length = 8)

@@ -47,12 +47,15 @@ namespace AutomationExercise.ApiTests.Tests
             Assert.That(brandsResponse.Brands, Is.Not.Null, "Brands list should not be null");
             Assert.That(brandsResponse.Brands, Is.Not.Empty, "Brands list should not be empty");
 
-            // Verify a brand schema
-            var brand = brandsResponse.Brands[0];
+            // Every brand, not just the first. Is.Not.Empty, because Is.Not.Null.Or.Empty is parsed as
+            // "not null, or empty" and so accepts an empty string - the model's default for a missing field.
             Assert.Multiple(() =>
             {
-                Assert.That(brand.Id, Is.GreaterThan(0), "Brand ID should be greater than 0");
-                Assert.That(brand.Brand, Is.Not.Null.Or.Empty, "Brand Name should not be empty");
+                foreach (var brand in brandsResponse.Brands)
+                {
+                    Assert.That(brand.Id, Is.GreaterThan(0), $"brand {brand.Id}: ID should be greater than 0");
+                    Assert.That(brand.Brand, Is.Not.Empty, $"brand {brand.Id}: Name should not be empty");
+                }
             });
         }
 

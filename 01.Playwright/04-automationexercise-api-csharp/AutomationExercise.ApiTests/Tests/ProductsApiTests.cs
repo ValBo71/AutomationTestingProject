@@ -2,6 +2,7 @@ using Allure.Net.Commons;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using NUnit.Framework;
+using System.Linq;
 using System.Threading.Tasks;
 using AutomationExercise.ApiTests.Base;
 using AutomationExercise.ApiTests.Clients;
@@ -47,16 +48,23 @@ namespace AutomationExercise.ApiTests.Tests
             Assert.That(productsResponse.Products, Is.Not.Null, "Products list should not be null");
             Assert.That(productsResponse.Products, Is.Not.Empty, "Products list should not be empty");
 
-            // Verify a product schema
-            var product = productsResponse.Products[0];
+            // Every product, not just the first - the description promises "all products".
+            // Is.Not.Empty rather than Is.Not.Null.Or.Empty: the latter reads as "not (null or empty)"
+            // but NUnit parses it as "not null, or empty", which an empty string satisfies. The models
+            // default missing fields to "", so that version passed even when a field was absent.
+            Assert.That(productsResponse.Products.Select(p => p.Id), Is.Unique, "Product IDs should be unique");
             Assert.Multiple(() =>
             {
-                Assert.That(product.Id, Is.GreaterThan(0), "Product ID should be greater than 0");
-                Assert.That(product.Name, Is.Not.Null.Or.Empty, "Product Name should not be empty");
-                Assert.That(product.Price, Is.Not.Null.Or.Empty, "Product Price should not be empty");
-                Assert.That(product.Brand, Is.Not.Null.Or.Empty, "Product Brand should not be empty");
-                Assert.That(product.Category, Is.Not.Null, "Product Category should not be null");
-                Assert.That(product.Category.Category, Is.Not.Null.Or.Empty, "Product Category Name should not be empty");
+                foreach (var product in productsResponse.Products)
+                {
+                    var which = $"product {product.Id}";
+                    Assert.That(product.Id, Is.GreaterThan(0), $"{which}: ID should be greater than 0");
+                    Assert.That(product.Name, Is.Not.Empty, $"{which}: Name should not be empty");
+                    Assert.That(product.Price, Does.Match(@"^Rs\. \d+$"), $"{which}: Price should look like 'Rs. 500'");
+                    Assert.That(product.Brand, Is.Not.Empty, $"{which}: Brand should not be empty");
+                    Assert.That(product.Category.Category, Is.Not.Empty, $"{which}: Category should not be empty");
+                    Assert.That(product.Category.Usertype.Usertype, Is.Not.Empty, $"{which}: Usertype should not be empty");
+                }
             });
         }
 

@@ -34,16 +34,23 @@ namespace AutomationExercise.ApiTests.Tests
         [TearDown]
         public async Task TestTearDown()
         {
-            // Fallback Cleanup: If the user was created but not deleted by the test sequence, delete it.
+            // Fallback cleanup: the account exists but the test did not get as far as deleting it.
             if (_isUserCreated && _testUser != null)
             {
+                string? problem;
                 try
                 {
-                    await _accountClient.DeleteAccountAsync(_testUser.Email, _testUser.Password);
+                    problem = await AccountCleanup.DeleteAsync(_accountClient, _testUser.Email, _testUser.Password);
                 }
                 catch (System.Exception ex)
                 {
-                    System.Console.WriteLine($"[TearDown Cleanup Warning] Failed to delete user {_testUser.Email} during fallback cleanup: {ex.Message}");
+                    problem = ex.Message;
+                }
+
+                // A warning, not a failure: the test's own verdict stands, but the leak is visible.
+                if (problem != null)
+                {
+                    Assert.Warn($"Test account may be left on the site: {problem}");
                 }
             }
         }
@@ -60,6 +67,10 @@ namespace AutomationExercise.ApiTests.Tests
             _testUser = TestUsers.GenerateRegisterUserRequest();
 
             var createResponse = await _accountClient.CreateAccountAsync(_testUser);
+            // Armed before any assertion: if creation succeeded but its response is not the one expected
+            // (a reworded message, say), TearDown still deletes the account. If it was never created,
+            // the fallback delete gets "not found" and treats that as nothing to clean up.
+            _isUserCreated = true;
 
             Assert.That(createResponse.Status, Is.EqualTo(200), "HTTP Status for Create Account should be 200 OK");
             
@@ -69,8 +80,6 @@ namespace AutomationExercise.ApiTests.Tests
             Assert.That(createMsgNode, Is.Not.Null);
             Assert.That(createMsgNode!.ResponseCode, Is.EqualTo(201), "API response code for Account Creation should be 201");
             Assert.That(createMsgNode.Message, Is.EqualTo(ExpectedMessages.UserCreated));
-            
-            _isUserCreated = true;
 
             // -------------------------------------------------------------
             // Step 2: Get Account Details by Email (API 14)
