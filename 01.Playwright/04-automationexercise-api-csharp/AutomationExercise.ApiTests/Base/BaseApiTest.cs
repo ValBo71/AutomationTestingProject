@@ -24,28 +24,9 @@ namespace AutomationExercise.ApiTests.Base
                 .AddJsonFile("Config/appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            var email = System.Environment.GetEnvironmentVariable("AUTOMATION_USER_EMAIL") ?? config["DefaultUser:Email"];
-            var password = System.Environment.GetEnvironmentVariable("AUTOMATION_USER_PASSWORD") ?? config["DefaultUser:Password"];
-
-            if (string.IsNullOrEmpty(email) || email == "your_email@example.com")
-            {
-                throw new System.InvalidOperationException("Test execution email credential is not configured. Please set the AUTOMATION_USER_EMAIL environment variable or configure DefaultUser:Email in appsettings.json to a valid non-personal email.");
-            }
-
-            if (string.IsNullOrEmpty(password) || password == "your_password")
-            {
-                throw new System.InvalidOperationException("Test execution password credential is not configured. Please set the AUTOMATION_USER_PASSWORD environment variable or configure DefaultUser:Password in appsettings.json to a valid non-personal password.");
-            }
-
-
             Settings = new TestSettings
             {
                 BaseUrl = config["BaseUrl"] ?? "https://automationexercise.com/",
-                DefaultUser = new DefaultUserCredentials
-                {
-                    Email = email,
-                    Password = password
-                },
                 Api = new ApiSettings
                 {
                     TimeoutMilliseconds = int.TryParse(config["Api:TimeoutMilliseconds"], out var ms) ? ms : 30000
@@ -61,6 +42,7 @@ namespace AutomationExercise.ApiTests.Base
             RequestContext = await PlaywrightInstance.APIRequest.NewContextAsync(new APIRequestNewContextOptions
             {
                 BaseURL = Settings.BaseUrl,
+                Timeout = Settings.Api.TimeoutMilliseconds,
                 ExtraHTTPHeaders = new Dictionary<string, string>
                 {
                     { "Accept", "application/json" }
