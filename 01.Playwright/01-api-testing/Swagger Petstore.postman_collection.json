@@ -17,7 +17,7 @@
               "listen": "prerequest",
               "script": {
                 "exec": [
-                  "pm.collectionVariables.set(\"nameUser\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
+                  "// Unique on the shared public Petstore: a random first name could be another visitor's user,\n// which DeleteUser at the end would then delete.\npm.collectionVariables.set(\"nameUser\", \"pm_user_\" + Date.now() + \"_\" + Math.floor(Math.random() * 100000));",
                   "pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
                   "pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomFirstName}}'));\r",
                   "pm.collectionVariables.set(\"emailUser\", pm.variables.replaceIn('{{$randomEmail}}'));\r",
@@ -106,7 +106,7 @@
                   "pm.test(\"User ID check\", function () {\r",
                   "    var jsonData = pm.response.json();\r",
                   "    var expedtedID = pm.collectionVariables.get(\"userID\");\r",
-                  "    pm.expect(jsonData.email).to.eql(expedtedID);\r",
+                  "    // Compared as text: the ids Petstore hands out (around 9.2e18) are above 2^53, so JSON.parse rounds them.\n    pm.expect(pm.response.text()).to.include('\"id\":' + expedtedID + ',');\r",
                   "});\r",
                   "\r",
                   "\r",
@@ -147,6 +147,21 @@
                 ],
                 "type": "text/javascript"
               }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Update answers with the user's id\", function () {",
+                  "    pm.expect(pm.response.json().message).to.eql(pm.collectionVariables.get(\"userID\"));",
+                  "});"
+                ]
+              }
             }
           ],
           "request": {
@@ -154,7 +169,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "  {\r\n    \"username\": \"{{nameUser}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"email\": \"{{emailUser}}\",\r\n    \"password\": \"{{pass}}\",\r\n    \"phone\": \"{{phone}}\"\r\n  }",
+              "raw": "  {\n    \"id\": {{userID}},\r\n    \"username\": \"{{nameUser}}\",\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"email\": \"{{emailUser}}\",\r\n    \"password\": \"{{pass}}\",\r\n    \"phone\": \"{{phone}}\"\r\n  }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -208,7 +223,7 @@
                   "    pm.expect(jsonData.phone).to.eql(expedtePhone);\r",
                   "});\r",
                   "\r",
-                  "pm.test(\"User created with supplited phone number\", function () {\r",
+                  "pm.test(\"User updated with supplied password\", function () {\r",
                   "    var jsonData = pm.response.json();\r",
                   "    var expedtePass = pm.collectionVariables.get(\"pass\");\r",
                   "    pm.expect(jsonData.password).to.eql(expedtePass);\r",
@@ -217,7 +232,7 @@
                   "pm.test(\"User ID check\", function () {\r",
                   "    var jsonData = pm.response.json();\r",
                   "    var expedtedID = pm.collectionVariables.get(\"userID\");\r",
-                  "    pm.expect(jsonData.email).to.eql(expedtedID);\r",
+                  "    // Compared as text: the ids Petstore hands out (around 9.2e18) are above 2^53, so JSON.parse rounds them.\n    pm.expect(pm.response.text()).to.include('\"id\":' + expedtedID + ',');\r",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -253,8 +268,15 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status code is 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// The public Petstore does not check credentials - any username and password get this answer - so",
+                  "// this request cannot prove the updated password works. That the new password was stored is what",
+                  "// \"Get udated User\" checks.",
+                  "pm.test(\"A session is reported\", function () {",
+                  "    pm.expect(pm.response.json().message).to.match(/^logged in user session:/);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -265,12 +287,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://petstore.swagger.io/v2/user/login?username={{nameUser}}&password={{pass}}",
-              "protocol": "https",
+              "raw": "{{baseURL}}/v2/user/login?username={{nameUser}}&password={{pass}}",
               "host": [
-                "petstore",
-                "swagger",
-                "io"
+                "{{baseURL}}"
               ],
               "path": [
                 "v2",
@@ -352,6 +371,13 @@
                   "});\r",
                   "\r",
                   "\r",
+                  "pm.sendRequest(pm.environment.get(\"baseURL\") + \"/v2/user/\" + pm.collectionVariables.get(\"nameUser\"), function (err, res) {",
+                  "    pm.test(\"The user is gone after the delete\", function () {",
+                  "        pm.expect(err).to.eql(null);",
+                  "        pm.expect(res.code).to.eql(404);",
+                  "    });",
+                  "});",
+                  "",
                   "pm.collectionVariables.unset(\"nameUser\");\r",
                   "pm.collectionVariables.unset(\"firstName\");\r",
                   "pm.collectionVariables.unset(\"lastName\");\r",
