@@ -55,9 +55,14 @@ namespace AutomationExercise.Tests.Base
 
                 try
                 {
-                    var tracesDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "TestResults", "traces");
+                    // Next to the screenshots, in the project's TestResults folder - the folder CI uploads.
+                    // The work directory is bin/<config>/<tfm>, which no artifact step picks up, so traces
+                    // were written on every failure and never reached anyone. The attempt number keeps a
+                    // [Retry] from overwriting the first failure's trace with the second's.
+                    var tracesDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestResults", "traces");
                     Directory.CreateDirectory(tracesDir);
-                    var tracePath = Path.Combine(tracesDir, $"{testName}.zip");
+                    var attempt = TestContext.CurrentContext.CurrentRepeatCount + 1;
+                    var tracePath = Path.Combine(tracesDir, $"{testName}_attempt{attempt}.zip");
                     await Context.Tracing.StopAsync(new()
                     {
                         Path = tracePath

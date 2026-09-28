@@ -52,13 +52,18 @@ namespace AutomationExercise.Tests.Tests
                 Assert.AreEqual(2, count, "Cart does not contain exactly 2 items.");
             });
 
-            await AllureHelper.StepAsync("Verify quantities of both items are 1", async () =>
+            await AllureHelper.StepAsync("Verify their prices, quantity and total price", async () =>
             {
-                var quantity1 = await cartPage.GetCartItemQuantityAsync(1);
-                var quantity2 = await cartPage.GetCartItemQuantityAsync(2);
-
-                Assert.AreEqual(1, quantity1, "First item quantity in cart is not 1.");
-                Assert.AreEqual(1, quantity2, "Second item quantity in cart is not 1.");
+                var lines = await cartPage.GetCartLinesAsync();
+                Assert.Multiple(() =>
+                {
+                    foreach (var line in lines)
+                    {
+                        Assert.That(line.Price, Is.GreaterThan(0), $"{line.Name}: price should be shown");
+                        Assert.That(line.Quantity, Is.EqualTo(1), $"{line.Name}: quantity should be 1");
+                        Assert.That(line.Total, Is.EqualTo(line.Price * line.Quantity), $"{line.Name}: total should be price x quantity");
+                    }
+                });
             });
         }
 
@@ -165,18 +170,23 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickLogoutAsync();
             });
 
-            await AllureHelper.StepAsync("Navigate to Products, search for product and add to cart", async () =>
+            const string searchTerm = "Blue Top";
+
+            await AllureHelper.StepAsync("Navigate to Products and search for the product", async () =>
             {
                 await homePage.NavigateAsync();
                 await homePage.ClickProductsAsync();
-                await productsPage.SearchProductAsync("Blue Top");
-                await productsPage.AddFirstProductToCartAsync();
-                await productsPage.ClickModalViewCartAsync();
+                await productsPage.SearchProductAsync(searchTerm);
+                Assert.IsTrue(await productsPage.IsProductsHeaderVisibleAsync("SEARCHED PRODUCTS"), "SEARCHED PRODUCTS header not visible.");
+                Assert.IsTrue(await productsPage.IsProductVisibleInListAsync(searchTerm), $"'{searchTerm}' is not among the search results.");
             });
 
-            await AllureHelper.StepAsync("Verify product is visible in cart", async () =>
+            await AllureHelper.StepAsync("Add the searched product to cart and verify it is the one in the cart", async () =>
             {
-                Assert.IsTrue(await cartPage.GetCartItemCountAsync() > 0, "Cart is empty.");
+                await productsPage.AddFirstProductToCartAsync();
+                await productsPage.ClickModalViewCartAsync();
+                var names = (await cartPage.GetCartLinesAsync()).ConvertAll(l => l.Name);
+                Assert.That(names, Is.EqualTo(new[] { searchTerm }), "The cart should hold exactly the searched product.");
             });
 
             await AllureHelper.StepAsync("Click 'Signup / Login' and login with pre-registered user", async () =>
@@ -188,7 +198,8 @@ namespace AutomationExercise.Tests.Tests
             await AllureHelper.StepAsync("Go back to Cart page and verify product is still in cart", async () =>
             {
                 await homePage.ClickCartAsync();
-                Assert.IsTrue(await cartPage.GetCartItemCountAsync() > 0, "Cart items were lost after login.");
+                var names = (await cartPage.GetCartLinesAsync()).ConvertAll(l => l.Name);
+                Assert.That(names, Is.EqualTo(new[] { searchTerm }), "The searched product should still be in the cart after login.");
             });
 
             await AllureHelper.StepAsync("Clean up: Delete the user account", async () =>

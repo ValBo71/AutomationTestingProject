@@ -171,6 +171,20 @@ namespace AutomationExercise.Tests.Tests
                 await cartPage.ClickProceedToCheckoutAsync();
             });
 
+            await AllureHelper.StepAsync("Verify Address Details and Review Your Order", async () =>
+            {
+                var delivery = await checkoutPage.GetDeliveryAddressTextAsync();
+                var billing = await checkoutPage.GetBillingAddressTextAsync();
+                Assert.Multiple(() =>
+                {
+                    Assert.That(delivery, Does.Contain("789 Pre-delivery Rd"), "Delivery address should be the one registered.");
+                    Assert.That(delivery, Does.Contain("Toronto"), "Delivery city should be the one registered.");
+                    Assert.That(billing, Does.Contain("789 Pre-delivery Rd"), "Billing address should be the one registered.");
+                });
+                Assert.That(await checkoutPage.GetReviewedProductNamesAsync(), Is.EqualTo(new[] { "Blue Top" }),
+                    "The order review should list the product added to the cart.");
+            });
+
             await AllureHelper.StepAsync("Place order and pay", async () =>
             {
                 await checkoutPage.EnterCommentAsync("Pre-registered order comment.");
@@ -253,6 +267,20 @@ namespace AutomationExercise.Tests.Tests
                 await productsPage.AddFirstProductToCartAsync();
                 await productsPage.ClickModalViewCartAsync();
                 await cartPage.ClickProceedToCheckoutAsync();
+            });
+
+            await AllureHelper.StepAsync("Verify Address Details and Review Your Order", async () =>
+            {
+                var delivery = await checkoutPage.GetDeliveryAddressTextAsync();
+                var billing = await checkoutPage.GetBillingAddressTextAsync();
+                Assert.Multiple(() =>
+                {
+                    Assert.That(delivery, Does.Contain("123 LoginCheckout St"), "Delivery address should be the one registered.");
+                    Assert.That(delivery, Does.Contain("Los Angeles"), "Delivery city should be the one registered.");
+                    Assert.That(billing, Does.Contain("123 LoginCheckout St"), "Billing address should be the one registered.");
+                });
+                Assert.That(await checkoutPage.GetReviewedProductNamesAsync(), Is.EqualTo(new[] { "Blue Top" }),
+                    "The order review should list the product added to the cart.");
             });
 
             await AllureHelper.StepAsync("Place order and pay", async () =>

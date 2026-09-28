@@ -4,6 +4,7 @@ namespace AutomationExercise.Tests.Selectors
     {
         // Cart Table Selectors
         public const string CartItems = "tr[id^='product-']";
+        public const string CartItemName = "td.cart_description h4 a";
         public const string CartItemRemoveButton = "a.cart_quantity_delete";
         public const string CartItemQuantity = "button.disabled";
         public const string CartItemPrice = "td.cart_price p";

@@ -19,6 +19,24 @@ namespace AutomationExercise.Tests.Pages
             await HandleConsentDialogAsync();
         }
 
+        /// <summary>
+        /// True once the browser is on "/" and the home page's own slider is shown. The header link to
+        /// "/" that earlier checks looked for is on every page of the site, so it proved nothing.
+        /// </summary>
+        public async Task<bool> IsHomePageShownAsync()
+        {
+            await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
+            return await IsVisibleAfterWaitAsync(HomePageSelectors.SliderCarousel);
+        }
+
+        /// <summary>
+        /// The heading of the slide currently shown. The carousel rotates, and only the active slide is
+        /// visible, so ".First" would point at a slide that is hidden most of the time.
+        /// </summary>
+        public ILocator ActiveSlideHeading() => Locator($"{HomePageSelectors.SliderCarousel} .item.active h2");
+
+        public ILocator SubscriptionHeading() => Locator("footer h2:has-text('Subscription')");
+
         public async Task HandleConsentDialogAsync()
         {
             var consentButton = Locator(".fc-consent-root button.fc-cta-consent");

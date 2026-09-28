@@ -38,9 +38,10 @@ namespace AutomationExercise.Tests.Pages
             return await errorMsg.InnerTextAsync();
         }
         
+        /// <summary>Waits for the form - it is checked straight after a navigation click.</summary>
         public async Task<bool> IsSignupFormVisibleAsync()
         {
-            return await Locator(LoginPageSelectors.SignupNameInput).IsVisibleAsync();
+            return await IsVisibleAfterWaitAsync(LoginPageSelectors.SignupNameInput);
         }
     }
 }

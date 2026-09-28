@@ -11,8 +11,16 @@ namespace AutomationExercise.Tests.Pages
         {
         }
 
+        /// <summary>
+        /// Waits for the cart to render - either a product row or the "Cart is empty!" notice - before
+        /// counting. Counting straight after navigation read an unrendered table as 0, which made a
+        /// "cart is empty" check pass for the wrong reason and a "cart has items" check fail for none.
+        /// </summary>
         public async Task<int> GetCartItemCountAsync()
         {
+            await Locator($"{CartPageSelectors.CartItems}, {CartPageSelectors.EmptyCartContainer}").First
+                .WaitForAsync(new() { State = WaitForSelectorState.Visible });
+
             if (await Locator(CartPageSelectors.EmptyCartContainer).IsVisibleAsync())
             {
                 return 0;
@@ -20,18 +28,45 @@ namespace AutomationExercise.Tests.Pages
             return await Locator(CartPageSelectors.CartItems).CountAsync();
         }
 
+        /// <summary>
+        /// Fails when there is nothing to remove. It used to skip the click on an empty cart, so a test
+        /// that then expected an empty cart passed without having removed anything.
+        /// </summary>
         public async Task RemoveFirstItemAsync()
         {
             var initialCount = await GetCartItemCountAsync();
-            if (initialCount > 0)
+            if (initialCount == 0)
             {
-                await Locator($"{CartPageSelectors.CartItems}:first-child {CartPageSelectors.CartItemRemoveButton}").ClickAsync();
-                
-                // Web-first wait: wait for the first cart item row to be detached/removed
-                var firstItem = Locator(CartPageSelectors.CartItems).First;
-                await firstItem.WaitForAsync(new() { State = WaitForSelectorState.Detached });
+                throw new System.InvalidOperationException("The cart is empty, so there is no product to remove.");
             }
+
+            var rows = Locator(CartPageSelectors.CartItems);
+            await rows.First.Locator(CartPageSelectors.CartItemRemoveButton).ClickAsync();
+
+            // The row is removed by the page's own script; wait until the table has one row fewer.
+            await Assertions.Expect(rows).ToHaveCountAsync(initialCount - 1);
         }
+
+        /// <summary>Name, unit price, quantity and line total of every row, as the cart shows them.</summary>
+        public async Task<System.Collections.Generic.List<(string Name, int Price, int Quantity, int Total)>> GetCartLinesAsync()
+        {
+            await GetCartItemCountAsync();
+            var lines = new System.Collections.Generic.List<(string, int, int, int)>();
+            var rows = Locator(CartPageSelectors.CartItems);
+            for (var i = 0; i < await rows.CountAsync(); i++)
+            {
+                var row = rows.Nth(i);
+                lines.Add((
+                    (await row.Locator(CartPageSelectors.CartItemName).InnerTextAsync()).Trim(),
+                    ParseRupees(await row.Locator(CartPageSelectors.CartItemPrice).InnerTextAsync()),
+                    int.Parse((await row.Locator(CartPageSelectors.CartItemQuantity).InnerTextAsync()).Trim()),
+                    ParseRupees(await row.Locator(CartPageSelectors.CartItemTotalPrice).InnerTextAsync())));
+            }
+            return lines;
+        }
+
+        /// <summary>"Rs. 500" -> 500.</summary>
+        private static int ParseRupees(string text) => int.Parse(text.Replace("Rs.", string.Empty).Trim());
 
         public async Task<int> GetCartItemQuantityAsync(int rowIndex)
         {
