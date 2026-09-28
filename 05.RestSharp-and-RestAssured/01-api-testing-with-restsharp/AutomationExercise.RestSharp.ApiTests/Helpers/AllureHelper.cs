@@ -39,7 +39,7 @@ namespace AutomationExercise.RestSharp.ApiTests.Helpers
                               $"Headers:\n{headersString}\n\n" +
                               $"Body:\n{bodyString}";
 
-            AllureApi.AddAttachment("API Request", "text/plain", System.Text.Encoding.UTF8.GetBytes(requestInfo), ".txt");
+            AllureApi.AddAttachment("API Request", "text/plain", System.Text.Encoding.UTF8.GetBytes(SensitiveData.Redact(requestInfo)), ".txt");
         }
 
         public static void AttachResponse(RestResponse response)
@@ -55,7 +55,7 @@ namespace AutomationExercise.RestSharp.ApiTests.Helpers
                                $"Headers:\n{headersString}\n\n" +
                                $"Response Body:\n{formattedBody}";
 
-            AllureApi.AddAttachment("API Response", "text/plain", System.Text.Encoding.UTF8.GetBytes(responseInfo), ".txt");
+            AllureApi.AddAttachment("API Response", "text/plain", System.Text.Encoding.UTF8.GetBytes(SensitiveData.Redact(responseInfo)), ".txt");
         }
     }
 }

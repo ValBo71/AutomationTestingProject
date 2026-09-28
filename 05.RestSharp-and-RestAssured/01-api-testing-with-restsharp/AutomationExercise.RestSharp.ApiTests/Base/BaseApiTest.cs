@@ -2,6 +2,7 @@ using System;
 using Allure.Net.Commons;
 using AutomationExercise.RestSharp.ApiTests.Clients;
 using AutomationExercise.RestSharp.ApiTests.Config;
+using AutomationExercise.RestSharp.ApiTests.Helpers;
 using NUnit.Framework;
 using RestSharp;
 
@@ -44,7 +45,7 @@ namespace AutomationExercise.RestSharp.ApiTests.Base
                 var failureInfo = $"Error Message:\n{errorMessage}\n\n" +
                                    $"Stack Trace:\n{stackTrace}";
 
-                AllureApi.AddAttachment("Test Failure Details", "text/plain", System.Text.Encoding.UTF8.GetBytes(failureInfo), ".txt");
+                AllureApi.AddAttachment("Test Failure Details", "text/plain", System.Text.Encoding.UTF8.GetBytes(SensitiveData.Redact(failureInfo)), ".txt");
             }
 
             RestClient?.Dispose();

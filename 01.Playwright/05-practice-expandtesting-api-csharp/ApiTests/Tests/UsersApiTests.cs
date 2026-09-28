@@ -32,8 +32,10 @@ namespace ApiTests.Tests
             var name = RandomDataGenerator.GenerateRandomString("User", 6);
             var email = RandomDataGenerator.GenerateUniqueEmail();
 
-            var registerResponse = await UsersClient.RegisterAsync(name, email, DefaultPassword);
-            TrackForCleanup(email, DefaultPassword);
+            var password = NewPassword();
+
+            var registerResponse = await UsersClient.RegisterAsync(name, email, password);
+            TrackForCleanup(email, password);
 
             Assert.That(registerResponse.Status, Is.EqualTo(201));
 
@@ -68,10 +70,12 @@ namespace ApiTests.Tests
         {
             var email = RandomDataGenerator.GenerateUniqueEmail();
 
-            var response = await UsersClient.RegisterAsync("", email, DefaultPassword);
+            var password = NewPassword();
+
+            var response = await UsersClient.RegisterAsync("", email, password);
             // Tracked although the registration should be refused: if the API ever accepts a blank
             // name - the very regression this test is here to catch - the account is still removed.
-            TrackForCleanup(email, DefaultPassword);
+            TrackForCleanup(email, password);
 
             Assert.That(response.Status, Is.EqualTo(400));
             var body = await ResponseHelper.DeserializeAsync<GenericResponse>(response);
@@ -175,7 +179,7 @@ namespace ApiTests.Tests
         public async Task ChangePassword_WithValidCredentials_ShouldChangePassword()
         {
             var user = await RegisterTestUserAsync();
-            var newPassword = "NewPassword123!";
+            var newPassword = NewPassword();
             await LoginAsync(user.Email, user.Password);
 
             var changePassResponse = await UsersClient.ChangePasswordAsync(user.Password, newPassword);
@@ -205,7 +209,7 @@ namespace ApiTests.Tests
             var user = await RegisterTestUserAsync();
             await LoginAsync(user.Email, user.Password);
 
-            var changePassResponse = await UsersClient.ChangePasswordAsync("WrongPassword", "NewPassword123");
+            var changePassResponse = await UsersClient.ChangePasswordAsync(user.Password + "_wrong", NewPassword());
             Assert.That(changePassResponse.Status, Is.EqualTo(400));
 
             var changePassResult = await ResponseHelper.DeserializeAsync<GenericResponse>(changePassResponse);

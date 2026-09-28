@@ -61,7 +61,7 @@ namespace AutomationExercise.Tests.Tests
             {
                 await loginPage.SignUpInitAsync(username, randomUser);
                 await signupPage.FillSignupDetailsAsync(
-                    password: "Password123!",
+                    password: TestUsers.RunPassword,
                     day: "10",
                     month: "June",
                     year: "1992",
@@ -148,7 +148,7 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickLoginSignupAsync();
                 await loginPage.SignUpInitAsync(username, randomUser);
                 await signupPage.FillSignupDetailsAsync(
-                    password: "Password123!",
+                    password: TestUsers.RunPassword,
                     day: "1",
                     month: "January",
                     year: "1990",
@@ -217,7 +217,7 @@ namespace AutomationExercise.Tests.Tests
 
             var randomEmail = RandomDataGenerator.GenerateEmail();
             var username = "LoginCheckoutUser_" + System.Guid.NewGuid().ToString().Substring(0, 5);
-            var password = "Password123!";
+            var password = TestUsers.RunPassword;
 
             await AllureHelper.StepAsync("Navigate to home page and register user", async () =>
             {
@@ -312,7 +312,7 @@ namespace AutomationExercise.Tests.Tests
                 await homePage.ClickLoginSignupAsync();
                 await loginPage.SignUpInitAsync(username, randomUser);
                 await signupPage.FillSignupDetailsAsync(
-                    password: "Password123!",
+                    password: TestUsers.RunPassword,
                     day: "5",
                     month: "May",
                     year: "1995",
@@ -386,7 +386,7 @@ namespace AutomationExercise.Tests.Tests
                 await cartPage.ClickRegisterLoginInCheckoutModalAsync();
                 await loginPage.SignUpInitAsync(username, randomUser);
                 await signupPage.FillSignupDetailsAsync(
-                    password: "Password123!",
+                    password: TestUsers.RunPassword,
                     day: "20",
                     month: "December",
                     year: "1988",

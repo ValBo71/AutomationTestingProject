@@ -8,13 +8,11 @@ const USERS = parseInt(__ENV.USERS || '20', 10);
 const RAMPUP = __ENV.RAMPUP || '60s';
 const DURATION = __ENV.DURATION || '60s';
 
-// Load test users JSON
-const testUsers = JSON.parse(open('./test-users.json'));
-const envEmail = __ENV.AUTOMATION_USER_EMAIL;
-const envPassword = __ENV.AUTOMATION_USER_PASSWORD;
-
-if (envEmail && envPassword) {
-  testUsers[0] = { email: envEmail, password: envPassword };
+// No stored credentials: setup() registers a throwaway login account for this run with a generated
+// password, and teardown() deletes it. The run used to log in to a permanent account whose password
+// sat in a JSON file in the repo, and which stayed on the public site between runs.
+function generatePassword() {
+  return `k6_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
 }
 
 export const options = {
@@ -58,8 +56,66 @@ const headers = {
   'User-Agent': 'k6 Performance Test',
 };
 
+function accountForm(name, email, password) {
+  return {
+    name,
+    email,
+    password,
+    title: 'Mr',
+    birth_date: '01',
+    birth_month: '01',
+    birth_year: '1990',
+    firstname: 'First',
+    lastname: 'Last',
+    company: 'Company',
+    address1: 'Address1',
+    address2: 'Address2',
+    country: 'Canada',
+    zipcode: '12345',
+    state: 'State',
+    city: 'City',
+    mobile_number: '1234567890',
+  };
+}
+
+// Runs once, before any VU. Its return value is handed to every scenario function and to teardown().
+export function setup() {
+  const user = {
+    email: `performance_k6_login_${Date.now()}_${Math.floor(Math.random() * 100000)}@example.com`,
+    password: generatePassword(),
+  };
+
+  const res = http.post(`${BASE_URL}/api/createAccount`, accountForm('K6 Login User', user.email, user.password), { headers });
+  let code;
+  try {
+    code = JSON.parse(res.body).responseCode;
+  } catch (e) {
+    code = undefined;
+  }
+  if (code !== 201) {
+    // Try to remove whatever may have been created, then stop: every login check would fail anyway.
+    http.del(`${BASE_URL}/api/deleteAccount`, { email: user.email, password: user.password }, { headers });
+    throw new Error(`setup: registering the login account answered ${res.status} ${res.body}`);
+  }
+  return { user };
+}
+
+// Runs once after all VUs finish - also when thresholds fail - so the login account never outlives the run.
+export function teardown(data) {
+  const res = http.del(`${BASE_URL}/api/deleteAccount`, { email: data.user.email, password: data.user.password }, { headers });
+  check(res, {
+    'Teardown: login account deleted': (r) => {
+      try {
+        return JSON.parse(r.body).responseCode === 200;
+      } catch (e) {
+        return false;
+      }
+    },
+  });
+}
+
 // 1. MAIN LOAD SCENARIO
-export function mainLoadScenario() {
+export function mainLoadScenario(data) {
   const baseUrl = BASE_URL;
 
   // GET All Products List
@@ -112,7 +168,7 @@ export function mainLoadScenario() {
   sleep(Math.random() * 1.5 + 0.5);
 
   // POST Verify Login
-  const user = testUsers[exec.scenario.iterationInInstance % testUsers.length] || testUsers[0];
+  const user = data.user;
   let resLogin = http.post(
     `${baseUrl}/api/verifyLogin`,
     { email: user.email, password: user.password },
@@ -166,28 +222,10 @@ export function accountLifecycleScenario() {
   const randomNum = Math.floor(Math.random() * 1000);
   const uniqueEmail = `performance_k6_${threadNum}_${timestamp}_${randomNum}@example.com`;
   const uniqueName = `User_K6_${threadNum}_${timestamp}`;
-  const password = 'pass1234';
+  const password = generatePassword();
 
   // Create Account
-  let resCreate = http.post(`${baseUrl}/api/createAccount`, {
-    name: uniqueName,
-    email: uniqueEmail,
-    password: password,
-    title: 'Mr',
-    birth_date: '01',
-    birth_month: '01',
-    birth_year: '1990',
-    firstname: 'First',
-    lastname: 'Last',
-    company: 'Company',
-    address1: 'Address1',
-    address2: 'Address2',
-    country: 'Canada',
-    zipcode: '12345',
-    state: 'State',
-    city: 'City',
-    mobile_number: '1234567890',
-  }, { headers });
+  let resCreate = http.post(`${baseUrl}/api/createAccount`, accountForm(uniqueName, uniqueEmail, password), { headers });
   
   check(resCreate, {
     'Create: HTTP Status is 200': (r) => r.status === 200,

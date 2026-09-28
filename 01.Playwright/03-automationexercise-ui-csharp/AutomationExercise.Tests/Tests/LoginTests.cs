@@ -32,7 +32,7 @@ namespace AutomationExercise.Tests.Tests
 
             var randomEmail = RandomDataGenerator.GenerateEmail();
             var username = "LoginUser_" + System.Guid.NewGuid().ToString().Substring(0, 5);
-            var password = "Password123!";
+            var password = TestUsers.RunPassword;
 
             await AllureHelper.StepAsync("Navigate to home page and register user", async () =>
             {
@@ -116,7 +116,7 @@ namespace AutomationExercise.Tests.Tests
 
             var randomEmail = RandomDataGenerator.GenerateEmail();
             var username = "LogoutUser_" + System.Guid.NewGuid().ToString().Substring(0, 5);
-            var password = "Password123!";
+            var password = TestUsers.RunPassword;
 
             await AllureHelper.StepAsync("Register user and log out", async () =>
             {

@@ -21,7 +21,7 @@ namespace AutomationExercise.RestSharp.ApiTests.Tests
     public class AccountApiTests : BaseApiTest
     {
         private string? _emailToCleanup;
-        private readonly string _password = "pass1234";
+        private readonly string _password = RandomDataGenerator.GeneratePassword();
 
         [TearDown]
         public async Task CleanupUser()
