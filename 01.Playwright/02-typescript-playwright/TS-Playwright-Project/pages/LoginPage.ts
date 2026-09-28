@@ -12,12 +12,29 @@ export class LoginPage extends BasePage {
   }
 
   async login(username: string, password: string) {
-    await this.page.locator(LoginSelectors.usernameInput).fill(username);
+    await this.usernameInput().fill(username);
     await this.page.locator(LoginSelectors.passwordInput).fill(password);
-    await this.page.locator(LoginSelectors.loginButton).click();
+    await this.loginButton().click();
   }
 
-  async getErrorMessageAsync(): Promise<string> {
-    return (await this.page.locator(LoginSelectors.errorMessage).innerText()).trim();
+  /**
+   * Locators rather than read-once values, so tests assert with `expect(...)` and get Playwright's
+   * auto-retry: the error banner is rendered after the click, and an `innerText()` read straight away
+   * could run before it appears.
+   */
+  loginLogo() {
+    return this.page.locator(LoginSelectors.loginLogo);
+  }
+
+  usernameInput() {
+    return this.page.locator(LoginSelectors.usernameInput);
+  }
+
+  loginButton() {
+    return this.page.locator(LoginSelectors.loginButton);
+  }
+
+  errorMessage() {
+    return this.page.locator(LoginSelectors.errorMessage);
   }
 }
