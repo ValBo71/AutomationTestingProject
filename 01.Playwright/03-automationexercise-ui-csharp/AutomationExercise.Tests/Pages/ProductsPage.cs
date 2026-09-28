@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using System.Linq;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Selectors;
 
@@ -65,11 +66,21 @@ namespace AutomationExercise.Tests.Pages
 
         public async Task<bool> IsProductVisibleInListAsync(string productName)
         {
+            // All names, not InnerTextAsync on the whole list: a locator that matches several cards throws
+            // in strict mode, which only a one-result search had hidden.
+            return (await GetListedProductNamesAsync()).Contains(productName);
+        }
+
+        public async Task<System.Collections.Generic.List<string>> GetListedProductNamesAsync()
+        {
             var items = Locator(ProductsPageSelectors.ProductListItems);
             await items.First.WaitForAsync(new() { State = WaitForSelectorState.Visible });
-            var text = await items.InnerTextAsync();
-            return text.Contains(productName);
+            var names = await Locator(ProductsPageSelectors.ProductListNames).AllInnerTextsAsync();
+            return names.Select(n => n.Trim()).ToList();
         }
+
+        /// <summary>Every result card, so a test can check that each one is shown.</summary>
+        public ILocator ProductCards() => Locator(ProductsPageSelectors.ProductListItems);
 
         public async Task ClickCategoryWomenAsync()
         {

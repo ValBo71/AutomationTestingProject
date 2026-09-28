@@ -86,8 +86,18 @@ namespace AutomationExercise.Tests.Tests
                 Assert.IsTrue(await productsPage.IsProductsHeaderVisibleAsync("SEARCHED PRODUCTS"), "SEARCHED PRODUCTS header not visible.");
             });
 
-            await AllureHelper.StepAsync("Verify searched product is visible in the list", async () =>
+            await AllureHelper.StepAsync("Verify all the products related to the search are visible", async () =>
             {
+                // Every result card is shown, and the searched product is among them. The site also
+                // matches on category, so not every result name contains the term (a search for "top"
+                // returns shirts too); requiring that would test the site's search rules, not the page.
+                var cards = productsPage.ProductCards();
+                var count = await cards.CountAsync();
+                Assert.That(count, Is.GreaterThan(0), "The search returned no products.");
+                for (var i = 0; i < count; i++)
+                {
+                    await Microsoft.Playwright.Assertions.Expect(cards.Nth(i)).ToBeVisibleAsync();
+                }
                 Assert.IsTrue(await productsPage.IsProductVisibleInListAsync(searchTerm), $"Product '{searchTerm}' not found in search results.");
             });
         }

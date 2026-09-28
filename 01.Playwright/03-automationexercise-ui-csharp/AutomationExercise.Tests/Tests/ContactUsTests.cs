@@ -60,8 +60,9 @@ namespace AutomationExercise.Tests.Tests
             await AllureHelper.StepAsync("Click return home button and verify homepage loading", async () =>
             {
                 await contactPage.ClickReturnHomeAsync();
-                await Page.WaitForSelectorAsync("a[href='/']", new PageWaitForSelectorOptions { State = WaitForSelectorState.Visible, Timeout = 10000 });
-                Assert.IsTrue(await Page.IsVisibleAsync("a[href='/']"), "Failed to return to Home Page.");
+                // The URL and the home page's own slider - not the header link to "/", which is on the
+                // Contact Us page too and so was "visible" whether or not the button did anything.
+                Assert.IsTrue(await homePage.IsHomePageShownAsync(), "Failed to return to Home Page.");
                 
                 // Cleanup temp file
                 if (File.Exists(testFilePath))

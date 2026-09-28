@@ -6,6 +6,7 @@ namespace AutomationExercise.Tests.Selectors
         public const string SearchButton = "#submit_search";
         public const string ProductsHeader = ".features_items h2.title";
         public const string ProductListItems = ".single-products";
+        public const string ProductListNames = ".features_items .productinfo p";
         public const string ModalViewCartButton = "p.text-center a:has-text('View Cart')";
         public const string ModalContinueShoppingButton = "button.close-modal";
         public const string ProductsTitle = "h2.title.text-center";

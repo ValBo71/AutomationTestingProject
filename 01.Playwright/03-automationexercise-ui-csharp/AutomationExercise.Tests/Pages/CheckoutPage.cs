@@ -24,6 +24,15 @@ namespace AutomationExercise.Tests.Pages
             return await invoiceList.InnerTextAsync();
         }
 
+        /// <summary>Product names in the "Review Your Order" table.</summary>
+        public async Task<System.Collections.Generic.IReadOnlyList<string>> GetReviewedProductNamesAsync()
+        {
+            var names = Locator($"{CartPageSelectors.CartItems} {CartPageSelectors.CartItemName}");
+            await names.First.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+            var texts = await names.AllInnerTextsAsync();
+            return System.Linq.Enumerable.ToList(System.Linq.Enumerable.Select(texts, t => t.Trim()));
+        }
+
         public async Task EnterCommentAsync(string comment)
         {
             await Locator(CartPageSelectors.CheckoutCommentInput).FillAsync(comment);

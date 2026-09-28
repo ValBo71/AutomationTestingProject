@@ -69,19 +69,32 @@ namespace AutomationExercise.Tests.Drivers
             }
 
             var context = await browser.NewContextAsync();
+            context.SetDefaultTimeout(Settings.TimeoutSeconds * 1000);
 
-            // Block all Google domains (ads, tag manager, analytics, fonts, etc.) and other trackers
-            await context.RouteAsync("**/*google*", route => route.AbortAsync());
-            await context.RouteAsync("**/*analytics*", route => route.AbortAsync());
-            await context.RouteAsync("**/*doubleclick*", route => route.AbortAsync());
-            await context.RouteAsync("**/*pagead*", route => route.AbortAsync());
-            await context.RouteAsync("**/*adsbygoogle*", route => route.AbortAsync());
-            await context.RouteAsync("**/*facebook*", route => route.AbortAsync());
-            await context.RouteAsync("**/*quantserve*", route => route.AbortAsync());
-            await context.RouteAsync("**/*adservice*", route => route.AbortAsync());
+            // Block ads, consent overlays and trackers by host. Matching the host matters: the earlier
+            // glob patterns such as "**/*google*" never matched these requests, because "*" in a Playwright
+            // glob does not cross a "/", so only the last path segment was tested. The ad scripts
+            // (pagead2.googlesyndication.com) and the "fundingchoices" vignette overlay that covers the
+            // page therefore still loaded, and were a large part of why these tests needed retries.
+            await context.RouteAsync(url => IsBlockedHost(url), route => route.AbortAsync());
 
             var page = await context.NewPageAsync();
             return (playwright, browser, context, page);
+        }
+
+        // Covers googlesyndication, fundingchoicesmessages.google.com, googletagmanager, fonts.googleapis
+        // and the other trackers the site loads; the site itself (automationexercise.com) matches none.
+        private static readonly string[] BlockedHostFragments =
+            { "google", "doubleclick", "facebook", "quantserve", "adservice", "analytics" };
+
+        private static bool IsBlockedHost(string url)
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return false;
+            foreach (var fragment in BlockedHostFragments)
+            {
+                if (uri.Host.Contains(fragment, StringComparison.OrdinalIgnoreCase)) return true;
+            }
+            return false;
         }
     }
 }
