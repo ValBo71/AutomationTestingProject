@@ -32,15 +32,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: "01.Playwright/02-typescript-playwright/TS-Playwright-Project/package-lock.json"
 
       - name: Install Dependencies
         run: npm ci
 
+      # Playwright only transpiles TypeScript; without this step the strict tsconfig is never enforced.
+      - name: Type Check
+        run: npm run typecheck
+
+      # The suite has a single chromium project, so the other browsers are not downloaded.
       - name: Install Playwright Browsers with OS Dependencies
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
       - name: Run Playwright Tests
         run: npx playwright test

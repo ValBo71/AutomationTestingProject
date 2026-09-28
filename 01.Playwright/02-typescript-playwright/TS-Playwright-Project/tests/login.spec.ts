@@ -1,14 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
+import { InventoryPage } from '../pages/InventoryPage';
 import { TestData } from '../data/testData';
-import { LoginSelectors } from '../selectors/LoginSelectors';
-import { MainPageSelectors } from '../selectors/MainPageSelectors';
 
 test.describe('Login functionality - Smoke Tests', () => {
   let loginPage: LoginPage;
+  let inventoryPage: InventoryPage;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
+    inventoryPage = new InventoryPage(page);
   });
 
   test('Valid user should login successfully', async ({ page }) => {
@@ -16,9 +17,8 @@ test.describe('Login functionality - Smoke Tests', () => {
     await loginPage.open();
 
     // Verify the logo on the first page (Login)
-    const loginLogo = page.locator(LoginSelectors.loginLogo);
-    await expect(loginLogo).toBeVisible();
-    await expect(loginLogo).toHaveText(TestData.expected.appTitle);
+    await expect(loginPage.loginLogo()).toBeVisible();
+    await expect(loginPage.loginLogo()).toHaveText(TestData.expected.appTitle);
 
     // 2. Enter username
     // 3. Enter password
@@ -33,16 +33,11 @@ test.describe('Login functionality - Smoke Tests', () => {
     await expect(page).toHaveURL(/.*inventory\.html/);
 
     // Verify an element from the inventory page is present
-    const inventoryContainer = page.locator(MainPageSelectors.inventoryContainer).first();
-    await expect(inventoryContainer).toBeVisible();
+    await expect(inventoryPage.inventoryContainer()).toBeVisible();
 
     // Verify the Swag Labs label
-    const appLogo = page.locator(MainPageSelectors.appLogo);
-    await expect(appLogo).toBeVisible();
-    await expect(appLogo).toHaveText(TestData.expected.appTitle);
-
-    // Keeps the browser open after the test finishes (Playwright Inspector) - commented out for CI/CD compatibility
-    // await page.pause();
+    await expect(inventoryPage.appLogo()).toBeVisible();
+    await expect(inventoryPage.appLogo()).toHaveText(TestData.expected.appTitle);
   });
 
   test('Locked out user should see an error and stay on the login page', async ({ page }) => {
@@ -53,10 +48,15 @@ test.describe('Login functionality - Smoke Tests', () => {
       TestData.credentials.password
     );
 
-    // Login should be rejected: no navigation to the inventory page
-    await expect(page).not.toHaveURL(/.*inventory\.html/);
+    // The error first: it is the page's answer to the click, so once it is shown the login attempt has
+    // been handled. Asserted with toHaveText, which retries until the banner renders.
+    await expect(loginPage.errorMessage()).toHaveText(TestData.expected.lockedOutError);
 
-    const errorMessage = await loginPage.getErrorMessageAsync();
-    expect(errorMessage).toBe(TestData.expected.lockedOutError);
+    // Then "stayed on the login page", stated positively. A "not on /inventory" check passes on its
+    // first attempt - before any redirect could have started - so it proved nothing. The login URL and
+    // the login form still being there do.
+    await expect(page).toHaveURL(/saucedemo\.com\/$/);
+    await expect(loginPage.loginButton()).toBeVisible();
+    await expect(loginPage.usernameInput()).toBeVisible();
   });
 });
