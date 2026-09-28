@@ -4,7 +4,7 @@ namespace AutomationExercise.Tests.TestData
     {
         public string Name { get; set; } = "QA Tester";
         public string Email { get; set; } = "qa_tester@example.com";
-        public string Password { get; set; } = "Password123!";
+        public string Password { get; set; } = TestUsers.RunPassword;
         public string FirstName { get; set; } = "John";
         public string LastName { get; set; } = "Doe";
         public string Company { get; set; } = "QA Org";
@@ -18,6 +18,13 @@ namespace AutomationExercise.Tests.TestData
 
     public static class TestUsers
     {
+        /// <summary>
+        /// Generated once per test run, so no password is kept in the repository - not even for the
+        /// throwaway accounts these tests register and delete. One value for the whole run keeps sign-up
+        /// and the later login in each test in step without passing it around.
+        /// </summary>
+        public static readonly string RunPassword = "Pw_" + System.Guid.NewGuid().ToString("N").Substring(0, 12) + "!";
+
         public static TestUser GetDefaultUser() => new TestUser();
     }
 }

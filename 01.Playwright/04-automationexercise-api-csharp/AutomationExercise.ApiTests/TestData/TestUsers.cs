@@ -19,7 +19,7 @@ namespace AutomationExercise.ApiTests.TestData
             {
                 Name = name,
                 Email = uniqueEmail,
-                Password = "SecretPassword123",
+                Password = "Pw_" + System.Guid.NewGuid().ToString("N").Substring(0, 12),
                 Title = "Mr",
                 BirthDate = "15",
                 BirthMonth = "May",

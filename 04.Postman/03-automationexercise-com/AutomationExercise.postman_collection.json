@@ -244,6 +244,48 @@
                     "name": "API 7: POST To Verify Login with valid details",
                     "event": [
                         {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "// Register a throwaway account for this login check; the test script deletes it again.",
+                                    "const loginEmail = \"postman_login_\" + Date.now() + \"_\" + Math.floor(Math.random() * 100000) + \"@example.com\";",
+                                    "pm.environment.set(\"loginEmail\", loginEmail);",
+                                    "",
+                                    "pm.sendRequest({",
+                                    "    url: pm.environment.get(\"baseUrl\") + \"/api/createAccount\",",
+                                    "    method: \"POST\",",
+                                    "    body: {",
+                                    "        mode: \"urlencoded\",",
+                                    "        urlencoded: [",
+                                    "            { key: \"email\", value: loginEmail },",
+                                    "            { key: \"password\", value: pm.environment.get(\"password\") },",
+                                    "            { key: \"name\", value: \"Postman Login User\" },",
+                                    "            { key: \"title\", value: \"Mr\" },",
+                                    "            { key: \"birth_date\", value: \"15\" },",
+                                    "            { key: \"birth_month\", value: \"May\" },",
+                                    "            { key: \"birth_year\", value: \"1990\" },",
+                                    "            { key: \"firstname\", value: \"First\" },",
+                                    "            { key: \"lastname\", value: \"Last\" },",
+                                    "            { key: \"company\", value: \"QA Org\" },",
+                                    "            { key: \"address1\", value: \"123 Test Street\" },",
+                                    "            { key: \"address2\", value: \"Apt 2B\" },",
+                                    "            { key: \"country\", value: \"Canada\" },",
+                                    "            { key: \"zipcode\", value: \"M4B 1B3\" },",
+                                    "            { key: \"state\", value: \"Ontario\" },",
+                                    "            { key: \"city\", value: \"Toronto\" },",
+                                    "            { key: \"mobile_number\", value: \"1234567890\" }",
+                                    "        ]",
+                                    "    }",
+                                    "}, function (err, res) {",
+                                    "    if (err || res.json().responseCode !== 201) {",
+                                    "        console.error(\"Registering the login test account failed\", err || res.text());",
+                                    "    }",
+                                    "});"
+                                ]
+                            }
+                        },
+                        {
                             "listen": "test",
                             "script": {
                                 "exec": [
@@ -254,6 +296,28 @@
                                     "pm.test(\"Response body responseCode is 200\", function () {",
                                     "    var jsonData = pm.response.json();",
                                     "    pm.expect(jsonData.responseCode).to.eql(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Message confirms the user exists\", function () {",
+                                    "    pm.expect(pm.response.json().message).to.eql(\"User exists!\");",
+                                    "});",
+                                    "",
+                                    "// Delete the throwaway account whatever the assertions above decided.",
+                                    "pm.sendRequest({",
+                                    "    url: pm.environment.get(\"baseUrl\") + \"/api/deleteAccount\",",
+                                    "    method: \"DELETE\",",
+                                    "    body: {",
+                                    "        mode: \"urlencoded\",",
+                                    "        urlencoded: [",
+                                    "            { key: \"email\", value: pm.environment.get(\"loginEmail\") },",
+                                    "            { key: \"password\", value: pm.environment.get(\"password\") }",
+                                    "        ]",
+                                    "    }",
+                                    "}, function (err, res) {",
+                                    "    pm.test(\"Login test account is deleted\", function () {",
+                                    "        pm.expect(err).to.eql(null);",
+                                    "        pm.expect(res.json().responseCode).to.eql(200);",
+                                    "    });",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -268,7 +332,7 @@
                             "formdata": [
                                 {
                                     "key": "email",
-                                    "value": "{{email}}",
+                                    "value": "{{loginEmail}}",
                                     "type": "text"
                                 },
                                 {
@@ -1383,6 +1447,22 @@
                     "response": []
                 }
             ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// No stored credentials. The password every account in this run uses is generated once per run;",
+                    "// the static login test registers its own throwaway account (see API 7). The collection used to log",
+                    "// in to a permanent account whose password sat in the environment file in the repo.",
+                    "if (!pm.environment.get(\"password\")) {",
+                    "    pm.environment.set(\"password\", \"pm_\" + Math.random().toString(36).slice(2) + Date.now().toString(36));",
+                    "}"
+                ]
+            }
         }
     ]
 }

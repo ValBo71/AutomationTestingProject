@@ -138,7 +138,7 @@ namespace AutomationExercise.Tests.Tests
 
             var randomEmail = RandomDataGenerator.GenerateEmail();
             var username = "CartVerifyUser_" + System.Guid.NewGuid().ToString().Substring(0, 5);
-            var password = "Password123!";
+            var password = TestUsers.RunPassword;
 
             // Create user first to login later
             await AllureHelper.StepAsync("Pre-register a user for testing", async () =>

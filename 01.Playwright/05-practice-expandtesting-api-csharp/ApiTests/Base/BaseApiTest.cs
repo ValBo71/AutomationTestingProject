@@ -25,7 +25,8 @@ namespace ApiTests.Base
         protected UsersApiClient UsersClient = null!;
         protected NotesApiClient NotesClient = null!;
 
-        protected const string DefaultPassword = "Password123";
+        /// <summary>A fresh password for each call, so the repository holds none, even for throwaway accounts.</summary>
+        protected static string NewPassword() => "Pw_" + Guid.NewGuid().ToString("N").Substring(0, 12);
 
         /// <summary>
         /// The account this test created on the shared live sandbox, if any. Set by
@@ -87,8 +88,9 @@ namespace ApiTests.Base
         /// so an unexpected status here can never leave the account behind.
         /// </summary>
         protected async Task<(string Name, string Email, string Password)> RegisterTestUserAsync(
-            string? name = null, string password = DefaultPassword)
+            string? name = null, string? password = null)
         {
+            password ??= NewPassword();
             name ??= RandomDataGenerator.GenerateRandomString("User", 6);
             var email = RandomDataGenerator.GenerateUniqueEmail();
 

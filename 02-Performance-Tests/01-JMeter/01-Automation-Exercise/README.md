@@ -10,8 +10,9 @@ The project is built using **Apache JMeter** and supports dynamic parameterizati
 
 Within this project directory, you will find the following files:
 1. **`AutomationExercise_Performance_Test.jmx`**: The main JMeter Test Plan configuration file containing HTTP samplers, assertions, timers, and listeners.
-2. **`test-users.csv`**: A CSV file containing test user credentials for the login verification scenario.
-3. **`README.md`**: This instruction and documentation guide.
+2. **`README.md`**: This instruction and documentation guide.
+
+No credentials are stored in the repository. A **setUp Thread Group** registers a throwaway login account with a generated email and password before the load starts, and a **tearDown Thread Group** deletes it when the run ends. The Account Lifecycle group also generates a fresh password on every iteration.
 
 ---
 
@@ -23,7 +24,7 @@ In accordance with the official [Automation Exercise API List](https://automatio
    * **GET** `/api/productsList` – Get all products list.
    * **GET** `/api/brandsList` – Get all brands list.
    * **POST** `/api/searchProduct` – Search product (defaults to search query: `tshirt`).
-   * **POST** `/api/verifyLogin` – Verify login with credentials loaded from `test-users.csv`.
+   * **POST** `/api/verifyLogin` – Verify login with the throwaway account registered by the setUp Thread Group.
    * **GET** `/api/getUserDetailByEmail` – Get user account details by email.
 
 2. **Account Lifecycle (Optional / Lower Load Thread Group):**

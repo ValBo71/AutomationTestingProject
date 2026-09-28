@@ -23,13 +23,14 @@ namespace ApiTests.Helpers
                 sb.AppendLine(body);
             }
 
-            var contentBytes = Encoding.UTF8.GetBytes(sb.ToString());
+            var contentBytes = Encoding.UTF8.GetBytes(SensitiveData.Redact(sb.ToString()));
             AllureApi.AddAttachment("API Request Details", "text/plain", contentBytes, ".txt");
         }
 
         public static void AttachResponse(int statusCode, string? headers = null, string? body = null)
         {
-            var contentBytes = Encoding.UTF8.GetBytes(body ?? string.Empty);
+            // Login responses carry a token; it is masked like a password.
+            var contentBytes = Encoding.UTF8.GetBytes(SensitiveData.Redact(body));
             AllureApi.AddAttachment("API Response Details", "application/json", contentBytes, ".json");
         }
 

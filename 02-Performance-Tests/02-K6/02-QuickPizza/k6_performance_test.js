@@ -136,7 +136,8 @@ export function registerAndRateScenario() {
   const vu = exec.vu.idInInstance;
   const iter = exec.vu.iterationInInstance;
   const uniqueUsername = `k6_qp_${vu}_${iter}_${Date.now()}`.slice(0, 32);
-  const password = 'SuperSecret123!';
+  // Generated per user, so the repo holds no password even for these throwaway accounts.
+  const password = `Qp_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}!`;
 
   // Fetch CSRF token (needed for login)
   let resCsrf = http.post(`${BASE_URL}/api/csrf-token`, null, { headers: jsonHeaders });

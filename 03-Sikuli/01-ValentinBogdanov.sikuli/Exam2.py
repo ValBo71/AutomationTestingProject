@@ -7,7 +7,9 @@ import time
 # ==============================================================================
 TEMP_MAIL_URL = "https://temp-mail.org/en/"
 JIRA_DASHBOARD_URL = "https://sandbox.xpand-it.com/secure/Dashboard.jspa"
-DEFAULT_PASSWORD = "Penka"
+# Generated per run: the password is only needed to finish signing up the fresh temp-mail account and
+# log in with it once, so there is no reason to keep one in the repository.
+DEFAULT_PASSWORD = "Qa%dz" % random.randrange(10000000, 100000000)
 
 # Timeouts (in seconds)
 DEFAULT_TIMEOUT = 30

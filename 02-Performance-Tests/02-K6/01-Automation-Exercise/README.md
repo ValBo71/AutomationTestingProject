@@ -8,8 +8,9 @@ This project is a replication of the API performance and load testing project fo
 
 Within this project directory, you will find the following files:
 1. **`k6_performance_test.js`**: The k6 load testing script written in JavaScript.
-2. **`test-users.json`**: A JSON file containing user credentials for login verification.
-3. **`README.md`**: This instruction and documentation guide.
+2. **`README.md`**: This instruction and documentation guide.
+
+No credentials are stored in the repository. k6's `setup()` registers a throwaway login account with a generated email and password before the load starts, and `teardown()` deletes it when the run ends (it runs even when thresholds fail). The `account_lifecycle` scenario also generates a fresh password on every iteration.
 
 ---
 

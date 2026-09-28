@@ -31,8 +31,9 @@ It covers all 14 official API testing scenarios organized in a structured, senio
 
 The environment file defines:
 * `baseUrl`: `https://automationexercise.com`
-* `email`: Default email for static login tests.
-* `password`: Default password for static login tests.
+* `loginEmail`: Dynamic placeholder for the throwaway account API 7 registers, logs in with and deletes.
+* `password`: Not stored in the file. The collection's pre-request script generates it once per run, so no
+  password is kept in the repository.
 * `registerEmail`: Dynamic placeholder updated during registration.
 * `searchedProduct`: Dynamic placeholder updated during product list extraction.
 

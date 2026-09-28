@@ -48,7 +48,7 @@ namespace AutomationExercise.Tests.Tests
             await AllureHelper.StepAsync("Fill full signup form and submit", async () =>
             {
                 await signupPage.FillSignupDetailsAsync(
-                    password: "Password123!",
+                    password: TestUsers.RunPassword,
                     day: "15",
                     month: "May",
                     year: "1990",
@@ -99,7 +99,7 @@ namespace AutomationExercise.Tests.Tests
 
             var duplicateEmail = RandomDataGenerator.GenerateEmail();
             var username = "DupUser_" + System.Guid.NewGuid().ToString().Substring(0, 5);
-            var password = "Password123!";
+            var password = TestUsers.RunPassword;
 
             await AllureHelper.StepAsync("Register a user first with the email", async () =>
             {

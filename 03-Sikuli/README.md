@@ -23,7 +23,7 @@ The script automates a complete end-to-end integration and bug reporting flow in
    * Returns to the temp-mail tab, refreshes, and waits for the confirmation email.
    * Clicks the email, double-clicks the username, and copies it to the clipboard.
 5. **Set Password & Login**:
-   * Clicks the "Set My Password" button, sets the password to `Penka`, and logs in.
+   * Clicks the "Set My Password" button, sets a password generated for this run, and logs in.
 6. **Project Creation**:
    * Creates a new Kanban project with a dynamically generated random ID and uses the username as the project key.
 7. **Create Bug Report**:

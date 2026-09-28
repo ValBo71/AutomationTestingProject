@@ -6,9 +6,14 @@ namespace AutomationExercise.RestSharp.ApiTests.Helpers
     {
         private static readonly Random Random = new();
 
+        /// <summary>
+        /// example.com is reserved for exactly this and never delivers mail. An earlier version built
+        /// the addresses on a real mailbox, which tied every test account on the public site to it.
+        /// The random suffix keeps two runs in the same millisecond apart.
+        /// </summary>
         public static string GenerateUniqueEmail()
         {
-            return $"vbogdanov+api_{DateTime.UtcNow:yyyyMMddHHmmssfff}@abv.bg";
+            return $"testuser+restsharp_{DateTime.UtcNow:yyyyMMddHHmmssfff}_{Guid.NewGuid().ToString("N")[..8]}@example.com";
         }
 
         public static string GenerateName()
