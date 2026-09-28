@@ -519,14 +519,14 @@
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - Account Lifecycle (Optional / Less Load)" enabled="true">
+        <stringProp name="TestPlan.comments">Runs a fixed number of iterations (accountLoops) rather than for a duration. A time-limited group stops its threads wherever they are when the time runs out - often between Create and Delete - which left an account with a generated, unknown password on the public site on every run. Each iteration here always reaches its Delete.</stringProp>
         <stringProp name="ThreadGroup.num_threads">${__P(accountUsers,2)}</stringProp>
         <intProp name="ThreadGroup.ramp_time">10</intProp>
-        <stringProp name="ThreadGroup.duration">${__P(duration,60)}</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
-          <stringProp name="LoopController.loops">${__P(loops,-1)}</stringProp>
+          <stringProp name="LoopController.loops">${__P(accountLoops,2)}</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
       </ThreadGroup>
@@ -1077,7 +1077,7 @@
         </elementProp>
       </PostThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Teardown - Delete Login Account" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Teardown - Delete Login Account ${__P(loginEmail)} (password ${__P(loginPassword)})" enabled="true">
           <stringProp name="HTTPSampler.path">/api/deleteAccount</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">DELETE</stringProp>

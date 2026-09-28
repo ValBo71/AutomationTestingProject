@@ -61,10 +61,11 @@ The following parameters are exposed as JMeter Properties and can be customized 
 | :--- | :--- | :--- |
 | `users` | Number of parallel virtual users (Threads) | `20` |
 | `rampup` | Time to spin up all virtual users (seconds) | `60` |
-| `duration` | Total test execution time (seconds) | `60` |
+| `duration` | Execution time of the main load group (seconds) | `60` |
 | `loops` | Number of loop iterations per thread (`-1` for infinite loops during duration) | `-1` |
 | `searchProduct`| Product search query parameter in the search request | `tshirt` |
 | `accountUsers` | Number of threads for the account lifecycle flow (lowered to prevent database lock/flooding) | `2` |
+| `accountLoops` | Iterations per account lifecycle thread. A fixed count, not a duration, so every created account reaches its Delete step instead of being left behind when time runs out | `2` |
 
 ---
 

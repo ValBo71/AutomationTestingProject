@@ -55,7 +55,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
 
                 // Logout to clear the session so we can test Login
                 await homePage.ClickLogoutAsync();
@@ -75,7 +74,6 @@ namespace AutomationExercise.Tests.Tests
             {
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
 
@@ -139,7 +137,6 @@ namespace AutomationExercise.Tests.Tests
                 );
                 await signupPage.ClickCreateAccountAsync();
                 await createdPage.ClickContinueAsync();
-                AccountPendingCleanup = true;
                 await homePage.ClickLogoutAsync();
             });
 
@@ -161,7 +158,6 @@ namespace AutomationExercise.Tests.Tests
                 await loginPage.LoginAsync(randomEmail, password);
                 await homePage.ClickDeleteAccountAsync();
                 await deletedPage.ClickContinueAsync();
-                AccountPendingCleanup = false;
             });
         }
     }

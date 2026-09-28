@@ -601,7 +601,10 @@
                                     "",
                                     "const e2ePhone = \"1\" + String(timestamp).substring(4);",
                                     "pm.collectionVariables.set(\"e2ePhone\", e2ePhone);",
-                                    "console.log(\"E2E User Generated - Username: \" + username);"
+                                    "console.log(\"E2E User Generated - Username: \" + username);",
+                                    "",
+                                    "// Generated per run, so the repository holds no password even for this throwaway user.",
+                                    "pm.collectionVariables.set(\"e2ePassword\", \"pw_\" + Math.random().toString(36).slice(2) + timestamp.toString(36));"
                                 ],
                                 "type": "text/javascript"
                             }
@@ -628,7 +631,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"id\": 999111,\n  \"username\": \"{{username}}\",\n  \"firstName\": \"E2E\",\n  \"lastName\": \"User\",\n  \"email\": \"{{e2eEmail}}\",\n  \"password\": \"SecretPassword123\",\n  \"phone\": \"{{e2ePhone}}\",\n  \"userStatus\": 0\n}"
+                            "raw": "{\n  \"id\": 999111,\n  \"username\": \"{{username}}\",\n  \"firstName\": \"E2E\",\n  \"lastName\": \"User\",\n  \"email\": \"{{e2eEmail}}\",\n  \"password\": \"{{e2ePassword}}\",\n  \"phone\": \"{{e2ePhone}}\",\n  \"userStatus\": 0\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/v2/user",
@@ -662,7 +665,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/v2/user/login?username={{username}}&password=SecretPassword123",
+                            "raw": "{{baseUrl}}/v2/user/login?username={{username}}&password={{e2ePassword}}",
                             "host": [
                                 "{{baseUrl}}"
                             ],
@@ -678,7 +681,7 @@
                                 },
                                 {
                                     "key": "password",
-                                    "value": "SecretPassword123"
+                                    "value": "{{e2ePassword}}"
                                 }
                             ]
                         }

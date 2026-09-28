@@ -15,14 +15,6 @@ namespace AutomationExercise.Tests.Base
         protected IBrowserContext Context { get; private set; } = null!;
         protected IPage Page { get; private set; } = null!;
 
-        /// <summary>
-        /// Set to true right after a test registers/logs into an account on the live site, and back to
-        /// false once the test's own "delete account" cleanup step succeeds. If a test fails or throws
-        /// in between, TearDown uses this flag to attempt a best-effort deletion so failed runs don't
-        /// leak accounts on the shared public demo site.
-        /// </summary>
-        protected bool AccountPendingCleanup { get; set; }
-
         [SetUp]
         public async Task Setup()
         {
@@ -93,18 +85,25 @@ namespace AutomationExercise.Tests.Base
                 }
             }
 
-            if (AccountPendingCleanup)
+            // Any account this test registered and did not delete itself - typically because it failed
+            // part-way - is deleted through the API. A leftover is reported as a warning, not a failure:
+            // the test's own verdict stands, but the leak shows up in the results.
+            foreach (var email in Infrastructure.AccountCleanup.TakeForCurrentTest())
             {
+                string? problem;
                 try
                 {
-                    var homePage = new Pages.HomePage(Page);
-                    await homePage.NavigateAsync();
-                    await homePage.ClickDeleteAccountAsync();
-                    Infrastructure.TestLog.Warn("TearDown safety-net: deleted a leftover account after the test did not reach its own cleanup step.");
+                    problem = await Infrastructure.AccountCleanup.DeleteIfPresentAsync(
+                        Playwright, Drivers.PlaywrightDriver.Settings.BaseUrl, email, TestData.TestUsers.RunPassword);
                 }
                 catch (System.Exception ex)
                 {
-                    Infrastructure.TestLog.Warn($"TearDown safety-net account cleanup failed (account may already be gone or session lost): {ex.Message}");
+                    problem = $"cleanup of {email} (password {TestData.TestUsers.RunPassword}) threw: {ex.Message}";
+                }
+
+                if (problem != null)
+                {
+                    Assert.Warn($"Test account may be left on the site: {problem}");
                 }
             }
 
