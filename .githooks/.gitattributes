@@ -1,0 +1,2 @@
+# sh scripts break with CRLF line endings
+* text eol=lf
