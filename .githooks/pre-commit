@@ -1,0 +1,15 @@
+#!/bin/sh
+# Blocks a commit when the staged changes contain something that looks like a secret.
+# Enable once per clone:  git config core.hooksPath .githooks
+GITLEAKS=$(command -v gitleaks 2>/dev/null)
+if [ -z "$GITLEAKS" ] && [ -x "$HOME/bin/gitleaks.exe" ]; then
+  GITLEAKS="$HOME/bin/gitleaks.exe"
+fi
+if [ -z "$GITLEAKS" ]; then
+  echo "pre-commit: gitleaks is not installed, secret scan skipped (https://github.com/gitleaks/gitleaks)." >&2
+  exit 0
+fi
+"$GITLEAKS" git --pre-commit --staged --redact --no-banner --verbose --log-level warn . || {
+  echo "pre-commit: possible secret in the staged changes. Move it to a git-ignored local file, or allow it in .gitleaks.toml if it is a false positive." >&2
+  exit 1
+}

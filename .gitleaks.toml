@@ -1,0 +1,14 @@
+# Secret scanning rules. Used by the pre-commit hook (.githooks/pre-commit)
+# and by the CI job (.github/workflows/secret-scan.yml).
+title = "gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Postman variable names, not values"
+regexes = ['''^debtorEhId\d_UK$''']
+
+[[allowlists]]
+description = "Third-party Playwright bundle that was committed with build output"
+paths = ['''(^|/)bin/Debug/.*/\.playwright/''']
