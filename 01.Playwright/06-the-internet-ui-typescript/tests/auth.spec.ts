@@ -45,51 +45,28 @@ test.describe('Form Authentication', () => {
 });
 
 test.describe('Forgot Password', () => {
-  /**
-   * KNOWN DEFECT (server-side, verified 2026-08): submitting the form returns
-   * HTTP 500 "Internal Server Error" instead of the confirmation page - the
-   * deployed app has no working mailer. Reproduced on repeated runs, so this
-   * is the application's behaviour rather than a flaky test.
-   *
-   * Marked as an expected failure rather than deleted or weakened: the suite
-   * keeps asserting the correct behaviour, and Playwright will flag this as
-   * "unexpected pass" the day the endpoint is fixed.
-   */
-  test.fail(
-    'Submitting an e-mail shows the confirmation page',
-    async ({ page }) => {
-      const authPage = new AuthPage(page);
-      await authPage.openForgotPassword();
+  // Until 2026-10 the deployed site answered this submit with HTTP 500, and
+  // the test was an expected failure. The site was fixed, so it is a plain
+  // test again.
+  test('Submitting an e-mail shows the confirmation page', async ({ page }) => {
+    const authPage = new AuthPage(page);
+    await authPage.openForgotPassword();
 
-      await authPage.requestPasswordReset('qa.tester@example.com');
+    await authPage.requestPasswordReset('qa.tester@example.com');
 
-      await expect(authPage.confirmationHeading()).toHaveText(Expected.forgotPasswordConfirmation);
-    }
-  );
+    await expect(page).toHaveURL(/\/email_sent$/);
+    await expect(authPage.confirmationMessage()).toHaveText(Expected.forgotPasswordConfirmation);
+  });
 
   test('The form itself renders and accepts input', async ({ page }) => {
     const authPage = new AuthPage(page);
     await authPage.openForgotPassword();
 
-    // Everything up to the broken submit is still worth covering.
     // This page titles itself with an <h2>, unlike the <h3> most examples use.
     await expect(page.locator('h2')).toHaveText('Forgot Password');
     const email = page.locator('#email');
     await email.fill('qa.tester@example.com');
     await expect(email).toHaveValue('qa.tester@example.com');
-  });
-
-  test('Submitting currently returns a 500 from the server', async ({ page }) => {
-    const authPage = new AuthPage(page);
-    await authPage.openForgotPassword();
-
-    // Pins the current broken behaviour so a silent change is noticed.
-    const [response] = await Promise.all([
-      page.waitForResponse((r) => r.url().includes('forgot_password') && r.request().method() === 'POST'),
-      authPage.requestPasswordReset('qa.tester@example.com'),
-    ]);
-
-    expect(response.status()).toBe(500);
   });
 });
 

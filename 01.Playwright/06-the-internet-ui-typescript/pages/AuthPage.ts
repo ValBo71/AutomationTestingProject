@@ -44,7 +44,7 @@ export class AuthPage extends BasePage {
     await this.page.locator(AuthSelectors.forgotPasswordSubmit).click();
   }
 
-  confirmationHeading() {
-    return this.page.locator(AuthSelectors.confirmationHeading);
+  confirmationMessage() {
+    return this.page.locator(AuthSelectors.confirmationMessage);
   }
 }

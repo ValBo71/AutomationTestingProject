@@ -9,7 +9,7 @@ naive test: randomised DOM ids, elements that appear only after a delay, content
 inside iframes and shadow roots, native dialogs, HTTP auth, and images that are
 "visible" while being broken.
 
-**62 tests, 9 spec files, all green.** Verified over four consecutive full runs
+**60 tests, 8 spec files, all green.** Verified over four consecutive full runs
 to rule out flakiness on the randomised challenges.
 
 ---
@@ -70,7 +70,7 @@ hold only intent and assertions.
 | 17 | File Download | `navigation` | Capture the `download` event |
 | 18 | File Upload | `navigation` | Fixture written at runtime, not committed |
 | 19 | Floating Menu | `interactions` | Must stay in viewport after scroll |
-| 20 | Forgot Password | `auth` | ⚠️ Server returns HTTP 500 — see *Known defects* |
+| 20 | Forgot Password | `auth` | Submit leads to the confirmation page |
 | 21 | Form Authentication | `auth` | Valid / bad user / bad password / logout |
 | 22 | Frames | `frames` | Cross the iframe boundary |
 | 23 | Geolocation | `navigation` | Permission granted + coordinates pinned for determinism |
@@ -94,29 +94,24 @@ hold only intent and assertions.
 | 41 | Sortable Data Tables | `dom` | **tablesorter rewrites rows asynchronously** — poll, don't read immediately |
 | 42 | Status Codes | `navigation` | Parametrised over 200 / 301 / 404 / 500 |
 | 43 | Typos | `dom` | Typo injected at random — assert one of two known states |
-| 44 | WYSIWYG Editor | `frames` | ⚠️ Editor is read-only — see *Known defects* |
+| 44 | WYSIWYG Editor | `frames` | ⚠️ Read-only when the site's TinyMCE quota runs out — see *Known limitation* |
 
 ---
 
-## ⚠️ Known defects (site-side, not test bugs)
+## ⚠️ Known limitation (site-side, not a test bug)
 
-Two challenges cannot currently pass because of problems in the target site
-itself. Rather than deleting the coverage or weakening the assertion until it
-goes green, both are marked `test.fail()` — the suite keeps asserting the
-*correct* behaviour, and Playwright will report an **unexpected pass** the day
-either is fixed.
+**WYSIWYG Editor — read-only when the quota runs out.** The site loads TinyMCE
+from its cloud on a monthly quota. When the quota is used up, the editor
+renders with `contenteditable="false"` and reports *"TinyMCE is in read-only
+mode because you have no more editor loads available this month."* Typing is
+then impossible for any client. The state flips without notice, so the typing
+test skips with that reason when the editor is read-only and runs otherwise.
+Reading the editor's content across the iframe boundary — the actual skill
+this challenge tests — is covered separately and passes in both states.
 
-**Forgot Password — HTTP 500.** Submitting the form returns
-`Internal Server Error` instead of the confirmation page; the deployed app has
-no working mailer. Reproduced on repeated runs, so it is behaviour, not flake.
-A companion test pins the current 500 so a silent change is noticed.
-
-**WYSIWYG Editor — read-only.** TinyMCE renders with
-`class="mce-content-readonly"` and `contenteditable="false"`, reporting
-*"TinyMCE is in read-only mode because you have no more editor loads available
-this month."* The site owner's TinyMCE cloud quota is exhausted, so typing is
-impossible for any client. Reading the editor's content across the iframe
-boundary — the actual skill this challenge tests — is still covered and passes.
+**Forgot Password — fixed upstream.** Until October 2026 the submit answered
+HTTP 500 and the test was marked `test.fail()`. The site now shows the
+confirmation page, so the test asserts it directly.
 
 ---
 

@@ -36,5 +36,6 @@ export const AuthSelectors = {
   // /forgot_password
   email: '#email',
   forgotPasswordSubmit: '#form_submit',
-  confirmationHeading: 'h1',
+  // The confirmation is bare text in the content area, not a heading.
+  confirmationMessage: '#content',
 } as const;

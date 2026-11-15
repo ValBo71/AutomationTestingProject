@@ -13,35 +13,36 @@ test.describe('Frames', () => {
     await framePage.openWysiwygEditor();
 
     // Crossing the iframe boundary is the actual skill this challenge tests,
-    // and that part works regardless of the editor being read-only.
+    // and that part works even when the editor is read-only (see below).
     const editorBody = framePage.editorBody();
     await expect(editorBody).toBeVisible();
     await expect(editorBody).toContainText(Expected.frameEditorDefaultText);
   });
 
   /**
-   * KNOWN BLOCKER (third-party, verified 2026-08): the editor renders with
-   * class "mce-content-readonly" and contenteditable="false", and TinyMCE
-   * shows "TinyMCE is in read-only mode because you have no more editor loads
-   * available this month". The site owner's TinyMCE cloud quota is exhausted,
-   * so typing is impossible for anyone - not a locator or timing problem.
+   * THIRD-PARTY QUOTA: the site loads TinyMCE from its cloud, on a monthly
+   * quota of editor loads. When the quota is used up the editor renders with
+   * contenteditable="false" and shows "TinyMCE is in read-only mode because
+   * you have no more editor loads available this month" - typing is then
+   * impossible for anyone (seen 2026-08 and 2026-09; editable again since
+   * 2026-10).
    *
-   * Kept as an expected failure so the intended coverage stays visible and
-   * the suite reports it the moment the quota resets.
+   * The state belongs to the site owner and flips without notice, so the test
+   * skips with that reason instead of pinning either state.
    */
-  test.fail('WYSIWYG Editor: text can be typed inside the TinyMCE iframe', async () => {
+  test('WYSIWYG Editor: text can be typed inside the TinyMCE iframe', async () => {
     await framePage.openWysiwygEditor();
+
+    const editorBody = framePage.editorBody();
+    await expect(editorBody).toBeVisible();
+    test.skip(
+      (await editorBody.getAttribute('contenteditable')) === 'false',
+      'TinyMCE is in read-only mode: the site has used up its monthly editor loads'
+    );
 
     await framePage.typeInEditor('Automated by Playwright');
 
-    await expect(framePage.editorBody()).toContainText('Automated by Playwright');
-  });
-
-  test('WYSIWYG Editor: the read-only state is reported by the editor itself', async () => {
-    await framePage.openWysiwygEditor();
-
-    // Pins the current third-party state, so the suite notices if it changes.
-    await expect(framePage.editorBody()).toHaveAttribute('contenteditable', 'false');
+    await expect(editorBody).toContainText('Automated by Playwright');
   });
 
   test('Frames: the iframe example exposes the same editor', async () => {

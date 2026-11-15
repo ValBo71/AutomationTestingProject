@@ -52,7 +52,7 @@ of each rather than a nightly snapshot.
 | 03 | [automationexercise-ui-csharp](./01.Playwright/03-automationexercise-ui-csharp) | C#, NUnit, Allure | 26 | ✅ | All 26 official [Automation Exercise](https://automationexercise.com/) test cases. POM, ad/tracker blocking, retry-on-transient-failure. Earlier work — the conventions in 06-08 supersede its style. |
 | 04 | [automationexercise-api-csharp](./01.Playwright/04-automationexercise-api-csharp) | C#, NUnit | 11 | ✅ | The same site's REST API, browserless via `IAPIRequestContext`. |
 | 05 | [practice-expandtesting-api-csharp](./01.Playwright/05-practice-expandtesting-api-csharp) | C#, NUnit, Allure | 18 | ✅ | Notes API — registration, auth and a full note CRUD lifecycle. DTO models, token headers, JSON helpers. |
-| 06 | [the-internet-ui-typescript](./01.Playwright/06-the-internet-ui-typescript) | TypeScript | 62 | ✅ | All **44 challenges** on the-internet — iframes, shadow roots, native dialogs, HTTP auth, broken images. |
+| 06 | [the-internet-ui-typescript](./01.Playwright/06-the-internet-ui-typescript) | TypeScript | 60 | ✅ | All **44 challenges** on the-internet — iframes, shadow roots, native dialogs, HTTP auth, broken images. |
 | 07 | [uitestingplayground-ui-typescript](./01.Playwright/07-uitestingplayground-ui-typescript) | TypeScript | 43 | ✅ | All **29 challenges** on UI Test Automation Playground — randomised ids, overlays, elements that lie about their state. |
 | 08 | [restful-booker-platform-api-typescript](./01.Playwright/08-restful-booker-platform-api-typescript) | TypeScript, Zod | 56 | ✅ | Six-service booking platform. API tests, Zod contract validation, and hybrid tests that share one session between HTTP and the browser. |
 
