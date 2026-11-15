@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using AutomationExercise.Tests.Infrastructure;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Base;
 using AutomationExercise.Tests.Pages;
@@ -20,7 +21,7 @@ namespace AutomationExercise.Tests.Tests
     public class CheckoutTests : BaseTest
     {
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 14: Place Order: Register while Checkout")]
         public async Task PlaceOrder_RegisterWhileCheckout()
@@ -122,7 +123,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 15: Place Order: Register before Checkout")]
         public async Task PlaceOrder_RegisterBeforeCheckout()
@@ -210,7 +211,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 16: Place Order: Login before Checkout")]
         public async Task PlaceOrder_LoginBeforeCheckout()
@@ -308,7 +309,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 23: Verify address details in checkout page")]
         public async Task VerifyAddressDetails_InCheckoutPage()
@@ -379,7 +380,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 24: Download Invoice after purchase order")]
         public async Task DownloadInvoice_AfterOrderPurchase()

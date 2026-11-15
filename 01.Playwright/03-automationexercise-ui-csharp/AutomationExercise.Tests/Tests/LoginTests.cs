@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using AutomationExercise.Tests.Infrastructure;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Base;
 using AutomationExercise.Tests.Pages;
@@ -19,7 +20,7 @@ namespace AutomationExercise.Tests.Tests
     public class LoginTests : BaseTest
     {
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 2: Login User with correct email and password")]
         public async Task LoginUser_WithCorrectCredentials_ShouldSucceed()
@@ -78,7 +79,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 3: Login User with incorrect email and password")]
         public async Task LoginUser_WithIncorrectCredentials_ShouldShowError()
@@ -101,7 +102,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 4: Logout User")]
         public async Task LogoutUser_ShouldSucceed()

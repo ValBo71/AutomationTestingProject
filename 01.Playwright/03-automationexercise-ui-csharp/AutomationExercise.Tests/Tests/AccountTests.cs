@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using AutomationExercise.Tests.Infrastructure;
 using System.Threading.Tasks;
 using AutomationExercise.Tests.Base;
 using AutomationExercise.Tests.Pages;
@@ -19,7 +20,7 @@ namespace AutomationExercise.Tests.Tests
     public class AccountTests : BaseTest
     {
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.critical)]
         [Description("Test Case 1: Register User")]
         public async Task RegisterUser_ShouldSucceed()
@@ -84,7 +85,7 @@ namespace AutomationExercise.Tests.Tests
         }
 
         [Test]
-        [Retry(2)]
+        [RetryOnError(2)]
         [AllureSeverity(SeverityLevel.normal)]
         [Description("Test Case 5: Register User with existing email")]
         public async Task RegisterUser_WithExistingEmail_ShouldShowError()

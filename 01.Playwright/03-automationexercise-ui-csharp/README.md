@@ -19,7 +19,9 @@ The tests are written in C# utilizing **Playwright** for fast and reliable brows
 * **Resiliency Features:** navigation is retried when the site answers with its "heavy load (queue full)" page
   (`Infrastructure/SiteAvailability.cs`), and ad, consent-overlay and tracker hosts are blocked by host name
   (`Drivers/PlaywrightDriver.cs`).
-* **`[Retry(2)]` on every test:** the target is a busy public demo site, so a test gets up to two more attempts.
+* **`[RetryOnError(2)]` on every test:** the target is a busy public demo site, so a test gets a second attempt.
+  NUnit's own `[Retry]` repeats only after a failed assertion; a Playwright timeout is an exception, so it was
+  never retried. `Infrastructure/RetryOnErrorAttribute.cs` repeats on both, with a fresh browser context.
   A retry can hide a genuinely flaky test, which is why a failed attempt keeps its own screenshot and trace
   (`TestResults/traces/<test>_attempt<n>.zip`) instead of being overwritten by the next one.
 * **No accounts left behind:** every email a test generates is tracked; `BaseTest.TearDown` deletes any account
