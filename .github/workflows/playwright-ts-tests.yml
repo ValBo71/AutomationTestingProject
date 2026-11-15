@@ -6,11 +6,11 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    # Runs at 01:00 UTC (04:00 Bulgarian Summer Time / 03:00 Winter Time) every day.
+    # Runs at 01:00 UTC (04:00 Bulgarian Summer Time / 03:00 Winter Time) every Monday.
     # Each suite has its own half-hour slot so no two share a runner
     # window - when a run goes red it is then obvious which suite, and
     # which target, is responsible.
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * 1'
   workflow_dispatch:
 
 env:

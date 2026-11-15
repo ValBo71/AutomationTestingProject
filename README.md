@@ -29,7 +29,7 @@ style reference.
 [valbo71.github.io/AutomationTestingProject](https://valbo71.github.io/AutomationTestingProject/)
 - Playwright reports served as-is, Allure results rendered on each publish.
 The site is rebuilt after any suite finishes, so it shows the most recent run
-of each rather than a nightly snapshot.
+of each rather than a scheduled snapshot.
 
 ---
 

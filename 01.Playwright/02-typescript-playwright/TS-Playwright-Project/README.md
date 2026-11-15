@@ -45,6 +45,6 @@ npm run typecheck
 
 ## CI
 
-The `Playwright TypeScript UI Tests` workflow runs on every push, pull request and nightly. In CI a failed test is
+The `Playwright TypeScript UI Tests` workflow runs on every push, pull request and once a week (Monday). In CI a failed test is
 retried up to twice, but a test that only passes on a retry is reported as flaky and **fails the run**
 (`failOnFlakyTests`), so flakiness is visible instead of hidden behind a green build.

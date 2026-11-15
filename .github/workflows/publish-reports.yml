@@ -15,10 +15,10 @@ on:
       - "Playwright UI Test Automation Playground"
       - "RestAssured Petstore API Tests"
     types: [completed]
-  # 05:30 UTC, after the last suite in the nightly rotation (05:00) has had
-  # time to finish, so a scheduled publish picks up that night's results.
+  # 05:30 UTC on Monday, after the last suite in the weekly rotation (05:00) has had
+  # time to finish, so a scheduled publish picks up that week's results.
   schedule:
-    - cron: '30 5 * * *'
+    - cron: '30 5 * * 1'
   workflow_dispatch:
 
 # A Pages site has a single deployment slot. Suites finish at different times
