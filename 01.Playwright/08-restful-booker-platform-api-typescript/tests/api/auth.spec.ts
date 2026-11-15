@@ -68,6 +68,7 @@ test.describe('Auth - protecting endpoints', () => {
   test('Deleting without a token answers 403, not the 401 a read gets', async ({
     anonymousRooms,
     anonymousBookings,
+    byIdRoutes,
   }) => {
     // Same missing credential, two different statuses depending on the verb.
     // Asserted as-is rather than normalised, because a client written against

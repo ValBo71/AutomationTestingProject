@@ -245,6 +245,31 @@ never to an exact total or to a before/after difference other writers can move.
 
 ---
 
+### When the sandbox itself is broken
+
+Since 2026-10-24 the gateway in front of the services has been failing on its
+own: every route with an id in the path (`/api/room/{id}`, `/api/booking/{id}`,
+`/api/message/{id}`) answers a bare `500` for any verb, while the collection
+routes keep working. In that state a test can still create a room, a booking or
+a message, and can no longer read it back, change it or delete it - so every
+run would leave data behind for everyone else, and the janitor could not undo
+it.
+
+`core/sandboxHealth.ts` checks for this once per worker, by reading one
+existing room and one existing message by id. Both have to fail before it is
+called an outage; one service failing alone is a defect, and the tests fail on
+it. While the outage lasts:
+
+- every test that writes (anything that asks for the `janitor`) and every test
+  that needs a by-id route (the `byIdRoutes` fixture) is **skipped with that
+  reason**, before it writes anything;
+- the read-only, validation and authentication tests still run;
+- in CI the run carries a `Sandbox outage` warning, so a green job with
+  skipped tests says why on its summary page.
+
+The day the routes answer again the probe passes and the full suite runs, with
+no change to the code.
+
 ## 🔍 Four things that went wrong while writing this
 
 Recorded because each one changed the code, and because the first is the kind of

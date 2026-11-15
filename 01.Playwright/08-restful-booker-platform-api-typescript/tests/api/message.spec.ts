@@ -161,7 +161,7 @@ test.describe('Messages', () => {
     expect(countBody.count).toBeGreaterThanOrEqual(0);
   });
 
-  test('A deleted message is gone from the inbox', async ({ messages }) => {
+  test('A deleted message is gone from the inbox', async ({ messages, byIdRoutes }) => {
     const id = await messages.createMessageAsync(buildMessage());
 
     const removal = await messages.remove(id);

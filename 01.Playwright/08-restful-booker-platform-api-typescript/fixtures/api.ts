@@ -4,6 +4,7 @@ import { BookingClient } from '../clients/BookingClient';
 import { MessageClient } from '../clients/MessageClient';
 import { RoomClient } from '../clients/RoomClient';
 import { SiteClient } from '../clients/SiteClient';
+import { BY_ID_OUTAGE_REASON, SandboxHealth, probeSandboxAsync } from '../core/sandboxHealth';
 
 /**
  * Undo stack for anything a test writes to the sandbox.
@@ -71,9 +72,42 @@ interface ApiFixtures {
   anonymousBookings: BookingClient;
   anonymousMessages: MessageClient;
   janitor: Janitor;
+  /**
+   * Ask for this in a test that reads, changes or deletes one item by its id
+   * without going through the janitor. It skips the test while the sandbox's
+   * by-id routes are down - see core/sandboxHealth.ts.
+   */
+  byIdRoutes: void;
 }
 
-export const test = base.extend<ApiFixtures>({
+interface ApiWorkerFixtures {
+  /** Probed once per worker; the answer does not change within a run. */
+  sandboxHealth: SandboxHealth;
+}
+
+export const test = base.extend<ApiFixtures, ApiWorkerFixtures>({
+  sandboxHealth: [
+    async ({ playwright }, use, workerInfo) => {
+      const baseURL = workerInfo.project.use.baseURL;
+      const context = await playwright.request.newContext({ baseURL });
+      const health = await probeSandboxAsync(context);
+      await context.dispose();
+      if (health.byIdRoutesDown) {
+        // GitHub renders this as a warning on the run, so a green job with
+        // skipped tests still says why on its summary page.
+        const prefix = process.env.GITHUB_ACTIONS ? '::warning title=Sandbox outage::' : '[sandbox] ';
+        console.warn(`${prefix}${BY_ID_OUTAGE_REASON} (${health.detail}). Tests that need those routes are skipped.`);
+      }
+      await use(health);
+    },
+    { scope: 'worker' },
+  ],
+
+  byIdRoutes: async ({ sandboxHealth }, use, testInfo) => {
+    testInfo.skip(sandboxHealth.byIdRoutesDown, `${BY_ID_OUTAGE_REASON} (${sandboxHealth.detail})`);
+    await use();
+  },
+
   /**
    * A fresh token per test, not one shared across the worker.
    *
@@ -141,8 +175,13 @@ export const test = base.extend<ApiFixtures>({
    * them - so this dependency is what guarantees the order. Without it, a test
    * that asked for `({ janitor, rooms })` would run its cleanup on a closed
    * context.
+   *
+   * It also depends on `byIdRoutes`: a test that asks for a janitor is a test
+   * that writes, and every undo is a delete by id. While those routes are down
+   * nothing it creates could be removed, so the test is skipped before it
+   * writes anything rather than left to pollute a shared instance.
    */
-  janitor: async ({ request }, use) => {
+  janitor: async ({ request, byIdRoutes }, use) => {
     const janitor = new Janitor();
     await use(janitor);
     await janitor.runAsync();

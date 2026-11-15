@@ -20,7 +20,7 @@ test.describe('Rooms - reading', () => {
     expect(body.rooms.length).toBeGreaterThan(0);
   });
 
-  test('A single room can be fetched by its id', async ({ rooms }) => {
+  test('A single room can be fetched by its id', async ({ rooms, byIdRoutes }) => {
     // Reads whichever room happens to be first rather than creating one. The
     // point here is that the by-id route agrees with the collection route, and
     // any room proves that - so this test stays a pure read, with nothing to
